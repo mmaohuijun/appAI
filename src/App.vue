@@ -15,6 +15,9 @@ export default {
 
 <style>
 #app {
-  
+  padding: 0 20px;
+}
+.line-input {
+  border: none;
 }
 </style>

@@ -25,13 +25,13 @@
                     </DropdownItem>
                   </DropdownMenu>
                 </Dropdown>
-              </MenuItem>             
-                <MenuItem name="2">
-                    场景
-                </MenuItem>
-                <MenuItem name="3">
-                    词库
-                </MenuItem>
+              </MenuItem>
+              <MenuItem name="2">
+                场景
+              </MenuItem>  
+              <MenuItem name="3">
+                词库
+              </MenuItem>
             </div>
         </Menu>
   </div>
@@ -49,13 +49,14 @@ export default {
         this.$router.push('/apps')
       } else {
         this.$router.push('/intents')
-      }
+      }   
     },
+    // 场景 词库 菜单
     selectMenu (name) {
-      if (name === 2) {
+      if (name === '2') {
         this.$router.push('/intents')
-      } else if (name === 3) {
-        this.$router.push('entities')
+      } else if (name === '3') {
+        this.$router.push('/entities')
       }
     }
 
