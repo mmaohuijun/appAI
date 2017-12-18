@@ -8,6 +8,11 @@ import jquery from 'jquery'
 import iView from 'iview'
 import 'iview/dist/styles/iview.css'
 
+Vue.use(iView, lodash, jquery)
+Object.defineProperty(Vue.prototype, 'iView', {value: 'iView'})
+Object.defineProperty(Vue.prototype, 'lodash', {value: 'lodash'})
+Object.defineProperty(Vue.prototype, 'jquery', {value: 'jquery'})
+
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */
