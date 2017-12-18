@@ -49,7 +49,7 @@ export default {
         this.$router.push('/apps')
       } else {
         this.$router.push('/intents')
-      }   
+      }
     },
     // 场景 词库 菜单
     selectMenu (name) {
@@ -68,6 +68,7 @@ export default {
   .layout {
         border: 1px solid #d7dde4;
         background: #f5f7f9;
+        margin-bottom: 30px;
     }
     .layout-logo {
         width: 100px;

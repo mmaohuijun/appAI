@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <Layout></Layout>
-    <router-view/>
+    <router-view></router-view>
   </div>
 </template>
 
@@ -16,8 +16,6 @@ export default {
 <style>
 #app {
   padding: 0 20px;
-}
-.line-input {
-  border: none;
+  font-size: 14px;
 }
 </style>

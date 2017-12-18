@@ -2,8 +2,8 @@ import Vue from 'vue'
 import Router from 'vue-router'
 // import HelloWorld from '@/components/HelloWorld'
 // 应用
-const HelloWorld = () => import('../components/HelloWorld')
-const Apps = () => import('../views/apps/Apps')
+const Application = () => import('../views/apps/Application')
+const EditApp = () => import('../views/apps/EditApp')
 const CreateApp = () => import('../views/apps/CreateApp')
 // 场景
 const Intents = () => import('../views/intents/Intents')
@@ -16,11 +16,19 @@ const CreateEntities = () => import('../views/entities/CreateEntities')
 Vue.use(Router)
 
 const normalRouter = [
-  { path: '/', component: HelloWorld, name: 'helloWorld' },
+  { path: '/', component: Application, name: '应用列表' },
   {
     path: '/apps',
-    component: Apps,
-    name: '应用列表'
+    component: Application,
+    name: '应用列表',
+    meta: {
+      title: '应用列表'
+    }
+  },
+  {
+    path: '/editAPP',
+    component: EditApp,
+    name: '编辑应用'
   },
   {
     path: '/createApp',
