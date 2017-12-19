@@ -27,6 +27,7 @@
 </template>
 
 <script>
+import $axios from '../../api/api.js'
 export default {
   name: 'Application',
   methods: {
@@ -40,7 +41,18 @@ export default {
     },
     gotoCreateApp () {
       this.$router.push('/createApp')
+    },
+    getApp () {
+      // $axios.get('').then(response => {
+      //   console.log(response)
+      // })
     }
+  },
+  created () {
+    console.log('$axios', $axios.get('/chat/robot/app/list?name').then(response => {
+      console.log(response)
+    }))
+    this.getApp()
   }
 }
 </script>

@@ -6,12 +6,14 @@ import { router } from './router'
 import lodash from 'lodash'
 import jquery from 'jquery'
 import iView from 'iview'
+import $axios from './api/api.js'
 import 'iview/dist/styles/iview.css'
 
-Vue.use(iView, lodash, jquery)
-Object.defineProperty(Vue.prototype, 'iView', {value: 'iView'})
-Object.defineProperty(Vue.prototype, 'lodash', {value: 'lodash'})
-Object.defineProperty(Vue.prototype, 'jquery', {value: 'jquery'})
+Vue.use(iView, lodash, jquery, $axios)
+Object.defineProperty(Vue.prototype, '_', {value: 'lodash'})
+Object.defineProperty(Vue.prototype, '$', {value: 'jquery'})
+Object.defineProperty(Vue.prototype, '$axios', {value: '$axios'})
+// console.log('axios', $axios.get())
 
 Vue.config.productionTip = false
 
