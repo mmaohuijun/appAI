@@ -14,8 +14,12 @@ export default {
 </script>
 
 <style>
-#app {
+/* #app{
   padding: 0 20px;
   font-size: 14px;
+  height: 100%;
+} */
+#app > div.layout + div{
+  padding: 0 30px;
 }
 </style>

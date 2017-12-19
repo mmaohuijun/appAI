@@ -5,24 +5,24 @@
     </div>
     <Input placeholder="搜索" icon="search"></Input>
     <ul class="list-group">
-      <li @click="hello">
-        <a href="">跑鞋示例</a>
+      <li @click="gotoIntents">
+        <a>应用1</a>
         <div class="rt">
-          <a @click.stop="goToEditApp">
+          <a @click.stop="gotoEditApp">
             <Icon type="gear-a" class="app-icon"></Icon>
           </a>
         </div>
       </li>
-      <li @click="hello">
-        <a href="">跑鞋示例</a>
+      <!-- <li @click="gotoIntents">
+        <a>应用2</a>
         <div class="rt">
-          <a @click.stop="goToEditApp">
+          <a @click.stop="gotoEditApp">
             <Icon type="gear-a" class="app-icon"></Icon>
           </a>
         </div>
-      </li>
+      </li> -->
     </ul>
-    <Button type="primary" size="large" @click="goToCreateApp">创建应用</Button>
+    <Button type="primary" size="large" @click="gotoCreateApp">创建应用</Button>
   </div>
 </template>
 
@@ -30,15 +30,15 @@
 export default {
   name: 'Application',
   methods: {
-    hello () {
+    gotoIntents () {
       console.log('hello')
       this.$router.push('/intents')
     },
-    goToEditApp () {
+    gotoEditApp () {
       console.log('router')
       this.$router.push('/editApp')
     },
-    goToCreateApp () {
+    gotoCreateApp () {
       this.$router.push('/createApp')
     }
   }
@@ -69,19 +69,26 @@ export default {
       border-bottom: none;
       font-size: 14px;
       padding:8px 10px;
-    }
-    &:hover {
+
+      a {
+        color: #333;
+      }
+
+      &:hover {
       cursor: pointer
-    }
-    &:hover .app-icon {
+      }
+
+      &:hover .app-icon {
         display: block;
       }
+    }  
   }
   .app-icon {
     position: relative;
     top: 2px;
     display: none;
     font-size: 16px;
+    color: #333;
   }
 </style>
 

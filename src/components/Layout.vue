@@ -6,7 +6,7 @@
               <MenuItem name="1">
                 <Dropdown @on-click="selectApp">
                   <a>
-                    跑鞋示例
+                    应用1
                     <Icon type="arrow-down-b"></Icon>
                     <Icon type="plus"></Icon> 
                   </a>
@@ -20,7 +20,7 @@
                       <Icon type="navicon" class="drop-down-list"></Icon>
                     </DropdownItem>
                     <DropdownItem name="showAppDetail" divided>
-                      跑鞋示例
+                      应用1
                       <Icon type="gear-a" class="drop-down-list"></Icon>
                     </DropdownItem>
                   </DropdownMenu>

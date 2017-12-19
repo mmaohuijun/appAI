@@ -36,9 +36,10 @@ export default {
 
 <style lang="less">
   .app-header {
-    // float: left;
     margin-top: 20px;
     margin-bottom: 20px;
+    width: 100%;
+    height: 50px;
   }
   .list-group {
     margin-top: 20px;

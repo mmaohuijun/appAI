@@ -63,7 +63,7 @@ export default {
     },
     delReply () {
       console.log(this.nextReplyId)
-      this.defaultReplyList.splice(index, 1)
+      // this.defaultReplyList.splice(index, 1)
     },
     saveCreate (name) {
       console.log('saveCreate')

@@ -3,29 +3,41 @@
     <div class="app-header">      
       <h1>词库</h1>
     </div>
-    <Input placeholder="搜索" icon="search"></Input>
-    <ul class="list-group">
-      <li>hello</li>
-      <li>跑鞋示例</li>
-    </ul>
-    <Button type="primary" size="large">创建词库</Button>
+    <div v-if="ifEntities">
+      <Input placeholder="搜索" icon="search"></Input>
+      <ul class="list-group">
+        <li>hello</li>
+        <li>跑鞋示例</li>
+      </ul>
+      <Button type="primary" size="large">创建词库</Button>
+    </div>
+    <div class="no-entities" v-else>
+      <p>还没有词库，先<a href="" @click.prevent="gotoCreateEntities">创建第一个</a>词库</p>
+      <p>详细了解词库，<a href="">查看文档</a></p>
+    </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'Entities'
+  name: 'Entities',
+  data () {
+    return {
+      ifEntities: false // 是否存在词库
+    }
+  },
+  methods: {
+    gotoCreateEntities () {
+      this.$router.push('/createEntities')
+    }
+  }
 }
 </script>
 
 <style lang="less">
   .app-header {
-    float: left;
     margin-top: 20px;
     margin-bottom: 20px;
-    h1 {
-      float: left
-    }
   }
   .list-group {
     margin-top: 20px;
@@ -41,5 +53,10 @@ export default {
       cursor: pointer;
     }
   }
+  .no-entities {
+      text-align: center;
+      font-size: 16px;
+      margin-top: 50px;
+    }
 </style>
 
