@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 // import HelloWorld from '@/components/HelloWorld'
+// import Layout from '../components/Layout'
 // 应用
 const Application = () => import('../views/apps/Application')
 const EditApp = () => import('../views/apps/EditApp')
@@ -26,7 +27,7 @@ const normalRouter = [
     }
   },
   {
-    path: '/editAPP',
+    path: '/editApp',
     component: EditApp,
     name: '编辑应用'
   },
@@ -66,6 +67,7 @@ const normalRouter = [
     name: '新建词库'
   }
 ]
+
 export const router = new Router({
   mode: 'history',
   routes: normalRouter

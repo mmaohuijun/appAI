@@ -1,17 +1,17 @@
 <template>
   <div>
     <Form :model="createAppForm" ref="createAppForm" :rules="ruleAppForm">
-      <Form-item label="应用名称" prop="appName">
-        <Input class="line-input" v-model="createAppForm.appName"></Input>
+      <Form-item label="应用名称" prop="name">
+        <Input class="line-input" v-model="createAppForm.name"></Input>
       </Form-item>
       <Form-item label="是否公开">
-        <Radio-group>
-          <Radio name="公开">公开</Radio>
-          <Radio name="保密">保密</Radio>
+        <Radio-group v-model="createAppForm.is_private">
+          <Radio label="0">私密</Radio>
+          <Radio label="1">公开</Radio>
         </Radio-group>
       </Form-item>
       <Form-item label="应用描述">
-        <Input></Input>
+        <Input v-model="createAppForm.describe"></Input>
       </Form-item>
       <Form-item label="语言">
         <Select placeholder="中文(简体)" disabled></Select>
@@ -25,9 +25,8 @@
         <a href="" @click.prevent="addOneReply">添加一行</a>
       </Form-item>
       <Form-item label="知识库选择">
-        <Select>
-          <Option value="searchEngin" label="搜索引擎"></Option>
-          <Option value="centerLib" label="知识中心库"></Option>
+        <Select v-model="createAppForm.storage">
+          <Option v-for="item in storageList" :value="item.value" :key="item.value">{{item.label}}</Option>
         </Select>
       </Form-item>
       <Form-item>
@@ -43,8 +42,22 @@ export default {
   data () {
     return {
       createAppForm: {
-        appName: ''
+        name: '', // 应用名称 必填
+        is_private: '', // 是否公开 0/1
+        def_reply: 'hello', // 默认回复
+        describe: '', // 应用描述
+        storage: '' // 知识库选择
       },
+      storageList: [
+        {
+          value: '搜索引擎',
+          label: '搜索引擎'
+        },
+        {
+          value: '知识中心库',
+          label: '知识中心库'
+        }
+      ],
       ruleAppForm: {
         appName: [
           { required: true, message: '应用名称不得为空', trigger: 'blur' }
@@ -71,8 +84,19 @@ export default {
         if (!valid) {
           this.$Message.error('提交失败')
         } else {
+          var data = {
+            name: this.createAppForm.name,
+            is_private: this.createAppForm.is_private,
+            def_reply: this.createAppForm.def_reply,
+            describe: this.createAppForm.describe,
+            storage: this.createAppForm.storage
+          }
+          console.log('data', data)
+          this.$axios.post('app/add', data).then(response => {
+            console.log(response)
+          })
           this.$Message.success('提交成功')
-          this.$router.push('/intents')
+          // this.$router.push('/intents')
         }
       })
     }

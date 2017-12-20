@@ -5,54 +5,60 @@
     </div>
     <Input placeholder="搜索" icon="search"></Input>
     <ul class="list-group">
-      <li @click="gotoIntents">
-        <a>应用1</a>
+      <li @click="gotoIntents" v-for="(item, index) in this.appList" :key="index">
+        <a>{{item.name}}</a>
         <div class="rt">
-          <a @click.stop="gotoEditApp">
+          <a @click.stop="gotoEditApp(index)">
             <Icon type="gear-a" class="app-icon"></Icon>
           </a>
         </div>
       </li>
-      <!-- <li @click="gotoIntents">
-        <a>应用2</a>
-        <div class="rt">
-          <a @click.stop="gotoEditApp">
-            <Icon type="gear-a" class="app-icon"></Icon>
-          </a>
-        </div>
-      </li> -->
     </ul>
     <Button type="primary" size="large" @click="gotoCreateApp">创建应用</Button>
   </div>
 </template>
 
 <script>
-import $axios from '../../api/api.js'
+// import $axios from '../../api/api.js'
 export default {
   name: 'Application',
+  data () {
+    return {
+      appList: [], // 应用列表
+      name: '' || null // 搜索关键字
+    }
+  },
+  computed: {
+    id () {
+      return this.appList.id
+    },
+    getAppId () {
+      return this.$store.state.APP_ID
+    }
+  },
   methods: {
     gotoIntents () {
-      console.log('hello')
       this.$router.push('/intents')
     },
-    gotoEditApp () {
-      console.log('router')
+    gotoEditApp (index) {
+      console.log(this.appList[index].id)
+      this.$store.commit('initAppId', this.appList[index].id)
+      console.log('getAppId', this.getAppId)
       this.$router.push('/editApp')
     },
     gotoCreateApp () {
       this.$router.push('/createApp')
     },
-    getApp () {
-      // $axios.get('').then(response => {
-      //   console.log(response)
-      // })
+    getAppList () {
+      this.$axios.post('app/list', { name: this.name }).then(response => {
+        if (response.data) {
+          this.appList = response.data.list
+        }
+      })
     }
   },
   created () {
-    console.log('$axios', $axios.get('/chat/robot/app/list?name').then(response => {
-      console.log(response)
-    }))
-    this.getApp()
+    this.getAppList()
   }
 }
 </script>
