@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
-// import $storage from 'api/storage'
+//  import $storage from 'api/storage'
 
 Vue.use(Vuex)
 
@@ -16,6 +16,11 @@ const store = new Vuex.Store({
   mutations: {
     initAppId (state, id) {
       state.APP_ID = id
+    }
+  },
+  actions: {
+    setAppId ({ commit }, id) {
+      commit('initAppId', id)
     }
   }
 })

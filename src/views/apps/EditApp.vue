@@ -77,7 +77,21 @@ export default {
       defaultReplyList: []
     }
   },
+  computed: {
+    getAppId () {
+      return this.$store.state.APP_ID
+    }
+  },
   methods: {
+    // 获取应用详情
+    getAppDetail () {
+      console.log('appid', this.getAppId)
+      this.$axios.post('app/detail', { id: this.getAppId }).then(response => {
+        if (response.data) {
+          console.log(response.data)
+        }
+      })
+    },
     saveCreate (name) {
       console.log('saveCreate')
       this.$refs[name].validate((valid) => {
@@ -89,6 +103,9 @@ export default {
         }
       })
     }
+  },
+  created () {
+    this.getAppDetail()
   }
 }
 </script>

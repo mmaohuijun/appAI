@@ -42,8 +42,9 @@ export default {
     },
     gotoEditApp (index) {
       console.log(this.appList[index].id)
-      this.$store.commit('initAppId', this.appList[index].id)
-      console.log('getAppId', this.getAppId)
+      // this.$store.commit('initAppId', this.appList[index].id)
+      this.$store.dispatch('setAppId', this.appList[index].id)
+      // console.log('getAppId', this.getAppId)
       this.$router.push('/editApp')
     },
     gotoCreateApp () {
