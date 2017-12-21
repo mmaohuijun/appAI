@@ -5,7 +5,7 @@
         <Input class="line-input" v-model="createAppForm.name"></Input>
       </Form-item>
       <Form-item label="是否公开">
-        <Radio-group v-model="createAppForm.is_private">
+        <Radio-group v-model="createAppForm.isPrivate">
           <Radio label="0">私密</Radio>
           <Radio label="1">公开</Radio>
         </Radio-group>
@@ -43,8 +43,8 @@ export default {
     return {
       createAppForm: {
         name: '', // 应用名称 必填
-        is_private: '', // 是否公开 0/1
-        def_reply: 'hello', // 默认回复
+        isPrivate: '', // 是否公开 0/1
+        defReply: 'hello', // 默认回复
         describe: '', // 应用描述
         storage: '' // 知识库选择
       },
@@ -86,8 +86,8 @@ export default {
         } else {
           var data = {
             name: this.createAppForm.name,
-            is_private: this.createAppForm.is_private,
-            def_reply: this.createAppForm.def_reply,
+            isPrivate: this.createAppForm.isPrivate,
+            defReply: this.createAppForm.defReply,
             describe: this.createAppForm.describe,
             storage: this.createAppForm.storage
           }

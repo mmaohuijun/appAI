@@ -5,7 +5,7 @@
     </div>
     <Input placeholder="搜索" icon="search"></Input>
     <ul class="list-group">
-      <li @click="gotoIntents" v-for="(item, index) in this.appList" :key="index">
+      <li @click="gotoIntents(index)" v-for="(item, index) in this.appList" :key="index">
         <a>{{item.name}}</a>
         <div class="rt">
           <a @click.stop="gotoEditApp(index)">
@@ -20,6 +20,8 @@
 
 <script>
 // import $axios from '../../api/api.js'
+
+// import $Storage from '../../api/storage.js'
 export default {
   name: 'Application',
   data () {
@@ -29,22 +31,24 @@ export default {
     }
   },
   computed: {
-    id () {
-      return this.appList.id
-    },
     getAppId () {
-      return this.$store.state.APP_ID
+      return this.$store.getters.getAppId
     }
   },
   methods: {
-    gotoIntents () {
+    // 跳转到场景
+    gotoIntents (index) {
+      let appId = this.appList[index].id
+      this.$store.dispatch('setAppId', appId)
       this.$router.push('/intents')
     },
+    // 跳转到 编辑页面
     gotoEditApp (index) {
-      console.log(this.appList[index].id)
-      // this.$store.commit('initAppId', this.appList[index].id)
-      this.$store.dispatch('setAppId', this.appList[index].id)
-      // console.log('getAppId', this.getAppId)
+      let appId = this.appList[index].id
+      console.log('appId', appId)
+      // this.$store.commit('initAppId', appId)
+      this.$store.dispatch('setAppId', appId)
+      // this.appId = $Storage.sessionStorage.getItem('appId')
       this.$router.push('/editApp')
     },
     gotoCreateApp () {

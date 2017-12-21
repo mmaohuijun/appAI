@@ -1,17 +1,17 @@
 <template>
   <div>
     <Form :model="createAppForm" ref="createAppForm" :rules="ruleAppForm">
-      <Form-item label="应用名称" prop="appName">
-        <Input class="line-input" v-model="createAppForm.appName"></Input>
+      <Form-item label="应用名称" prop="name">
+        <Input class="line-input" v-model="createAppForm.name"></Input>
       </Form-item>
       <Form-item label="是否公开">
-        <Radio-group>
-          <Radio name="公开">公开</Radio>
-          <Radio name="保密">保密</Radio>
+        <Radio-group v-model="createAppForm.isPrivate">
+          <Radio label="0">公开</Radio>
+          <Radio label="1">保密</Radio>
         </Radio-group>
       </Form-item>
       <Form-item label="应用描述">
-        <Input></Input>
+        <Input v-model="createAppForm.describe"></Input>
       </Form-item>
       <Form-item label="语言">
         <Select placeholder="中文(简体)" disabled></Select>
@@ -25,9 +25,8 @@
         <a href="" >添加一行</a>
       </Form-item>
       <Form-item label="知识库选择">
-        <Select>
-          <Option value="searchEngin" label="搜索引擎"></Option>
-          <Option value="centerLib" label="知识中心库"></Option>
+        <Select v-model="createAppForm.storage">
+          <Option v-for="item in storageList" :value="item.value" :key="item.value">{{item.label}}</Option>
         </Select>
       </Form-item>
       <Form-item>
@@ -51,22 +50,45 @@
             <p>你确定要删除这个应用吗？删除后无法恢复！</p>
           </td>
           <td>
-            <Button size="large">删除应用</Button>
+            <Button size="large" @click="showModal=true">删除应用</Button>
           </td>
         </tr>
       </table>
+      <Modal
+        v-model="showModal"
+        title="删除应用"
+        @on-ok="deleteApp">
+        <p>确定删除应用吗？</p>
+        <p>删除后无法恢复</p>
+      </Modal>
     </div>
   </div>
 </template>
 
 <script>
+import $Storage from '../../api/storage.js'
 export default {
   name: 'EditApp',
   data () {
     return {
       createAppForm: {
-        appName: ''
+        id: 0,
+        name: '', // 应用名称 必填
+        isPrivate: '', // 是否公开 0/1
+        defReply: 'hello', // 默认回复
+        describe: '', // 应用描述
+        storage: '' // 知识库选择
       },
+      storageList: [
+        {
+          value: '搜索引擎',
+          label: '搜索引擎'
+        },
+        {
+          value: '知识中心库',
+          label: '知识中心库'
+        }
+      ],
       ruleAppForm: {
         appName: [
           { required: true, message: '应用名称不得为空', trigger: 'blur' }
@@ -74,32 +96,52 @@ export default {
       },
       nextReplyId: 0,
       defaultReply: '',
-      defaultReplyList: []
+      defaultReplyList: [],
+      showModal: false
     }
   },
   computed: {
-    getAppId () {
-      return this.$store.state.APP_ID
-    }
+    // appId () {
+    //   return this.$store.getters.getAppId
+    // }
   },
   methods: {
     // 获取应用详情
     getAppDetail () {
-      console.log('appid', this.getAppId)
-      this.$axios.post('app/detail', { id: this.getAppId }).then(response => {
+      this.appId = $Storage.sessionStorage.getItem('appId')
+      this.$axios.post('app/detail', { id: this.appId }).then(response => {
         if (response.data) {
-          console.log(response.data)
+          let data = response.data
+          this.createAppForm.id = data.id
+          this.createAppForm.name = data.name
+          this.createAppForm.isPrivate = data.isPrivate
+          this.createAppForm.defReply = data.defReply
+          this.createAppForm.describe = data.describe
+          this.createAppForm.storage = data.storage
         }
       })
     },
+    // 保存修改
     saveCreate (name) {
       console.log('saveCreate')
       this.$refs[name].validate((valid) => {
         if (!valid) {
           this.$Message.error('提交失败')
         } else {
-          this.$Message.success('提交成功')
-          this.$router.push('/intents')
+          this.$axios.post('app/add', this.createAppForm).then(response => {
+            if (response.data === null) {
+              this.$Message.success('提交成功')
+              this.$router.push('/intents')
+            }
+          })
+        }
+      })
+    },
+    // 删除应用
+    deleteApp () {
+      this.$axios.post('app/del', { id: this.appId }).then(response => {
+        if (response.data === null) {
+          this.$router.push('/apps')
         }
       })
     }

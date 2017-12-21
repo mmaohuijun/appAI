@@ -1,19 +1,43 @@
 <template>
   <div class="create-box">
-    <aside v-if="hasIntentsList">
+    <aside>
       <h2>场景列表</h2>
-      <input type="text" placeholder="搜索">
-      <ul>
-        <li><a href="" @click.prevent="gotoEdit">123</a></li>
+      <input type="text" placeholder="搜索">   
+      <ul v-if="hasIntents" v-for="(item, index) in intentList" :key="index">    
+        <li><a href="" @click.prevent="gotoEdit">{{item.name}}</a></li>
       </ul>
+      <p v-else>当前场景列表为空！</p>
     </aside>
     <Form class="form" ref="createIntentsForm" :model="createIntentsForm" :rules="ruleIntentsForm">
       <Form-item label="场景名称" prop="intentName">
         <Input v-model="createIntentsForm.intentName"></Input>
       </Form-item>
-      <Form-item label="用户提问">
-        <Input placeholder="添加用户提问语料"></Input>
-        <a href="">添加一行</a>
+      <Form-item label="用户提问" class="user-ask"><br>
+        <!-- <Input placeholder="添加用户提问语料"></Input>
+        <a href="">添加一行</a> -->
+        <div>
+          <input type="text" placeholder="添加用户提问语料">
+        </div>
+        <div>
+          <table class="user-ask-tbl">
+            <thead>
+              <tr>
+                <th>名称</th>
+                <th>类型</th>
+                <th>取值</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>X</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </Form-item>
       <Form-item label="动作">
         <Input placeholder="输入动作名称..."></Input>
@@ -59,18 +83,23 @@ export default {
   name: 'CreateIntents',
   data () {
     return {
-      // 创建场景 表单
-      createIntentsForm: {
+      appId: '', // 应用id
+      name: '', // 搜素场景关键词
+      createIntentsForm: { // 创建场景 表单
         intentName: ''
-      },
-      // 场景表单的验证规则
-      ruleIntentsForm: {
+      }, 
+      ruleIntentsForm: { // 场景表单的验证规则
         intentName: [
           { required: true, message: '场景名称不能为空', trigger: 'blur' }
         ]
       },
-      // 是否显示场景列表
-      hasIntentsList: false
+      hasIntents: false, // 是否有场景
+      intentList: [] // 场景列表
+    }
+  },
+  computed: {
+    getAppId () {
+      return this.$store.getters.getAppId
     }
   },
   methods: {
@@ -84,11 +113,28 @@ export default {
           this.$Message.error('提交失败')
         } else {
           this.$Message.success('提交成功')
-          // 显示场景列表 以及新添加的值
-          this.hasIntentsList = true
+        }
+      })
+    },
+    // 左侧场景列表
+    getIntentsList () {
+      this.appId = this.$store.state.appId
+      if (!this.appId) {
+        this.appId = this.getAppId
+      }
+      this.$axios.post('intent/list', { appId: this.appId, name: this.name }).then(response => {
+        if (response.data.list.length > 0) {
+          this.hasIntents = true
+          this.intentList = response.data.list
+        } else {
+          this.hasIntents = false
         }
       })
     }
+  },
+  created () {
+    // console.log(this.getAppId)
+    this.getIntentsList()
   }
 }
 </script>
@@ -97,6 +143,14 @@ export default {
   .create-box {
     display: flex;
   }
+  input {
+      outline: none;
+      border: none;
+      // border-right: 1px solid #ccc;
+      width: 290px;
+      padding: 10px 15px;
+      // box-sizing: border-box;
+    }
   // 左侧侧边栏
   aside {
     // float: left;
@@ -112,14 +166,6 @@ export default {
       padding-bottom: 15px;
       width: 300px;
       padding-left: 15px;
-    }
-    input {
-      outline: none;
-      border: none;
-      // border-right: 1px solid #ccc;
-      width: 290px;
-      padding: 10px 15px;
-      // box-sizing: border-box;
     }
     ul {
       border-top: 1px solid #ccc;
@@ -146,6 +192,13 @@ export default {
   // 右侧表单
   .form {
     flex-grow: 1;
+
+    // 用户提问
+    .user-ask {
+      input {
+        
+      }
+    }
   }
   .action-table {
     border: 1px solid #ccc;
@@ -158,9 +211,6 @@ export default {
       border: 1px solid #ccc;
       padding: 10px;
     }
-    input {
-      border: none;
-      outline: none;
-    }
   }
+  //
 </style>

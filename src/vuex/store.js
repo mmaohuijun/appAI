@@ -1,26 +1,41 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
-//  import $storage from 'api/storage'
+import $Storage from '../api/storage'
 
 Vue.use(Vuex)
 
 const store = new Vuex.Store({
   // 定义状态
   state: {
-    APP_ID: '' // 应用id
+    appId: '', // 选择的应用id
+    hasIntents: false // 是否有场景
   },
   getters: {
-    getAppId: state => state.APP_ID
+    getAppId: () => {
+      return $Storage.sessionStorage.getItem('appId')
+    }
   },
   mutations: {
-    initAppId (state, id) {
-      state.APP_ID = id
+    SET_APPID (state, id) {
+      state.appId = id
+    },
+    HAS_INTENTS (state) {
+      state.hasIntents = true
+      // $Storage.sessionStorage.setItem('hasIntents', true)
     }
   },
   actions: {
-    setAppId ({ commit }, id) {
-      commit('initAppId', id)
+    setAppId ({ commit, dispatch }, id) {
+      dispatch('clearAppId')
+      commit('SET_APPID', id)
+      $Storage.sessionStorage.setItem('appId', id)
+    },
+    clearAppId () {
+      $Storage.sessionStorage.removeItem('appId')
+    },
+    hasIntents ({ commit }) {
+      commit('HAS_INTENTS')
     }
   }
 })
