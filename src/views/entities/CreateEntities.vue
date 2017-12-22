@@ -50,7 +50,7 @@ export default {
   methods: {
     // 编辑某个词库
     gotoEdit () {
-      this.$router.push('/editEntities')
+      this.$router.push({ name: 'CreateEntities' })
     },
     saveCreate (name) {
       this.$refs[name].validate((valid) => {

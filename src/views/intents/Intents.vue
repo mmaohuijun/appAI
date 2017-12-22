@@ -33,6 +33,7 @@
 </template>
 
 <script>
+// import $Storage from '../../api/storage.js'
 export default {
   name: 'Intents',
   data () {
@@ -51,10 +52,10 @@ export default {
   },
   methods: {
     gotoCreateIntents () {
-      this.$router.push('/createIntents')
+      this.$router.push({ name: 'CreateIntents' })
     },
     gotoEditIntents (index) {
-      this.$router.push('/editIntents')
+      this.$router.push({ name: ':appId/editIntents' })
     },
     // 获取场景列表
     getIntentsList () {
@@ -62,9 +63,9 @@ export default {
       if (!this.appId) {
         this.appId = this.getAppId
       }
-      console.log('appId', this.appId)
+      // this.appId = $Storage.sessionStorage.getItem('appId')
       this.$axios.post('intent/list', { appId: this.appId, name: this.name }).then(response => {
-        console.log(response.data.list.length)
+        // console.log(response.data.list.length)
         if (response.data.list.length > 0) {
           this.ifIntents = true
           this.intentList = response.data.list
@@ -81,7 +82,15 @@ export default {
     }
   },
   created () {
+    console.log(this.appId)
+    // console.log('appId', this.getAppId)
     this.getIntentsList()
+  },
+  watch: {
+    'appId' (newVal, oldVal) {
+      console.log(newVal, oldVal)
+      // this.getIntentsList()
+    }
   }
 }
 </script>

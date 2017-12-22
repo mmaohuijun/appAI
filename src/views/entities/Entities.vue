@@ -28,7 +28,7 @@ export default {
   },
   methods: {
     gotoCreateEntities () {
-      this.$router.push('/createEntities')
+      this.$router.push({ name: 'CreateEntities' })
     }
   }
 }

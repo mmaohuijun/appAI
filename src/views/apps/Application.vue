@@ -19,9 +19,7 @@
 </template>
 
 <script>
-// import $axios from '../../api/api.js'
 
-// import $Storage from '../../api/storage.js'
 export default {
   name: 'Application',
   data () {
@@ -40,7 +38,8 @@ export default {
     gotoIntents (index) {
       let appId = this.appList[index].id
       this.$store.dispatch('setAppId', appId)
-      this.$router.push('/intents')
+      this.$store.dispatch('setAppName', this.appList[index].name)
+      this.$router.push({ name: 'Intents', params: { appId: appId } })
     },
     // 跳转到 编辑页面
     gotoEditApp (index) {
@@ -49,10 +48,10 @@ export default {
       // this.$store.commit('initAppId', appId)
       this.$store.dispatch('setAppId', appId)
       // this.appId = $Storage.sessionStorage.getItem('appId')
-      this.$router.push('/editApp')
+      this.$router.push({ name: 'EditApp', params: { appId: appId } })
     },
     gotoCreateApp () {
-      this.$router.push('/createApp')
+      this.$router.push({ name: 'CreateApp' })
     },
     getAppList () {
       this.$axios.post('app/list', { name: this.name }).then(response => {

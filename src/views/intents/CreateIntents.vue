@@ -87,7 +87,7 @@ export default {
       name: '', // 搜素场景关键词
       createIntentsForm: { // 创建场景 表单
         intentName: ''
-      }, 
+      },
       ruleIntentsForm: { // 场景表单的验证规则
         intentName: [
           { required: true, message: '场景名称不能为空', trigger: 'blur' }
@@ -196,7 +196,7 @@ export default {
     // 用户提问
     .user-ask {
       input {
-        
+
       }
     }
   }
