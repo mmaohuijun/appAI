@@ -3,33 +3,6 @@
     <Menu mode="horizontal" theme="dark" active-name="1" @on-select="selectMenu">
             <div class="layout-logo"></div>
             <div class="layout-nav">
-              <!-- <MenuItem name="1"> -->
-                <!-- <Dropdown @on-click="selectApp">
-                  <a>
-                    {{this.getAppName}}
-                    <Icon type="arrow-down-b"></Icon>
-                    <Icon type="plus"></Icon> 
-                  </a>
-                  <DropdownMenu slot="list">
-                    <DropdownItem name="createApp">
-                      创建应用
-                      <Icon type="plus-circled" class="drop-down-list"></Icon>
-                    </DropdownItem>
-                    <DropdownItem name="showApp">
-                      查看所有应用
-                      <Icon type="navicon" class="drop-down-list"></Icon>
-                    </DropdownItem> -->
-                    <!-- <DropdownItem name="showAppDetail" divided>
-                      应用1
-                      <Icon type="gear-a" class="drop-down-list"></Icon>
-                    </DropdownItem> -->
-                    <!-- <DropdownItem :name="index" v-for="(item, index) in appList" :key="item.id">
-                      {{item.name}}
-                      <Icon type="gear-a" class="drop-down-list"></Icon>
-                    </DropdownItem>
-                  </DropdownMenu> -->
-                <!-- </Dropdown> -->
-              <!-- </MenuItem> -->
               <Submenu name="3">
                   <template slot="title">
                       <Icon type="stats-bars"></Icon>
@@ -119,7 +92,7 @@ export default {
       if (name === 2) {
         this.$router.push({ name: 'Intents', params: { appId: this.getAppId } })
       } else if (name === '3') {
-        this.$router.push('/entities')
+        this.$router.push({ name: 'Entities' })
       }
     },
     getIntentsList (appId) {
@@ -133,9 +106,6 @@ export default {
           this.ifIntents = false
         }
       })
-    },
-    hello () {
-      console.log('hello')
     },
     // 查看所有应用
     gotoApp () {
@@ -156,24 +126,18 @@ export default {
     },
     // 查看某应用下 所有词库
     gotoEntities () {
-      this.$router.push({ name: 'Entities', params: { appId: this.getAppId }})
+      this.$router.push({ name: 'Entities', params: { appId: this.getAppId } })
     }
   },
   created () {
-    console.log(this.getAppId)
     this.getAppList()
-  },
-  watch: {
-    '$router.to' (n, o) {
-      console.log(n, o)
-    }
   }
 }
 </script>
 
-<style lang="">
+<style lang="less">
+  // 导航条样式
   .layout {
-        border: 1px solid #d7dde4;
         background: #f5f7f9;
         margin-bottom: 30px;
     }
@@ -201,4 +165,20 @@ export default {
       padding: 30px 30px 0 30px;
       border: none;
     }
+    /* 没有应用、场景、词库列表 */
+    .no-list {
+      text-align: center;
+      font-size: 16px;
+      margin-top: 50px;
+    }
+    .app-header {
+    float: left;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    clear: both;
+    h1 {
+      clear: both
+    }  
+  }
+    
 </style>
