@@ -160,16 +160,24 @@ export default {
       padding-left: 150px;
       margin-top:-15px;
     }
+    .layout>ul {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+    }
     .layout>div {
       background: #fff;
       padding: 30px 30px 0 30px;
       border: none;
+      margin-top: 50px;
     }
-    /* 没有应用、场景、词库列表 */
+
+    /* 没有应用、场景、词库列表 apps/intents/entities */ 
     .no-list {
       text-align: center;
       font-size: 16px;
-      margin-top: 50px;
+      margin-top: 100px;
     }
     .app-header {
     float: left;
@@ -179,6 +187,66 @@ export default {
     h1 {
       clear: both
     }  
+  }
+
+  // 添加/编辑页面 create/edit
+  .create-box {
+      .my-input {
+      outline: none;
+      border: 1px solid #ccc;
+      width: 100%;
+      padding: 5px;
+      margin-bottom: 1px;
+    }
+    // 左侧侧边栏 列表
+    aside {
+      width: 300px;
+      border: 1px solid #ccc;
+      padding: 15px 0;
+      margin-right: 15px;
+      border-bottom: none;
+      position: fixed;
+      left: 0;
+      top: 60px;
+      height: 100%;
+      background: #ccc;
+      input {
+      width: 290px;
+      outline: none;
+      border: none;
+      padding: 10px 15px;
+      }
+      h2 {
+        border-bottom: 1px solid #ccc;
+        padding-bottom: 15px;
+        width: 300px;
+        padding-left: 15px;
+      }
+      ul {
+        border-top: 1px solid #ccc;
+        li {
+          // border-bottom: 1px solid #ccc;       
+          a {
+            width: 100%;
+            display: inline-block;
+            padding: 8px 15px;
+            color: #333;
+
+            &:hover {
+              color: #fff;
+            }
+          }
+
+          &:hover a {
+            cursor: pointer;
+          background: #9399A6;
+          }
+        }
+      }
+    }
+    .form {
+      margin-left: 300px;
+    }
   }
     
 </style>

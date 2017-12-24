@@ -16,10 +16,13 @@
         <!-- <Input placeholder="添加用户提问语料"></Input>
         <a href="">添加一行</a> -->
         <div>
-          <input type="text" placeholder="添加用户提问语料">
+          <input @select="selectText" class="my-input" type="text" placeholder="添加用户提问语料">
+          <Select v-model="chooseWord" >
+            <Option v-for="item in entitiesList" :value="item.value" :key="item.value">{{item.label}}</Option>
+          </Select>
         </div>
         <div>
-          <table class="user-ask-tbl">
+          <table class="action-tbl user-ask-tbl">
             <thead>
               <tr>
                 <th>名称</th>
@@ -43,7 +46,7 @@
         <Input placeholder="输入动作名称..."></Input>
       </Form-item>
       <Form-item>
-        <table class="action-table">
+        <table class="action-tbl">
           <thead>
             <td>是否必须</td>
             <td>参数名称</td>
@@ -94,7 +97,12 @@ export default {
         ]
       },
       hasIntents: false, // 是否有场景
-      intentList: [] // 场景列表
+      intentList: [], // 场景列表
+      entitiesList: [
+        { value: 1, label:'词1' },
+        { value: 2, label: '词2' },
+        { value: 3, label: 'ci3' }
+      ] // 词库列表
     }
   },
   computed: {
@@ -130,6 +138,13 @@ export default {
           this.hasIntents = false
         }
       })
+    },
+    // 鼠标选中 表单中的文字
+    selectText () {
+      console.log('selectText')
+      // let selector = window.getSelection() ? window.getSelection().toString : document.selection.createRange().text
+      let selector = window.getSelection().toString()
+      alert(selector)
     }
   },
   created () {
@@ -140,67 +155,19 @@ export default {
 </script>
 
 <style lang="less">
-  .create-box {
-    display: flex;
-  }
-  input {
-      outline: none;
-      border: none;
-      // border-right: 1px solid #ccc;
-      width: 290px;
-      padding: 10px 15px;
-      // box-sizing: border-box;
-    }
-  // 左侧侧边栏
-  aside {
-    // float: left;
-    width: 300px;
-    // height: 100%;
-    border: 1px solid #ccc;
-    padding: 15px 0;
-    margin-right: 15px;
-    border-bottom: none;
-
-    h2 {
-      border-bottom: 1px solid #ccc;
-      padding-bottom: 15px;
-      width: 300px;
-      padding-left: 15px;
-    }
-    ul {
-      border-top: 1px solid #ccc;
-      li {
-        // border-bottom: 1px solid #ccc;       
-        a {
-          width: 100%;
-          display: inline-block;
-          padding: 8px 15px;
-          color: #333;
-
-          &:hover {
-            color: #fff;
-          }
-        }
-
-        &:hover a {
-          cursor: pointer;
-        background: #9399A6;
-        }
-      }
-    }
-  }
   // 右侧表单
   .form {
-    flex-grow: 1;
-
     // 用户提问
     .user-ask {
       input {
 
       }
+      .user-ask-tabl {
+        
+      }
     }
   }
-  .action-table {
+  .action-tbl {
     border: 1px solid #ccc;
     border-collapse: collapse;
     width: 100%;
@@ -210,6 +177,11 @@ export default {
     td {
       border: 1px solid #ccc;
       padding: 10px;
+    }
+    input {
+      outline: none;
+      border: none;
+      padding: 10px 15px;
     }
   }
   //
