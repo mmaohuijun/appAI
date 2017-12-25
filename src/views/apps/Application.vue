@@ -31,7 +31,8 @@ export default {
   data () {
     return {
       appList: [], // 应用列表
-      name: '' || null // 搜索关键字
+      name: '' || null, // 搜索关键字
+      ifApps: false // 是否有应用
     }
   },
   computed: {
@@ -62,7 +63,10 @@ export default {
     getAppList () {
       this.$axios.post('app/list', { name: this.name }).then(response => {
         if (response.data) {
-          this.appList = response.data.list
+          if (response.data.list.length > 0) {
+            this.appList = response.data.list
+            this.ifApps = true
+          }
         }
       })
     }
@@ -74,41 +78,6 @@ export default {
 </script>
 
 <style lang="less">
-  .lf {
-    float: left
-  }
-  .rt {
-    float: right
-  }
-  .list-group {
-    margin-top: 20px;
-    margin-bottom: 20px;
-    border-bottom: 1px solid #ccc;
-    li {
-      border: 1px solid #ccc;
-      border-bottom: none;
-      font-size: 14px;
-      padding:8px 10px;
 
-      a {
-        color: #333;
-      }
-
-      &:hover {
-      cursor: pointer
-      }
-
-      &:hover .app-icon {
-        display: block;
-      }
-    }  
-  }
-  .app-icon {
-    position: relative;
-    top: 2px;
-    display: none;
-    font-size: 16px;
-    color: #333;
-  }
 </style>
 

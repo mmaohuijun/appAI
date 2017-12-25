@@ -1,19 +1,22 @@
 <template>
   <div class="create-box">
-    <aside v-if="hasEntitiesList">
+    <aside>
       <h2>词库列表</h2>
-      <input type="text" placeholder="搜索">
-      <ul>
-        <li><a href="" @click.prevent="gotoEdit">123</a></li>
+      <input type="text" placeholder="搜索">   
+      <ul v-if="hasEntities">    
+        <li v-for="(item, index) in entitiesList" :key="index" @click="gotoEdit(index)">
+          <a>{{item.name}}</a>
+        </li>
       </ul>
+      <p v-else>当前词库列表为空！</p>
     </aside>
     <Form class="form" ref="createEntitiesForm" :model="createEntitiesForm" :rules="ruleEntitiesForm">
-      <Form-item label="词库名称" prop="entitiesName">
-        <Input v-model="createEntitiesForm.entitiesName"></Input>
+      <Form-item label="词库名称" prop="name">
+        <Input v-model="createEntitiesForm.name"></Input>
       </Form-item>
       <Form-item>
         <table class="add-keywords-tbl">
-          <tr><td><input placeholder="添加关键词" type="text"></td></tr>
+          <tr><td><input placeholder="添加关键词" type="text" v-model="createEntitiesForm.word"></td></tr>
           <tr><td><input placeholder="添加关键词" type="text"></td></tr>
           <tr><td><input placeholder="添加关键词" type="text"></td></tr>
           <tr><td><input placeholder="添加关键词" type="text"></td></tr>
@@ -33,11 +36,20 @@ export default {
   name: 'CreateEntities',
   data () {
     return {
+      // 应用id
+      appId: '',
+      // 词库 id
+      id: 0 || '',
+      // 搜索词库列表 关键词
+      name: '',
       // 是否已创建词库
-      hasEntitiesList: false,
+      hasEntities: false,
+      // 词库列表
+      entitiesList: [],
       // 创建词库 表单
       createEntitiesForm: {
-        entitiesName: ''
+        name: '',
+        word: ''
       },
       // 表单验证规则
       ruleEntitiesForm: {
@@ -47,22 +59,54 @@ export default {
       }
     }
   },
+  computed: {
+    getAppId () {
+      return this.$store.getters.getAppId
+    }
+  },
   methods: {
     // 编辑某个词库
-    gotoEdit () {
-      this.$router.push({ name: 'CreateEntities' })
+    gotoEdit (index) {
+      console.log(this.entitiesList[index].id)
+      this.$store.dispatch('setEntityId', this.entitiesList[index].id)
+      this.$router.push({ name: 'EditEntities', params: { appId: this.appId } })
     },
     saveCreate (name) {
       this.$refs[name].validate((valid) => {
         if (!valid) {
           this.$Message.error('提交失败')
         } else {
-          this.$Message.success('提交成功')
-          // 显示词库列表 以及新添加的值
-          this.hasEntitiesList = true
+          let data = {
+            appId: this.appId,
+            name: this.createEntitiesForm.name,
+            id: this.id,
+            synonymyFlag: 0,
+            wordList: []
+          }
+          this.$axios.post('dict/add', data).then(response => {
+            if (response.data === null) {
+              this.$Message.success('提交成功')
+              this.getEntitiesList()
+            }
+          })
+        }
+      })
+    },
+    getEntitiesList () {
+      this.appId = this.$store.state.appId
+      if (!this.appId) {
+        this.appId = this.getAppId
+      }
+      this.$axios.post('dict/list', { name: this.name, appId: this.appId }).then(response => {
+        if (response.data.dictList.length > 0) {
+          this.entitiesList = response.data.dictList
+          this.hasEntities = true
         }
       })
     }
+  },
+  created () {
+    this.getEntitiesList()
   }
 }
 </script>

@@ -17,8 +17,8 @@
         <a href="">添加一行</a> -->
         <div>
           <input @select="selectText" class="my-input" type="text" placeholder="添加用户提问语料">
-          <Select v-model="chooseWord" >
-            <Option v-for="item in entitiesList" :value="item.value" :key="item.value">{{item.label}}</Option>
+          <Select v-if="selectSomething">
+            <Option v-for="item in entitiesList" :value="item.name" :key="item.id">{{item.name}}</Option>
           </Select>
         </div>
         <div>
@@ -32,7 +32,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr>
+              <tr v-for="(item, index) in askForm" :key="index">
                 <td></td>
                 <td></td>
                 <td></td>
@@ -98,11 +98,9 @@ export default {
       },
       hasIntents: false, // 是否有场景
       intentList: [], // 场景列表
-      entitiesList: [
-        { value: 1, label:'词1' },
-        { value: 2, label: '词2' },
-        { value: 3, label: 'ci3' }
-      ] // 词库列表
+      selectSomething: false, // 是否选取文字
+      entitiesList: [], // 词库列表
+      askList: [] // 用户提问列表
     }
   },
   computed: {
@@ -139,12 +137,26 @@ export default {
         }
       })
     },
+    // 获取词库列表
+    getEntitiesList() {
+      this.$axios.post('dict/list', { appId: this.appId, name: '' }).then(response => {
+        if (response.data) {
+          this.entitiesList = response.data.dictList
+        }
+      })
+    },
+    // 获取用户提问列表
+
     // 鼠标选中 表单中的文字
     selectText () {
       console.log('selectText')
       // let selector = window.getSelection() ? window.getSelection().toString : document.selection.createRange().text
       let selector = window.getSelection().toString()
-      alert(selector)
+      // alert(selector)
+      if (selector !== null) {
+        this.selectSomething = true
+        this.getEntitiesList()
+      }
     }
   },
   created () {

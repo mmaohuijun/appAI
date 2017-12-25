@@ -3,14 +3,10 @@
     <div class="app-header">      
       <h1>场景</h1>
     </div> 
-    <div v-if="!ifIntents" class="no-list">
-      <p>还没有场景，先<a href="" @click.prevent="gotoCreateIntents">创建第一个</a>场景</p>
-      <p>详细了解场景，<a href="">查看文档</a></p>
-    </div>
-    <div v-else>
+    <div v-if="ifIntents">
       <Input placeholder="搜索" icon="search"></Input>
       <ul class="list-group">
-      <li @click="gotoEditIntents(index)" v-for="(item, index) in this.intentList" :key="index">
+      <li @click="gotoEditIntents(index)" v-for="(item, index) in intentList" :key="index">
         <a>{{item.name}}</a>
         <div class="rt">
           <a @click.stop="delIntents()">
@@ -28,6 +24,10 @@
           <p>删除后无法恢复</p>
         </Modal>
     </div> 
+    <div v-else class="no-list">
+      <p>还没有场景，先<a href="" @click.prevent="gotoCreateIntents">创建第一个</a>场景</p>
+      <p>详细了解场景，<a href="">查看文档</a></p>
+    </div>
   </div>
   
 </template>
@@ -40,7 +40,7 @@ export default {
     return {
       name: '', // 场景列表 搜索关键词
       appId: '', // 应用id
-      ifIntents: true, // 是否存在场景
+      ifIntents: false, // 是否存在场景
       intentList: [],
       showModal: false // 显示删除 模态框
     }
@@ -55,7 +55,9 @@ export default {
       this.$router.push({ name: 'CreateIntents' })
     },
     gotoEditIntents (index) {
-      this.$router.push({ name: ':appId/editIntents' })
+      console.log(this.intentList[index].id)
+      this.$store.dispatch('setIntentId', this.intentList[index].id)
+      this.$router.push({ name: 'EditIntents', params: this.getAppId })
     },
     // 获取场景列表
     getIntentsList () {
@@ -67,10 +69,8 @@ export default {
       this.$axios.post('intent/list', { appId: this.appId, name: this.name }).then(response => {
         // console.log(response.data.list.length)
         if (response.data.list.length > 0) {
-          this.ifIntents = true
           this.intentList = response.data.list
-        } else {
-          this.ifIntents = false
+          this.ifIntents = true
         }
       })
     },
@@ -90,41 +90,6 @@ export default {
 </script>
 
 <style lang="less">
-  .lf {
-    float: left
-  }
-  .rt {
-    float: right
-  }
-  .list-group {
-    margin-top: 20px;
-    margin-bottom: 20px;
-    border-bottom: 1px solid #ccc;
-    li {
-      border: 1px solid #ccc;
-      border-bottom: none;
-      font-size: 14px;
-      padding:8px 10px;
 
-      a {
-        color: #333;
-      }
-
-      &:hover {
-      cursor: pointer
-      }
-
-      &:hover .app-icon {
-        display: block;
-      }
-    }  
-  }
-  .app-icon {
-    position: relative;
-    top: 2px;
-    display: none;
-    font-size: 16px;
-    color: #333;
-  }
 </style>
 

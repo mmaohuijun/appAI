@@ -17,7 +17,7 @@
                       </MenuItem>
                     </MenuGroup>
               </Submenu>
-              <MenuItem name="2" @click.native="gotoIntents">
+              <MenuItem name="2" @click.native="gotoIntents(-1)">
                 场景
               </MenuItem>  
               <MenuItem name="3" @click.native="gotoEntities">
@@ -51,6 +51,7 @@ export default {
       return this.$store.getters.getAppId
     },
     getAppName () {
+      // return this.$store.getters.getAppName
       let appName
       appName = this.$store.state.appName
       if (!appName) {
@@ -66,7 +67,7 @@ export default {
       this.$axios.post('app/list', {name: name}).then(response => {
         if (response.data) {
           this.appList = response.data.list
-          this.$store.dispatch('setAppId', this.appList[0].id)
+          // this.$store.dispatch('setAppId', this.appList[0].id)
         }
       })
     },
@@ -77,7 +78,7 @@ export default {
       } else if (name === 'showApp') {
         this.$router.push('/apps')
       } else {
-        console.log('name')
+        console.log('下拉name')
         this.index = name
         // this.appId = this.getAppList
         this.$store.dispatch('setAppId', this.getAppId)
@@ -92,7 +93,7 @@ export default {
       if (name === 2) {
         this.$router.push({ name: 'Intents', params: { appId: this.getAppId } })
       } else if (name === '3') {
-        this.$router.push({ name: 'Entities' })
+        this.$router.push({ name: 'Entities', params: { appId: this.getAppId } })
       }
     },
     getIntentsList (appId) {
@@ -118,11 +119,17 @@ export default {
     },
     // 查看某应用下 所有场景
     gotoIntents (index) {
-      console.log('index', index)
-      this.$store.dispatch('setAppId', this.appList[index].id)
-      this.$router.push({ name: 'Intents', params: { appId: this.appList[index].id } })
-      // 强制页面刷新 修改
-      // this.$router.go(0)
+      console.log('gotoIntents', index)
+      if (index !== -1) {
+        console.log('index', index)
+        this.$store.dispatch('setAppId', this.appList[index].id)
+        this.$store.dispatch('setAppName', this.appList[index].name)
+        this.$router.push({ name: 'Intents', params: { appId: this.appList[index].id } })
+        // 强制页面刷新 修改
+        this.$router.go(0)
+      } else {
+        this.$router.push({ name: 'Intents', params: { appId: this.getAppId } })
+      }
     },
     // 查看某应用下 所有词库
     gotoEntities () {
@@ -188,7 +195,43 @@ export default {
       clear: both
     }  
   }
+  // 有列表情况 apps/intents/entities
+  .lf {
+    float: left
+  }
+  .rt {
+    float: right
+  }
+  .list-group {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #ccc;
+    li {
+      border: 1px solid #ccc;
+      border-bottom: none;
+      font-size: 14px;
+      padding:8px 10px;
 
+      a {
+        color: #333;
+      }
+
+      &:hover {
+      cursor: pointer
+      }
+
+      &:hover .app-icon {
+        display: block;
+      }
+    }  
+  }
+  .app-icon {
+    position: relative;
+    top: 2px;
+    display: none;
+    font-size: 16px;
+    color: #333;
+  }
   // 添加/编辑页面 create/edit
   .create-box {
       .my-input {
