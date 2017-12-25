@@ -3,18 +3,24 @@
     <div class="app-header">      
       <h1>所有应用</h1>
     </div>
-    <Input placeholder="搜索" icon="search"></Input>
-    <ul class="list-group">
-      <li @click="gotoIntents(index)" v-for="(item, index) in this.appList" :key="index">
-        <a>{{item.name}}</a>
-        <div class="rt">
-          <a @click.stop="gotoEditApp(index)">
-            <Icon type="gear-a" class="app-icon"></Icon>
-          </a>
-        </div>
-      </li>
-    </ul>
-    <Button type="primary" size="large" @click="gotoCreateApp">创建应用</Button>
+    <div v-if="ifApps">
+      <Input placeholder="搜索" icon="search"></Input>
+      <ul class="list-group">
+        <li @click="gotoIntents(index)" v-for="(item, index) in this.appList" :key="index">
+          <a>{{item.name}}</a>
+          <div class="rt">
+            <a @click.stop="gotoEditApp(index)">
+              <Icon type="gear-a" class="app-icon"></Icon>
+            </a>
+          </div>
+        </li>
+      </ul>
+      <Button type="primary" size="large" @click="gotoCreateApp">创建应用</Button>
+    </div>
+    <div v-else class="no-list">
+      <p>还没有词库，先<a href="" @click.prevent="gotoCreateApp">创建第一个</a>应用</p>
+      <p>详细了解应用，<a href="">查看文档</a></p>
+    </div>
   </div>
 </template>
 
@@ -73,14 +79,6 @@ export default {
   }
   .rt {
     float: right
-  }
-  .app-header {
-    float: left;
-    margin-top: 20px;
-    margin-bottom: 20px;
-    h1 {
-      float: left
-    }
   }
   .list-group {
     margin-top: 20px;

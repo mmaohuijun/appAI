@@ -11,7 +11,7 @@
       </ul>
       <Button type="primary" size="large">创建词库</Button>
     </div>
-    <div class="no-entities" v-else>
+    <div class="no-list" v-else>
       <p>还没有词库，先<a href="" @click.prevent="gotoCreateEntities">创建第一个</a>词库</p>
       <p>详细了解词库，<a href="">查看文档</a></p>
     </div>
@@ -35,10 +35,6 @@ export default {
 </script>
 
 <style lang="less">
-  .app-header {
-    margin-top: 20px;
-    margin-bottom: 20px;
-  }
   .list-group {
     margin-top: 20px;
     margin-bottom: 20px;
@@ -53,10 +49,5 @@ export default {
       cursor: pointer;
     }
   }
-  .no-entities {
-      text-align: center;
-      font-size: 16px;
-      margin-top: 50px;
-    }
 </style>
 

@@ -3,33 +3,6 @@
     <Menu mode="horizontal" theme="dark" active-name="1" @on-select="selectMenu">
             <div class="layout-logo"></div>
             <div class="layout-nav">
-              <!-- <MenuItem name="1"> -->
-                <!-- <Dropdown @on-click="selectApp">
-                  <a>
-                    {{this.getAppName}}
-                    <Icon type="arrow-down-b"></Icon>
-                    <Icon type="plus"></Icon> 
-                  </a>
-                  <DropdownMenu slot="list">
-                    <DropdownItem name="createApp">
-                      创建应用
-                      <Icon type="plus-circled" class="drop-down-list"></Icon>
-                    </DropdownItem>
-                    <DropdownItem name="showApp">
-                      查看所有应用
-                      <Icon type="navicon" class="drop-down-list"></Icon>
-                    </DropdownItem> -->
-                    <!-- <DropdownItem name="showAppDetail" divided>
-                      应用1
-                      <Icon type="gear-a" class="drop-down-list"></Icon>
-                    </DropdownItem> -->
-                    <!-- <DropdownItem :name="index" v-for="(item, index) in appList" :key="item.id">
-                      {{item.name}}
-                      <Icon type="gear-a" class="drop-down-list"></Icon>
-                    </DropdownItem>
-                  </DropdownMenu> -->
-                <!-- </Dropdown> -->
-              <!-- </MenuItem> -->
               <Submenu name="3">
                   <template slot="title">
                       <Icon type="stats-bars"></Icon>
@@ -119,7 +92,7 @@ export default {
       if (name === 2) {
         this.$router.push({ name: 'Intents', params: { appId: this.getAppId } })
       } else if (name === '3') {
-        this.$router.push('/entities')
+        this.$router.push({ name: 'Entities' })
       }
     },
     getIntentsList (appId) {
@@ -133,9 +106,6 @@ export default {
           this.ifIntents = false
         }
       })
-    },
-    hello () {
-      console.log('hello')
     },
     // 查看所有应用
     gotoApp () {
@@ -160,20 +130,14 @@ export default {
     }
   },
   created () {
-    console.log(this.getAppId)
     this.getAppList()
-  },
-  watch: {
-    '$router.to' (n, o) {
-      console.log(n, o)
-    }
   }
 }
 </script>
 
-<style lang="">
+<style lang="less">
+  // 导航条样式
   .layout {
-        border: 1px solid #d7dde4;
         background: #f5f7f9;
         margin-bottom: 30px;
     }
@@ -196,9 +160,93 @@ export default {
       padding-left: 150px;
       margin-top:-15px;
     }
+    .layout>ul {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+    }
     .layout>div {
       background: #fff;
       padding: 30px 30px 0 30px;
       border: none;
+      margin-top: 50px;
     }
+
+    /* 没有应用、场景、词库列表 apps/intents/entities */ 
+    .no-list {
+      text-align: center;
+      font-size: 16px;
+      margin-top: 100px;
+    }
+    .app-header {
+    float: left;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    clear: both;
+    h1 {
+      clear: both
+    }  
+  }
+
+  // 添加/编辑页面 create/edit
+  .create-box {
+      .my-input {
+      outline: none;
+      border: 1px solid #ccc;
+      width: 100%;
+      padding: 5px;
+      margin-bottom: 1px;
+    }
+    // 左侧侧边栏 列表
+    aside {
+      width: 300px;
+      border: 1px solid #ccc;
+      padding: 15px 0;
+      margin-right: 15px;
+      border-bottom: none;
+      position: fixed;
+      left: 0;
+      top: 60px;
+      height: 100%;
+      background: #ccc;
+      input {
+      width: 290px;
+      outline: none;
+      border: none;
+      padding: 10px 15px;
+      }
+      h2 {
+        border-bottom: 1px solid #ccc;
+        padding-bottom: 15px;
+        width: 300px;
+        padding-left: 15px;
+      }
+      ul {
+        border-top: 1px solid #ccc;
+        li {
+          // border-bottom: 1px solid #ccc;       
+          a {
+            width: 100%;
+            display: inline-block;
+            padding: 8px 15px;
+            color: #333;
+
+            &:hover {
+              color: #fff;
+            }
+          }
+
+          &:hover a {
+            cursor: pointer;
+          background: #9399A6;
+          }
+        }
+      }
+    }
+    .form {
+      margin-left: 300px;
+    }
+  }
+    
 </style>

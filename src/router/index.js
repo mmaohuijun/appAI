@@ -57,12 +57,3 @@ export const router = new Router({
   mode: 'history',
   routes: normalRouter
 })
-
-// router.beforeEach((to, from, next) => {
-//   if (to.params.appId) {
-//     const appId = to.params.appId
-//     store.dispatch('setAppId', appId)
-//   } else {
-//     next()
-//   }
-// })
