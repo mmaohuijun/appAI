@@ -17,6 +17,7 @@ const CreateEntities = () => import('../views/entities/CreateEntities')
 Vue.use(Router)
 
 const normalRouter = [
+  { path: '/', component: Application },
   {
     path: '/apps',
     component: Layout,
@@ -24,7 +25,7 @@ const normalRouter = [
     name: '应用',
     children: [
       { path: 'index', name: 'Application', component: Application },
-      { path: 'createApp', name: 'CreateApp', component: CreateApp },
+      { path: 'create', name: 'CreateApp', component: CreateApp },
       { path: ':appId/editApp', name: 'EditApp', component: EditApp }
     ]
   },
@@ -35,18 +36,18 @@ const normalRouter = [
     name: '场景',
     children: [
       { path: ':appId/index', name: 'Intents', component: Intents },
-      { path: 'createIntents', name: 'CreateIntents', component: CreateIntents },
+      { path: 'create', name: 'CreateIntents', component: CreateIntents },
       { path: ':appId/editIntents', name: 'EditIntents', component: EditIntents }
     ]
   },
   {
     path: '/entities',
     component: Layout,
-    redirect: 'entities/index',
+    redirect: '/entities/:appId/index',
     name: '词库',
     children: [
       { path: ':appId/index', name: 'Entities', component: Entities },
-      { path: 'createEntities', name: 'CreateEntities', component: CreateEntities },
+      { path: 'create', name: 'CreateEntities', component: CreateEntities },
       { path: ':appId/editEntities', name: 'EditEntities', component: EditEntities }
     ]
   }

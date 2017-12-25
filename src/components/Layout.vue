@@ -156,7 +156,7 @@ export default {
     },
     // 查看某应用下 所有词库
     gotoEntities () {
-      this.$router.push({ name: 'Entities', params: { appId: this.getAppId }})
+      this.$router.push({ name: 'Entities', params: { appId: this.getAppId } })
     }
   },
   created () {
