@@ -131,7 +131,7 @@ export default {
           this.$axios.post('app/add', this.createAppForm).then(response => {
             if (response.data === null) {
               this.$Message.success('提交成功')
-              this.$router.push('/intents')
+              this.$router.push({ name: 'Application' })
             }
           })
         }
@@ -141,7 +141,7 @@ export default {
     deleteApp () {
       this.$axios.post('app/del', { id: this.appId }).then(response => {
         if (response.data === null) {
-          this.$router.push('/apps')
+          this.$router.push({ name: 'Application' })
         }
       })
     }

@@ -48,19 +48,24 @@ export default {
   },
   computed: {
     getAppId () {
-      return this.$store.getters.getAppId
+      let appId
+      appId = this.$store.state.appId
+      if (!appId) {
+        appId = this.$store.getters.getAppId
+      }
+      return appId
     },
     getAppName () {
       // return this.$store.getters.getAppName
       let appName
-      // appName = this.$store.state.appName
-      // if (!appName) {
-      //   appName = this.$store.getters.getAppName
-      // }
-      appName = this.$store.getters.getAppName
+      appName = this.$store.state.appName
       if (!appName) {
-        appName = '应用'
+        appName = this.$store.getters.getAppName
       }
+    //   appName = this.$store.getters.getAppName
+    //   if (!appName) {
+    //     appName = '应用'
+    //   }
       return appName
     }
   },
@@ -75,30 +80,15 @@ export default {
         }
       })
     },
-    // 下拉菜单选择
-    selectApp (name) {
-      if (name === 'createApp') {
-        this.$router.push({name: 'CreateApp'})
-      } else if (name === 'showApp') {
-        this.$router.push('/apps')
-      } else {
-        console.log('下拉name')
-        this.index = name
-        // this.appId = this.getAppList
-        this.$store.dispatch('setAppId', this.getAppId)
-        this.$store.dispatch('setAppName', this.getAppName)
-        this.$router.push({ name: 'Intents', params: { appId: this.getAppId } })
-        // 需要优化
-        // this.getIntentsList(this.getAppId)
-      }
-    },
     // 场景 词库 菜单
     selectMenu (name) {
-      if (name === 2) {
+      // this.$router.go(0)    
+      if (name === 2) {    
         this.$router.push({ name: 'Intents', params: { appId: this.getAppId } })
       } else if (name === '3') {
-        this.$router.push({ name: 'Entities', params: { appId: this.getAppId } })
+        this.$router.push({ name: 'Entities', params: { appId: this.getAppId } })      
       }
+      console.log('appId', this.getAppId)
     },
     getIntentsList (appId) {
       // this.appId = $Storage.sessionStorage.getItem('appId')

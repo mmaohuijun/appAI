@@ -14,30 +14,34 @@
       </Form-item>
       <Form-item label="用户提问" class="user-ask"><br>
       <div v-for="(item, index) in askList" :key="index" style="border: 2px solid pink">
-          <input 
-            @select="selectText" 
+        <div>
+          <div>
+            <input 
+            @select="selectText(index)" 
             class="my-input" 
             type="text" 
             placeholder="添加用户提问语料" 
-            v-model="item.text" />
+            v-model="item.text"/>
+          </div>    
+        </div>        
           <Select v-if="entitySelect" @on-change="changeSelect">
             <Option v-for="item in entitiesList" :value="item.id" :key="item.id">{{item.name}}</Option>
           </Select>
 
-        <div v-if="hasSelected">
-          <table class="action-tbl">
+        <div v-if="hasSelected || item.entitys">
+          <table class="action-tbl" >
             <thead>
               <tr>
                 <th>名称</th>
                 <th>类型</th>
                 <th>取值</th>
-                <th></th>
+                <th>操作</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="(item, index) in item.entitys" :key="index" :ask-list="item">
                 <td><input type="text" v-model="item.entity"></td>
-                <td>{{ item.type }}</td>
+                <td @click="toEditSelect(index)">{{ item.type }}</td>
                 <td>{{ item.value }}</td>
                 <td><button @click.prevent="deleteEntityLine(index)">删除</button></td>
               </tr>
@@ -51,30 +55,37 @@
         <input type="text" class="my-input" placeholder="请输入动作名称" v-model="actionName">
       </Form-item>
       <Form-item>
-        <table class="action-tbl">
+        <table class="action-tbl" v-if="showActionList">
           <thead>
             <!-- <td>是否必须</td> -->
             <td>参数名称</td>
             <td>类型</td>
             <td>取值</td>
-            <td>提示语</td>
+            <!-- <td>提示语</td> -->
+            <td>操作</td>
           </thead>
           <tbody>
             <!-- <td>
               <input type="checkbox">
             </td> -->
-            <td>
-              <input type="text" placeholder="添加参数名称...">
-            </td>
-            <td>
-              <input type="text" placeholder="选择类型">
-            </td>
-            <td>
-              <input type="text" value="${}">
-            </td>
-            <td>
-              <input type="text" placeholder="编辑提示语">
-            </td>
+            <tr v-for="(item, index) in slotList" :key="index">
+              <td>
+                <input type="text" placeholder="添加参数名称..." v-model="item.typeName">
+              </td>
+              <td>
+                <input type="text" placeholder="选择类型" v-model="item.dictName">
+              </td>
+              <td>
+                <input type="text" v-model=" '${ ' + item.typeName + '}'">
+              </td>
+              <td>
+                <button @click.prevent="delSlotList(index)">删除</button>
+              </td>
+              <!-- <td>
+                <input type="text" placeholder="编辑提示语" v-model="item.message">
+              </td> -->
+            </tr>
+            
           </tbody>
         </table>
         <a href="">添加一行</a>
@@ -108,40 +119,24 @@ export default {
       entitiesList: [], // 词库列表
       entitySelect: false, // 是否显示词库选择下拉框
       hasSelected: false, // 已经选取有效字段
-      askList: [
-        {
-          id: '',
-          text: '34', // 用户提问语料
-          intent: '', // 场景名称
-          entitys: [ // 用户提问下的表格
-            {
-              entity: '11', // 名称
-              type: '112',
-              value: '123' // 取值
-            }
-          ]
-        },
-        {
-          id: '',
-          text: '1234', // 用户提问语料
-          intent: '', // 场景名称
-          entitys: [ // 用户提问下的表格
-            {
-              entity: 'fgg', // 名称
-              type: 'sdgg',
-              value: 'sg' // 取值
-            }
-          ]
-        }
-      ], // 用户提问列表
-      entitys: [
-        {
-          entity: '',
-          type: '',
-          value: ''
-        }
-      ], // 提问表格列表
-      askTextList: ['你好', 'hello'],
+      showActionList: false,
+      askList: [],
+      // askList: [
+      //   {
+      //     id: '',
+      //     text: '34', // 用户提问语料
+      //     intent: '', // 场景名称
+      //     entitys: [ // 用户提问下的表格
+      //       {
+      //         entity: '11', // 名称
+      //         type: '112',
+      //         value: '123' // 取值
+      //       }
+      //     ]
+      //   }
+      // ], // 用户提问列表
+      textIndex: '', // 选中的text index
+      editSelect: false, // 是否为编辑下拉列表值
       slotList: [],
       actionName: '', // 动作名称
       selector: '' // 鼠标划取的词
@@ -210,7 +205,9 @@ export default {
       })
     },
     // 鼠标选中 表单中的文字
-    selectText () {
+    selectText (index) {
+      console.log('selectText', index)
+      this.textIndex = index
       // let selector = window.getSelection() ? window.getSelection().toString : document.selection.createRange().text
       let selector = window.getSelection().toString()
       if (this.entitiesList.length > 0) {
@@ -221,38 +218,48 @@ export default {
       }
     },
     // 选中的Option变化时触发
-    changeSelect (entityId) {
+    changeSelect (entityId, tbindex) {
       this.entitySelect = false
-      // // 通过获取对象数组中某一个对象的id 查询该对象的索引
       let index, entity, type, value
       for (index = 0; index < this.entitiesList.length; index++) {
         if (this.entitiesList[index].id === entityId) {
           console.log(index)
           this.hasSelected = true
+          this.showActionList = true
           entity = this.entitiesList[index].pinyin
           type = this.selector
           value = this.entitiesList[index].name
         }
       }
-      console.log('选中某词库的entitys', entity, type, value)    
-      this.entitys.push({ entity: entity, type: type, value: value })
-      this.askList.entitys = this.entitys
+      console.log(tbindex)
+      this.askList[this.textIndex].entitys.push({ entity: entity, type: type, value: value })
+      this.slotList.push({ typeName: entity, dictName: type })
+      console.log(this.askList)
     },
     // 删除一行
     deleteEntityLine (index) {
       console.log(index)
-      this.entitys.splice(index, 1)
-      if (this.entitys.length < 1) {
+      this.askList[this.textIndex].entitys.splice(index, 1)
+      if (this.askList[this.textIndex].entitys.length < 1) {
         this.hasSelected = false
       }
     },
+    delSlotList (index) {
+      this.slotList.splice(index, 1)
+      if (this.slotList.length < 1) {
+        this.showActionList = false
+      }
+    },
     // 添加一行 用户提问
-    addAskList() {
-      console.log('zhi', this.askList)
-      this.askList.push({ text: '', intent: '', entitys: [] })
-      console.log(this.askList)
-
-    }  
+    addAskList () {
+      this.askList.push({})
+    },
+    // 编辑下拉框的值
+    toEditSelect (entityId,tbindex) {
+      this.editSelect = true
+      this.entitySelect = true
+      this.changeSelect(entityId, tbindex)
+    }
   },
   created () {
     // console.log(this.getAppId)

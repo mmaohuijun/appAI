@@ -96,7 +96,7 @@ export default {
             console.log(response)
           })
           this.$Message.success('提交成功')
-          // this.$router.push('/intents')
+          this.$router.push({ name: 'Application' })
         }
       })
     }
