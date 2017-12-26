@@ -53,9 +53,13 @@ export default {
     getAppName () {
       // return this.$store.getters.getAppName
       let appName
-      appName = this.$store.state.appName
+      // appName = this.$store.state.appName
+      // if (!appName) {
+      //   appName = this.$store.getters.getAppName
+      // }
+      appName = this.$store.getters.getAppName
       if (!appName) {
-        appName = this.$store.getters.getAppName
+        appName = '应用'
       }
       return appName
     }

@@ -138,7 +138,7 @@ export default {
       })
     },
     // 获取词库列表
-    getEntitiesList() {
+    getEntitiesList () {
       this.$axios.post('dict/list', { appId: this.appId, name: '' }).then(response => {
         if (response.data) {
           this.entitiesList = response.data.dictList
