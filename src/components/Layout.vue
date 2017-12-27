@@ -82,11 +82,10 @@ export default {
     },
     // 场景 词库 菜单
     selectMenu (name) {
-      // this.$router.go(0)    
-      if (name === 2) {    
+      if (name === 2) {
         this.$router.push({ name: 'Intents', params: { appId: this.getAppId } })
       } else if (name === '3') {
-        this.$router.push({ name: 'Entities', params: { appId: this.getAppId } })      
+        this.$router.push({ name: 'Entities', params: { appId: this.getAppId } })
       }
       console.log('appId', this.getAppId)
     },
@@ -246,7 +245,7 @@ export default {
       left: 0;
       top: 60px;
       height: 100%;
-      background: #ccc;
+      // background: #ccc;
       input {
       width: 290px;
       outline: none;

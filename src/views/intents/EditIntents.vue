@@ -255,7 +255,7 @@ export default {
       this.askList.push({})
     },
     // 编辑下拉框的值
-    toEditSelect (entityId,tbindex) {
+    toEditSelect (entityId, tbindex) {
       this.editSelect = true
       this.entitySelect = true
       this.changeSelect(entityId, tbindex)

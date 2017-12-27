@@ -16,9 +16,17 @@
       </Form-item>
       <Form-item>
         <table class="add-keywords-tbl">
-          <tr><td><input placeholder="添加关键词" type="text" v-model="createEntitiesForm.word"></td></tr>
+          <tr v-for="(item, index) in createEntitiesForm.wordList" :key="index">
+            <td>
+              <input 
+              placeholder="添加关键词" 
+              type="text" 
+              v-focus="addLine"
+              v-model="item.keyword">
+            </td>
+          </tr>      
         </table>
-        <a href="">添加一行</a>
+        <a href="" @click.prevent="addLine">添加一行</a>
       </Form-item>
       <Form-item>
         <Button type="primary" size="large" @click="saveCreate('createEntitiesForm')">保存</Button>
@@ -43,7 +51,7 @@ export default {
       // 创建词库 表单
       createEntitiesForm: {
         name: '',
-        word: ''
+        wordList: []
       },
       // 是否有词库列表
       hasEntities: false,
@@ -65,6 +73,15 @@ export default {
       return this.$store.getters.getEntityId
     }
   },
+  directives: {
+    focus: {
+      inserted: function (el, { value }) {
+        if (value) {
+          el.focus() 
+        }
+      }
+    }
+  },
   methods: {
     // 获取词库列表
     getEntitiesList () {
@@ -75,7 +92,6 @@ export default {
       this.$axios.post('dict/list', { name: this.name, appId: this.appId }).then(response => {
         if (response.data.dictList.length > 0) {
           this.entitiesList = response.data.dictList
-          console.log('entitiesList', this.entitiesList)
           this.hasEntities = true
         }
       })
@@ -86,13 +102,15 @@ export default {
       if (!selectEntity) {
         this.id = this.getEntityId
       }
-      console.log(this.id)
       this.$axios.post('dict/detail', { id: this.id }).then(response => {
         if (response.data) {
           let data = response.data.detail
           this.createEntitiesForm.name = data.name
-          this.createEntitiesForm.word = []
+          this.createEntitiesForm.wordList = data.wordList
           this.createEntitiesForm.id = data.id
+          if (data.wordList.length < 1) {
+            this.addLine()
+          }
         }
       })
     },
@@ -113,7 +131,7 @@ export default {
             id: this.createEntitiesForm.id,
             name: this.createEntitiesForm.name,
             synonymyFlag: 0,
-            wordList: []
+            wordList: this.createEntitiesForm.wordList
           }
           this.$axios.post('dict/add', data).then(response => {
             if (response.data === null) {
@@ -123,11 +141,26 @@ export default {
           })
         }
       })
+    },
+    // 添加一行
+    addLine () {
+      this.createEntitiesForm.wordList.push({ keyword: this.createEntitiesForm.wordList.keyword })
+      console.log(this.createEntitiesForm.wordList)
+    },
+    // enter 添加一行
+    enterAddLine (event) {
+      if (event.key === 'Enter' || event.keyCode === 13) {
+        this.addLine()
+      }
     }
   },
   created () {
     this.getEntitiesList()
     this.getEntitiesDetail()
+    document.addEventListener('keyup', this.enterAddLine)
+  },
+  destroyed () {
+    document.removeEventListener('keyup', this.enterAddLine)
   }
 }
 </script>
