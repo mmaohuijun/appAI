@@ -19,7 +19,7 @@
           <tr v-for="(item, index) in createEntitiesForm.wordList" :key="index">
             <td>
               <input 
-              placeholder="添加关键词" 
+              placeholder="添加关键词"
               type="text" 
               v-focus="addLine"
               v-model="item.keyword">
@@ -36,6 +36,7 @@
 </template>
 
 <script>
+import qs from 'qs'
 export default {
   name: 'CreateEntities',
   data () {
@@ -131,7 +132,7 @@ export default {
             id: this.createEntitiesForm.id,
             name: this.createEntitiesForm.name,
             synonymyFlag: 0,
-            wordList: this.createEntitiesForm.wordList
+            wordList:[{ keyword: '123' }, { keyword: '222' }]
           }
           this.$axios.post('dict/add', data).then(response => {
             if (response.data === null) {

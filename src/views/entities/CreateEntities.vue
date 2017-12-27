@@ -16,13 +16,17 @@
       </Form-item>
       <Form-item>
         <table class="add-keywords-tbl">
-          <tr><td><input placeholder="添加关键词" type="text" v-model="createEntitiesForm.word"></td></tr>
-          <tr><td><input placeholder="添加关键词" type="text"></td></tr>
-          <tr><td><input placeholder="添加关键词" type="text"></td></tr>
-          <tr><td><input placeholder="添加关键词" type="text"></td></tr>
-          <tr><td><input placeholder="添加关键词" type="text"></td></tr>
+          <tr v-for="(item, index) in createEntitiesForm.wordList" :key="index">
+            <td>
+              <input 
+              placeholder="添加关键词" 
+              type="text" 
+              v-focus="addKeyLine"
+              v-model="item.keyword">
+            </td>
+          </tr>      
         </table>
-        <a href="">添加一行</a>
+        <a href="" @click.prevent="addKeyLine">添加一行</a>
       </Form-item>
       <Form-item>
         <Button type="primary" size="large" @click="saveCreate('createEntitiesForm')">保存</Button>
@@ -49,7 +53,7 @@ export default {
       // 创建词库 表单
       createEntitiesForm: {
         name: '',
-        word: ''
+        wordList: []
       },
       // 表单验证规则
       ruleEntitiesForm: {
@@ -62,6 +66,15 @@ export default {
   computed: {
     getAppId () {
       return this.$store.getters.getAppId
+    }
+  },
+  directives: {
+    focus: {
+      inserted: function (el, { value }) {
+        if (value) {
+          el.focus() 
+        }
+      }
     }
   },
   methods: {
@@ -81,7 +94,7 @@ export default {
             name: this.createEntitiesForm.name,
             id: this.id,
             synonymyFlag: 0,
-            wordList: []
+            wordList: this.createEntitiesForm.wordList
           }
           this.$axios.post('dict/add', data).then(response => {
             if (response.data === null) {
@@ -103,10 +116,25 @@ export default {
           this.hasEntities = true
         }
       })
+      this.createEntitiesForm.wordList.push({ keyword: this.createEntitiesForm.wordList.keyword })
+    },
+    addKeyLine () {
+      this.createEntitiesForm.wordList.push({ keyword: this.createEntitiesForm.wordList.keyword })
+      console.log(this.createEntitiesForm.wordList)
+    },
+    // enter 添加一行
+    enterAddLine (event) {
+      if (event.key === 'Enter' || event.keyCode === 13) {
+        this.addKeyLine()
+      }
     }
   },
   created () {
     this.getEntitiesList()
+    document.addEventListener('keyup', this.enterAddLine)
+  },
+  destroyed () {
+     document.removeEventListener('keyup', this.enterAddLine)
   }
 }
 </script>

@@ -12,23 +12,26 @@
       <Form-item label="场景名称" prop="name">
         <Input v-model="createIntentsForm.name"></Input>
       </Form-item>
-      <Form-item label="用户提问" class="user-ask"><br>
-      <div v-for="(item, index) in askList" :key="index" style="border: 2px solid pink">
+      <Form-item label="用户提问"><br>
+      <div v-for="(item, index) in askList" :key="index" style="margin-bottom: 10px;" class="ask-box">
         <div>
-          <div>
+          <div class="input-box">
             <input 
             @select="selectText(index)" 
             class="my-input" 
             type="text" 
             placeholder="添加用户提问语料" 
             v-model="item.text"/>
+            <div @click="deleteAskList(index)">
+              <Icon v-show="index!==0" type="trash-a" class="trash-icon"></Icon>
+            </div>          
           </div>    
         </div>        
-          <Select v-if="entitySelect" @on-change="changeSelect">
+          <Select v-if="hasEntities&&index === textIndex" @on-change="changeSelect">
             <Option v-for="item in entitiesList" :value="item.id" :key="item.id">{{item.name}}</Option>
           </Select>
 
-        <div v-if="hasSelected || item.entitys">
+        <div v-if="hasSelected&&index === textIndex">
           <table class="action-tbl" >
             <thead>
               <tr>
@@ -51,6 +54,7 @@
       </div>
       <a href="" @click.prevent="addAskList">添加一行</a> 
       </Form-item>
+
       <Form-item label="动作">
         <input type="text" class="my-input" placeholder="请输入动作名称" v-model="actionName">
       </Form-item>
@@ -73,7 +77,7 @@
                 <input type="text" placeholder="添加参数名称..." v-model="item.typeName">
               </td>
               <td>
-                <input type="text" placeholder="选择类型" v-model="item.dictName">
+                <input type="text" placeholder="选择类型" v-model="item.dictName" @click="hasEntities=true">
               </td>
               <td>
                 <input type="text" v-model=" '${ ' + item.typeName + '}'">
@@ -84,11 +88,13 @@
               <!-- <td>
                 <input type="text" placeholder="编辑提示语" v-model="item.message">
               </td> -->
-            </tr>
-            
+            </tr>         
           </tbody>
         </table>
-        <a href="">添加一行</a>
+        <Select v-if="hasEntities" @on-change="changeSelect" :key="index">
+            <Option v-for="item in entitiesList" :value="item.id" :key="item.id">{{item.name}}</Option>
+        </Select>
+        <a href="" @click.prevent="addActionList">添加一行</a>
       </Form-item>
       <Form-item>
         <Button type="primary" size="large" @click="saveCreate('createIntentsForm')">保存</Button>
@@ -117,8 +123,9 @@ export default {
       hasIntents: false, // 是否有场景
       intentList: [], // 场景列表
       entitiesList: [], // 词库列表
-      entitySelect: false, // 是否显示词库选择下拉框
+      hasEntities: false, // 是否有词库
       hasSelected: false, // 已经选取有效字段
+      showSlect: false,
       showActionList: false,
       askList: [],
       // askList: [
@@ -163,6 +170,47 @@ export default {
           this.$Message.success('提交成功')
         }
       })
+      let data = {
+        appId: this.getAppId,
+        intent: {
+          actionName: this.actionName,
+          appId: this.getAppId,
+          // askList: [
+          //   {         
+          //     text: '',
+          //     intent: this.createIntentsForm.name,
+          //     entitys: [
+          //       {           
+          //         entity: '',
+          //         value: '',               
+          //       }
+          //     ]
+          //   }
+          // ],   
+          askList: this.askList,  
+          name: this.createIntentsForm.name,
+          rank: '',
+          // slotList: [
+          //   {
+          //     defValue: '',
+          //     dictName: '',
+          //     flag: '',      
+          //     message: '',
+          //     typeName: ''
+          //   }
+          // ],
+          slotList: this.slotList
+        }    
+      }
+      console.log('data', data)
+      this.$axios.post('intent/add', data).then(response => {
+        console.log(response)
+        if (response.data === null) {
+          this.$Message.success('提交成功')
+        }
+      })
+      console.log('askList', this.askList)
+      console.log('slotList', this.slotList)
     },
     // 左侧场景列表
     getIntentsList () {
@@ -199,19 +247,23 @@ export default {
           var data = response.data.intent
           this.createIntentsForm.name = data.name
           this.askList = data.askList
+          if (this.askList.length < 1) {
+            this.askList.push({ text: this.askList.text })
+          }
           this.slotList = data.slotList
+          if (this.slotList.length < 1) {
+            this.slotList.push({  })
+          }
           this.actionName = data.actionName
         }
       })
     },
     // 鼠标选中 表单中的文字
     selectText (index) {
-      console.log('selectText', index)
       this.textIndex = index
-      // let selector = window.getSelection() ? window.getSelection().toString : document.selection.createRange().text
       let selector = window.getSelection().toString()
       if (this.entitiesList.length > 0) {
-        this.entitySelect = true
+        this.hasEntities = true
         if (selector) {
           this.selector = selector
         }
@@ -219,11 +271,10 @@ export default {
     },
     // 选中的Option变化时触发
     changeSelect (entityId, tbindex) {
-      this.entitySelect = false
+      this.hasEntities = false
       let index, entity, type, value
       for (index = 0; index < this.entitiesList.length; index++) {
         if (this.entitiesList[index].id === entityId) {
-          console.log(index)
           this.hasSelected = true
           this.showActionList = true
           entity = this.entitiesList[index].pinyin
@@ -236,11 +287,20 @@ export default {
       this.slotList.push({ typeName: entity, dictName: type })
       console.log(this.askList)
     },
+    // 
+    deleteAskList (index) {
+      console.log('askList', index)
+      this.askList.splice(index, 1)
+    },
     // 删除一行
     deleteEntityLine (index) {
       console.log(index)
       this.askList[this.textIndex].entitys.splice(index, 1)
+      this.slotList.splice(index, 1)
       if (this.askList[this.textIndex].entitys.length < 1) {
+        this.hasSelected = false
+      }
+      if (this.slotList.length < 1) {
         this.hasSelected = false
       }
     },
@@ -252,12 +312,18 @@ export default {
     },
     // 添加一行 用户提问
     addAskList () {
-      this.askList.push({})
+      this.askList.push({ text: this.askList.text })
+    },
+    // 添加一行 动作列表
+    addActionList () {
+      console.log('addActionList')
+      this.showActionList = true
+      this.slotList.push({ typeName: this.slotList.typeName, dictName: this.slotList.dictName })
     },
     // 编辑下拉框的值
     toEditSelect (entityId, tbindex) {
       this.editSelect = true
-      this.entitySelect = true
+      this.hasEntities = true
       this.changeSelect(entityId, tbindex)
     }
   },
@@ -266,14 +332,37 @@ export default {
     this.getIntentsList()
     this.getIntentsDetail()
     this.getEntitiesList()
+  },
+  watch: {
+    "slotList": function (oldVal, newVal) {
+      console.log('watch', oldVal, newVal)
+      if (!newVal) {
+        this.slotList.push({ typeName: this.slotList.typeName, dictName: this.slotList.dictName })
+      } 
+    }
   }
 }
 </script>
 
 <style lang="less">
-  // 右侧表单
-  .form {
-    // 用户提问
+
+  .ask-box {
+  // 删除按钮
+    .input-box {
+      position: relative;
+
+      &:hover .trash-icon {
+        display: block;
+      }
+      .trash-icon {
+        position: absolute;
+        font-size: 14px;
+        right: 10px;
+        top: 40%;
+        display: none;
+        cursor: pointer;
+      }
+    }
   }
   .action-tbl {
     border: 1px solid #ccc;
@@ -283,6 +372,7 @@ export default {
       text-align: center;
     }
     td {
+      width: 25%;
       border: 1px solid #ccc;
       padding: 10px;
     }
@@ -292,5 +382,5 @@ export default {
       padding: 10px 15px;
     }
   }
-  //
+
 </style>

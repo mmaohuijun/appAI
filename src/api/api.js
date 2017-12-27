@@ -5,7 +5,8 @@ const $axios = axios.create({
   baseURL: process.env.BASE_URL,
   timeout: 30000,
   headers: {
-    'Content-Type': 'application/x-www-form-urlencoded'
+    // 'Content-Type': 'application/x-www-form-urlencoded'
+    'Content-Type': 'application/x-www-form-urlencoded; application/json;charset=UTF-8'
   },
   withCredentials: false,
   transformRequest: [function (data) {

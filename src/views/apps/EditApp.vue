@@ -19,10 +19,8 @@
       <Form-item label="时区">
         <Select placeholder="(GMT + 8:00) Asia/Shanghai" disabled></Select>
       </Form-item>
-      <Form-item label="默认回复" prop="defaultReply">
-        <Input placeholder="机器人回复" value="Oh my God！我竟然不知道你想说什么！" icon="trash-a" ></Input>
-        <!-- <Input type="text" placeholder="机器人回复" :index=index v-for="(item,index) in defaultReplyList" :key="item.id" icon="trash-a" @on-click="delReply"></Input> -->
-        <a href="" >添加一行</a>
+      <Form-item label="默认回复">
+        <Input placeholder="请输入默认回复" v-model="createAppForm.defReply"></Input>
       </Form-item>
       <Form-item label="知识库选择">
         <Select v-model="createAppForm.storage">
@@ -75,7 +73,7 @@ export default {
         id: 0,
         name: '', // 应用名称 必填
         isPrivate: '', // 是否公开 0/1
-        defReply: 'hello', // 默认回复
+        defReply: '', // 默认回复
         describe: '', // 应用描述
         storage: '' // 知识库选择
       },
@@ -94,9 +92,6 @@ export default {
           { required: true, message: '应用名称不得为空', trigger: 'blur' }
         ]
       },
-      nextReplyId: 0,
-      defaultReply: '',
-      defaultReplyList: [],
       showModal: false
     }
   },
