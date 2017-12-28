@@ -55,7 +55,7 @@ export default {
       this.$router.push({ name: 'CreateIntents' })
     },
     gotoEditIntents (index) {
-      console.log(this.intentList[index].id)
+      // console.log(this.intentList[index].id)
       this.$store.dispatch('setIntentId', this.intentList[index].id)
       this.$router.push({ name: 'EditIntents', params: this.getAppId })
     },
@@ -67,7 +67,7 @@ export default {
       }
       // this.appId = $Storage.sessionStorage.getItem('appId')
       this.$axios.post('intent/list', { appId: this.appId, name: this.name }).then(response => {
-        // console.log(response.data.list.length)
+        // // console.log(response.data.list.length)
         if (response.data.list.length > 0) {
           this.intentList = response.data.list
           this.ifIntents = true
@@ -78,12 +78,10 @@ export default {
     // 删除某个场景
     delIntents () {
       this.showModal = true
-      console.log('delIntents')
+      // console.log('delIntents')
     }
   },
   created () {
-    console.log(this.appId)
-    // console.log('appId', this.getAppId)
     this.getIntentsList()
   }
 }

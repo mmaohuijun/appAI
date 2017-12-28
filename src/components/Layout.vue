@@ -210,7 +210,7 @@ export default {
       }
 
       &:hover {
-      cursor: pointer
+      // cursor: pointer
       }
 
       &:hover .app-icon {

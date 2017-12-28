@@ -128,23 +128,9 @@ export default {
       showSlect: false,
       showActionList: false,
       askList: [],
-      // askList: [
-      //   {
-      //     id: '',
-      //     text: '34', // 用户提问语料
-      //     intent: '', // 场景名称
-      //     entitys: [ // 用户提问下的表格
-      //       {
-      //         entity: '11', // 名称
-      //         type: '112',
-      //         value: '123' // 取值
-      //       }
-      //     ]
-      //   }
-      // ], // 用户提问列表
+      slotList: [],
       textIndex: '', // 选中的text index
       editSelect: false, // 是否为编辑下拉列表值
-      slotList: [],
       actionName: '', // 动作名称
       selector: '' // 鼠标划取的词
     }
@@ -170,47 +156,40 @@ export default {
           this.$Message.success('提交成功')
         }
       })
-      let data = {
-        appId: this.getAppId,
-        intent: {
-          actionName: this.actionName,
-          appId: this.getAppId,
-          // askList: [
-          //   {         
-          //     text: '',
-          //     intent: this.createIntentsForm.name,
-          //     entitys: [
-          //       {           
-          //         entity: '',
-          //         value: '',               
-          //       }
-          //     ]
-          //   }
-          // ],   
-          askList: this.askList,  
-          name: this.createIntentsForm.name,
-          rank: '',
-          // slotList: [
-          //   {
-          //     defValue: '',
-          //     dictName: '',
-          //     flag: '',      
-          //     message: '',
-          //     typeName: ''
-          //   }
-          // ],
-          slotList: this.slotList
-        }    
-      }
-      console.log('data', data)
-      this.$axios.post('intent/add', data).then(response => {
-        console.log(response)
+      this.$axios.post('intent/add', this.getSaveData()).then(response => {
+        // console.log(response)
         if (response.data === null) {
           this.$Message.success('提交成功')
         }
       })
-      console.log('askList', this.askList)
-      console.log('slotList', this.slotList)
+    },
+    // 获取保存数据
+    getSaveData () {
+      let data
+      data = {
+        appId: this.getAppId,
+        'intent.actionName': this.actionName,
+        'intent.appId': this.getAppId,
+        'intent.name': this.createIntentsForm.name,
+        'intent.rank': ''
+      }
+      this._.each(this.slotList, (ele, index) => {
+        data[`intent.slotList[${index}].defValue`] = ele.defValue
+        data[`intent.slotList[${index}].dictName`] = ele.dictName
+        data[`intent.slotList[${index}].flag`] = ele.flag
+        data[`intent.slotList[${index}].message`] = ele.message
+        data[`intent.slotList[${index}].typeName`] = ele.typeName
+      })
+      // // asklist
+      this._.each(this.askList, (ele, index) => {
+        data[`intent.askList[${index}].text`] = ele.text
+        data[`intent.askList[${index}].intent`] = this.createIntentsForm.name
+        this._.each(ele.entitys, (ele2, index2) => {
+          data[`intent.askList[${index}].entitys[${index2}].value`] = ele.entitys[index2].value
+          data[`intnet.askList[${index}].entitys[${index2}].entity`] = ele.entitys[index2].entity
+        })
+      })
+      return data
     },
     // 左侧场景列表
     getIntentsList () {
@@ -243,7 +222,7 @@ export default {
       }
       this.$axios.post('intent/detail', { id: this.intentId }).then(response => {
         if (response.data) {
-          console.log(response.data)
+          // console.log(response.data)
           var data = response.data.intent
           this.createIntentsForm.name = data.name
           this.askList = data.askList
@@ -252,7 +231,7 @@ export default {
           }
           this.slotList = data.slotList
           if (this.slotList.length < 1) {
-            this.slotList.push({  })
+            // this.slotList.push({  })
           }
           this.actionName = data.actionName
         }
@@ -260,6 +239,7 @@ export default {
     },
     // 鼠标选中 表单中的文字
     selectText (index) {
+      // console.log('selectText', index)
       this.textIndex = index
       let selector = window.getSelection().toString()
       if (this.entitiesList.length > 0) {
@@ -270,7 +250,7 @@ export default {
       }
     },
     // 选中的Option变化时触发
-    changeSelect (entityId, tbindex) {
+    changeSelect (entityId) {
       this.hasEntities = false
       let index, entity, type, value
       for (index = 0; index < this.entitiesList.length; index++) {
@@ -280,21 +260,22 @@ export default {
           entity = this.entitiesList[index].pinyin
           type = this.selector
           value = this.entitiesList[index].name
+        } else {
+          // console.log('no index')
         }
       }
-      console.log(tbindex)
+
       this.askList[this.textIndex].entitys.push({ entity: entity, type: type, value: value })
       this.slotList.push({ typeName: entity, dictName: type })
-      console.log(this.askList)
+      // console.log(this.askList)
     },
-    // 
     deleteAskList (index) {
-      console.log('askList', index)
+      // console.log('askList', index)
       this.askList.splice(index, 1)
     },
     // 删除一行
     deleteEntityLine (index) {
-      console.log(index)
+      // console.log(index)
       this.askList[this.textIndex].entitys.splice(index, 1)
       this.slotList.splice(index, 1)
       if (this.askList[this.textIndex].entitys.length < 1) {
@@ -312,11 +293,12 @@ export default {
     },
     // 添加一行 用户提问
     addAskList () {
-      this.askList.push({ text: this.askList.text })
+      this.askList.push({ text: this.askList.text, entitys: [] })
+      // this.askList[0].entitys.push({ entity: this.askList.entitys.entity, type: this.askList.entitys.type, value: this.askList.entitys.value })
     },
     // 添加一行 动作列表
     addActionList () {
-      console.log('addActionList')
+      // console.log('addActionList')
       this.showActionList = true
       this.slotList.push({ typeName: this.slotList.typeName, dictName: this.slotList.dictName })
     },
@@ -328,59 +310,57 @@ export default {
     }
   },
   created () {
-    // console.log(this.getAppId)
+    // // console.log(this.getAppId)
     this.getIntentsList()
     this.getIntentsDetail()
     this.getEntitiesList()
   },
   watch: {
-    "slotList": function (oldVal, newVal) {
-      console.log('watch', oldVal, newVal)
+    'slotList': function (oldVal, newVal) {
+      // console.log('watch', oldVal, newVal)
       if (!newVal) {
         this.slotList.push({ typeName: this.slotList.typeName, dictName: this.slotList.dictName })
-      } 
+      }
     }
   }
 }
 </script>
 
 <style lang="less">
-
-  .ask-box {
+.ask-box {
   // 删除按钮
-    .input-box {
-      position: relative;
+  .input-box {
+    position: relative;
 
-      &:hover .trash-icon {
-        display: block;
-      }
-      .trash-icon {
-        position: absolute;
-        font-size: 14px;
-        right: 10px;
-        top: 40%;
-        display: none;
-        cursor: pointer;
-      }
+    &:hover .trash-icon {
+      display: block;
+    }
+    .trash-icon {
+      position: absolute;
+      font-size: 14px;
+      right: 10px;
+      top: 40%;
+      display: none;
+      cursor: pointer;
     }
   }
-  .action-tbl {
+}
+.action-tbl {
+  border: 1px solid #ccc;
+  border-collapse: collapse;
+  width: 100%;
+  thead {
+    text-align: center;
+  }
+  td {
+    width: 25%;
     border: 1px solid #ccc;
-    border-collapse: collapse;
-    width: 100%;
-    thead {
-      text-align: center;
-    }
-    td {
-      width: 25%;
-      border: 1px solid #ccc;
-      padding: 10px;
-    }
-    input {
-      outline: none;
-      border: none;
-      padding: 10px 15px;
-    }
+    padding: 10px;
   }
-
+  input {
+    outline: none;
+    border: none;
+    padding: 10px 15px;
+  }
+}
 </style>

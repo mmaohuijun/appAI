@@ -72,7 +72,7 @@ export default {
     focus: {
       inserted: function (el, { value }) {
         if (value) {
-          el.focus() 
+          el.focus()
         }
       }
     }
@@ -80,7 +80,7 @@ export default {
   methods: {
     // 编辑某个词库
     gotoEdit (index) {
-      console.log(this.entitiesList[index].id)
+      // console.log(this.entitiesList[index].id)
       this.$store.dispatch('setEntityId', this.entitiesList[index].id)
       this.$router.push({ name: 'EditEntities', params: { appId: this.appId } })
     },
@@ -93,9 +93,12 @@ export default {
             appId: this.appId,
             name: this.createEntitiesForm.name,
             id: this.id,
-            synonymyFlag: 0,
-            wordList: this.createEntitiesForm.wordList
+            synonymyFlag: 0
+            // wordList: this.createEntitiesForm.wordList
           }
+          this._.each(this.createEntitiesForm.wordList, (ele, index) => {
+            data[`wordList[${index}].keyword`] = ele.keyword
+          })
           this.$axios.post('dict/add', data).then(response => {
             if (response.data === null) {
               this.$Message.success('提交成功')
@@ -120,7 +123,7 @@ export default {
     },
     addKeyLine () {
       this.createEntitiesForm.wordList.push({ keyword: this.createEntitiesForm.wordList.keyword })
-      console.log(this.createEntitiesForm.wordList)
+      // console.log(this.createEntitiesForm.wordList)
     },
     // enter 添加一行
     enterAddLine (event) {
@@ -134,7 +137,7 @@ export default {
     document.addEventListener('keyup', this.enterAddLine)
   },
   destroyed () {
-     document.removeEventListener('keyup', this.enterAddLine)
+    document.removeEventListener('keyup', this.enterAddLine)
   }
 }
 </script>

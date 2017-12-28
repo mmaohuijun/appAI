@@ -36,7 +36,6 @@
 </template>
 
 <script>
-import qs from 'qs'
 export default {
   name: 'CreateEntities',
   data () {
@@ -78,7 +77,7 @@ export default {
     focus: {
       inserted: function (el, { value }) {
         if (value) {
-          el.focus() 
+          el.focus()
         }
       }
     }
@@ -131,9 +130,13 @@ export default {
             appId: this.appId,
             id: this.createEntitiesForm.id,
             name: this.createEntitiesForm.name,
-            synonymyFlag: 0,
-            wordList:[{ keyword: '123' }, { keyword: '222' }]
+            synonymyFlag: 0
+            // wordList: this.createEntitiesForm.wordList
           }
+          this._.each(this.createEntitiesForm.wordList, (ele, index) => {
+            data[`wordList[${index}].keyword`] = ele.keyword
+            data[`wordList[${index}].id`] = ele.id
+          })
           this.$axios.post('dict/add', data).then(response => {
             if (response.data === null) {
               this.$Message.success('提交成功')
@@ -146,7 +149,7 @@ export default {
     // 添加一行
     addLine () {
       this.createEntitiesForm.wordList.push({ keyword: this.createEntitiesForm.wordList.keyword })
-      console.log(this.createEntitiesForm.wordList)
+      // console.log(this.createEntitiesForm.wordList)
     },
     // enter 添加一行
     enterAddLine (event) {

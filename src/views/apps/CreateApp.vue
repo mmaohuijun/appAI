@@ -67,16 +67,16 @@ export default {
   },
   methods: {
     addOneReply () {
-      console.log('addOneReply')
+      // console.log('addOneReply')
       this.nextReplyId ++
       this.defaultReplyList.push({value: this.defaultReply, id: this.nextReplyId})
     },
     delReply () {
-      console.log(this.nextReplyId)
+      // console.log(this.nextReplyId)
       // this.defaultReplyList.splice(index, 1)
     },
     saveCreate (name) {
-      console.log('saveCreate')
+      // console.log('saveCreate')
       this.$refs[name].validate((valid) => {
         if (!valid) {
           this.$Message.error('提交失败')
@@ -88,9 +88,9 @@ export default {
             describe: this.createAppForm.describe,
             storage: this.createAppForm.storage
           }
-          console.log('data', data)
+          // console.log('data', data)
           this.$axios.post('app/add', data).then(response => {
-            console.log(response)
+            // console.log(response)
           })
           this.$Message.success('提交成功')
           this.$router.push({ name: 'Application' })

@@ -54,7 +54,7 @@ export default {
     },
     // 获取词库列表
     getEntitiesList () {
-      console.log(this.$store.getters.getAppId)
+      // console.log(this.$store.getters.getAppId)
       this.$axios.post('dict/list', { name: this.name, appId: this.$store.getters.getAppId }).then(response => {
         if (response.data.dictList.length > 0) {
           this.entitiesList = response.data.dictList
@@ -79,7 +79,7 @@ export default {
           this.$Message.success('提交成功！')
         }
       })
-      this.getEntitiesList()
+      this.$router.go(0)
     }
   },
   created () {
