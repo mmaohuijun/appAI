@@ -9,7 +9,7 @@
       <li @click="gotoEditIntents(index)" v-for="(item, index) in intentList" :key="index">
         <a>{{item.name}}</a>
         <div class="rt">
-          <a @click.stop="delIntents()">
+          <a @click.stop="del(index)">
             <Icon type="trash-a" class="app-icon"></Icon>
           </a>
         </div>
@@ -18,8 +18,8 @@
       <Button type="primary" size="large" @click="gotoCreateIntents">创建场景</Button>
       <Modal
         v-model="showModal"
-        title="删除场景"
-        @on-ok="delIntents">
+        @on-ok="delIntents"
+        title="删除场景">
           <p>确定删除场景吗</p>
           <p>删除后无法恢复</p>
         </Modal>
@@ -42,7 +42,8 @@ export default {
       appId: '', // 应用id
       ifIntents: false, // 是否存在场景
       intentList: [],
-      showModal: false // 显示删除 模态框
+      showModal: false, // 显示删除 模态框
+      delId: '' // 删除场景id
     }
   },
   computed: {
@@ -76,9 +77,17 @@ export default {
     },
     // 编辑某个场景
     // 删除某个场景
-    delIntents () {
+    del (index) {
       this.showModal = true
-      // console.log('delIntents')
+      this.delId = this.intentList[index].id
+    },
+    delIntents () {
+      this.$axios.post('intent/del', { appId: this.appId, id: this.delId }).then(reponse => {
+        if (response.data === null) {
+          this.$Message.success('提交成功！')
+        }
+      })
+      this.$router.go(0)
     }
   },
   created () {

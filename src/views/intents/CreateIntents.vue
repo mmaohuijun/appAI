@@ -168,25 +168,25 @@ export default {
       let data
       data = {
         appId: this.getAppId,
-        'intent.actionName': this.actionName,
-        'intent.appId': this.getAppId,
-        'intent.name': this.createIntentsForm.name,
-        'intent.rank': ''
+        actionName: this.actionName,
+        appId: this.getAppId,
+        name: this.createIntentsForm.name,
+        rank: ''
       }
       this._.each(this.slotList, (ele, index) => {
-        data[`intent.slotList[${index}].defValue`] = ele.defValue
-        data[`intent.slotList[${index}].dictName`] = ele.dictName
-        data[`intent.slotList[${index}].flag`] = ele.flag
-        data[`intent.slotList[${index}].message`] = ele.message
-        data[`intent.slotList[${index}].typeName`] = ele.typeName
+        data[`slotList[${index}].defValue`] = ele.defValue
+        data[`slotList[${index}].dictName`] = ele.dictName
+        data[`slotList[${index}].flag`] = ele.flag
+        data[`slotList[${index}].message`] = ele.message
+        data[`slotList[${index}].typeName`] = ele.typeName
       })
       // // asklist
       this._.each(this.askList, (ele, index) => {
-        data[`intent.askList[${index}].text`] = ele.text
-        data[`intent.askList[${index}].intent`] = this.createIntentsForm.name
+        data[`askList[${index}].text`] = ele.text
+        data[`askList[${index}].intent`] = this.createIntentsForm.name
         this._.each(ele.entitys, (ele2, index2) => {
-          data[`intent.askList[${index}].entitys[${index2}].value`] = ele.entitys[index2].value
-          data[`intnet.askList[${index}].entitys[${index2}].entity`] = ele.entitys[index2].entity
+          data[`askList[${index}].entitys[${index2}].value`] = ele.entitys[index2].value
+          data[`askList[${index}].entitys[${index2}].entity`] = ele.entitys[index2].entity
         })
       })
       return data

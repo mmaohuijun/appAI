@@ -4,7 +4,7 @@
       <h2>场景列表</h2>
       <input type="text" placeholder="搜索">   
       <ul v-if="hasIntents" v-for="(item, index) in intentList" :key="index">    
-        <li><a href="" @click.prevent="gotoEdit">{{item.name}}</a></li>
+        <li><a href="" @click.prevent="gotoEdit(index)">{{item.name}}</a></li>
       </ul>
       <p v-else>当前场景列表为空！</p>
     </aside>
@@ -139,14 +139,17 @@ export default {
     getAppId () {
       return this.$store.getters.getAppId
     },
-    getIntentId () {
+    getIntentId () { 
       return this.$store.getters.getIntentId
     }
   },
   methods: {
     // 编辑某个场景
-    gotoEdit () {
-      this.$router.push('/editIntents')
+    gotoEdit (index) {
+      // this.$router.push('/editIntents')
+      this.$store.dispatch('setIntentId', this.intentList[index].id)
+      this.$router.push({ name: 'EditIntents', params: { appId: this.getAppId } })
+      this.getIntentsDetail()
     },
     saveCreate (name) {
       this.$refs[name].validate((valid) => {
@@ -168,25 +171,28 @@ export default {
       let data
       data = {
         appId: this.getAppId,
-        'intent.actionName': this.actionName,
-        'intent.appId': this.getAppId,
-        'intent.name': this.createIntentsForm.name,
-        'intent.rank': ''
+        actionName: this.actionName,
+        appId: this.getAppId,
+        name: this.createIntentsForm.name,
+        rank: '',
+        id: this.getIntentId
       }
       this._.each(this.slotList, (ele, index) => {
-        data[`intent.slotList[${index}].defValue`] = ele.defValue
-        data[`intent.slotList[${index}].dictName`] = ele.dictName
-        data[`intent.slotList[${index}].flag`] = ele.flag
-        data[`intent.slotList[${index}].message`] = ele.message
-        data[`intent.slotList[${index}].typeName`] = ele.typeName
+        data[`slotList[${index}].id`] = this.slotList[index].id 
+        data[`slotList[${index}].defValue`] = ele.defValue
+        data[`slotList[${index}].dictName`] = ele.dictName
+        data[`slotList[${index}].flag`] = ele.flag
+        data[`slotList[${index}].message`] = ele.message
+        data[`slotList[${index}].typeName`] = ele.typeName
       })
       // // asklist
       this._.each(this.askList, (ele, index) => {
-        data[`intent.askList[${index}].text`] = ele.text
-        data[`intent.askList[${index}].intent`] = this.createIntentsForm.name
+        data[`askList[${index}].id`] = this.askList[index].id
+        data[`askList[${index}].text`] = ele.text
+        data[`askList[${index}].intent`] = this.createIntentsForm.name
         this._.each(ele.entitys, (ele2, index2) => {
-          data[`intent.askList[${index}].entitys[${index2}].value`] = ele.entitys[index2].value
-          data[`intnet.askList[${index}].entitys[${index2}].entity`] = ele.entitys[index2].entity
+          data[`askList[${index}].entitys[${index2}].value`] = ele.entitys[index2].value
+          data[`askList[${index}].entitys[${index2}].entity`] = ele.entitys[index2].entity
         })
       })
       return data
@@ -217,9 +223,10 @@ export default {
     // 获取某场景详情
     getIntentsDetail () {
       this.intentId = this.$store.state.intentId
-      if (!this.intnetId) {
-        this.intentId = this.getIntentId
-      }
+        // if (this.intnetId === null) {
+        //   this.intentId = this.getIntentId
+        // }
+      console.log('intent', this.$store.getters.getIntentId)
       this.$axios.post('intent/detail', { id: this.intentId }).then(response => {
         if (response.data) {
           // console.log(response.data)
@@ -258,8 +265,10 @@ export default {
           this.hasSelected = true
           this.showActionList = true
           entity = this.entitiesList[index].pinyin
-          type = this.selector
-          value = this.entitiesList[index].name
+          // type = this.selector
+          // value = this.entitiesList[index].name
+          type = this.entitiesList[index].name
+          value = this.selector
         } else {
           // console.log('no index')
         }
