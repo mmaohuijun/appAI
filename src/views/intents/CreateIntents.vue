@@ -169,7 +169,6 @@ export default {
       data = {
         appId: this.getAppId,
         actionName: this.actionName,
-        appId: this.getAppId,
         name: this.createIntentsForm.name,
         rank: ''
       }
@@ -235,8 +234,8 @@ export default {
           this.hasSelected = true
           this.showActionList = true
           entity = this.entitiesList[index].pinyin
-          type = this.selector
-          value = this.entitiesList[index].name
+          type = this.entitiesList[index].name
+          value = this.selector
         } else {
           // console.log('no index')
         }

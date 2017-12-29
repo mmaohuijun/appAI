@@ -17,7 +17,9 @@
         <div>
           <div class="input-box">
             <input 
-            @select="selectText(index)" 
+            @focus="focusInput(index)"
+            @blur="blurInput"
+            @select="selectText(index)"
             class="my-input" 
             type="text" 
             placeholder="添加用户提问语料" 
@@ -31,7 +33,7 @@
             <Option v-for="item in entitiesList" :value="item.id" :key="item.id">{{item.name}}</Option>
           </Select>
 
-        <div v-if="hasSelected&&index === textIndex">
+        <div v-if="showAsk&&index === textIndex || hasSelected&&index === textIndex ">
           <table class="action-tbl" >
             <thead>
               <tr>
@@ -126,8 +128,9 @@ export default {
       hasEntities: false, // 是否有词库
       hasSelected: false, // 已经选取有效字段
       showSlect: false,
-      showActionList: false,
+      showActionList: true,
       askList: [],
+      showAsk: false, // 显示表格
       slotList: [],
       textIndex: '', // 选中的text index
       editSelect: false, // 是否为编辑下拉列表值
@@ -139,7 +142,7 @@ export default {
     getAppId () {
       return this.$store.getters.getAppId
     },
-    getIntentId () { 
+    getIntentId () {
       return this.$store.getters.getIntentId
     }
   },
@@ -172,13 +175,12 @@ export default {
       data = {
         appId: this.getAppId,
         actionName: this.actionName,
-        appId: this.getAppId,
         name: this.createIntentsForm.name,
         rank: '',
         id: this.getIntentId
       }
       this._.each(this.slotList, (ele, index) => {
-        data[`slotList[${index}].id`] = this.slotList[index].id 
+        data[`slotList[${index}].id`] = this.slotList[index].id
         data[`slotList[${index}].defValue`] = ele.defValue
         data[`slotList[${index}].dictName`] = ele.dictName
         data[`slotList[${index}].flag`] = ele.flag
@@ -238,7 +240,7 @@ export default {
           }
           this.slotList = data.slotList
           if (this.slotList.length < 1) {
-            // this.slotList.push({  })
+            this.slotList.push({ defValue: this.slotList.defValue, typeName: this.slotList.typeName, dictName: this.slotList.dictName })
           }
           this.actionName = data.actionName
         }
@@ -246,7 +248,7 @@ export default {
     },
     // 鼠标选中 表单中的文字
     selectText (index) {
-      // console.log('selectText', index)
+      console.log('selectText', index)
       this.textIndex = index
       let selector = window.getSelection().toString()
       if (this.entitiesList.length > 0) {
@@ -259,8 +261,8 @@ export default {
     // 选中的Option变化时触发
     changeSelect (entityId) {
       this.hasEntities = false
-      let index, entity, type, value
-      for (index = 0; index < this.entitiesList.length; index++) {
+      let entity, type, value
+      for (let index = 0; index < this.entitiesList.length; index++) {
         if (this.entitiesList[index].id === entityId) {
           this.hasSelected = true
           this.showActionList = true
@@ -307,7 +309,6 @@ export default {
     },
     // 添加一行 动作列表
     addActionList () {
-      // console.log('addActionList')
       this.showActionList = true
       this.slotList.push({ typeName: this.slotList.typeName, dictName: this.slotList.dictName })
     },
@@ -316,6 +317,22 @@ export default {
       this.editSelect = true
       this.hasEntities = true
       this.changeSelect(entityId, tbindex)
+    },
+    // 输入框得到焦点
+    focusInput (i) {
+      // this.inputIndex = i
+      this.textIndex = i
+      console.log('focusInput')
+      console.log(this.askList[i])
+      if (this.askList[i].entitys) {
+        if (this.askList[i].entitys.length > 0) {
+          this.showAsk = true
+        }
+      }     
+    },
+    blurInput () {
+      console.log('blurInput')
+      this.showAsk = false
     }
   },
   created () {

@@ -82,7 +82,7 @@ export default {
       this.delId = this.intentList[index].id
     },
     delIntents () {
-      this.$axios.post('intent/del', { appId: this.appId, id: this.delId }).then(reponse => {
+      this.$axios.post('intent/del', { appId: this.appId, id: this.delId }).then(response => {
         if (response.data === null) {
           this.$Message.success('提交成功！')
         }

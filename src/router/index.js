@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Layout from '../components/Layout'
+// 登录
+const Login = () => import('../views/login/Login')
 // 应用
 const Application = () => import('../views/apps/Application')
 const EditApp = () => import('../views/apps/EditApp')
@@ -13,11 +15,13 @@ const CreateIntents = () => import('../views/intents/CreateIntents')
 const Entities = () => import('../views/entities/Entities')
 const EditEntities = () => import('../views/entities/EditEntities')
 const CreateEntities = () => import('../views/entities/CreateEntities')
+// 模块
+const Module = () => import('../views/modules/Module')
 
 Vue.use(Router)
 
 const normalRouter = [
-  { path: '/', component: Application },
+  { path: '/', component: Login },
   {
     path: '/apps',
     component: Layout,
@@ -49,6 +53,15 @@ const normalRouter = [
       { path: ':appId/index', name: 'Entities', component: Entities },
       { path: 'create', name: 'CreateEntities', component: CreateEntities },
       { path: ':appId/editEntities', name: 'EditEntities', component: EditEntities }
+    ]
+  },
+  {
+    path: '/module',
+    component: Layout,
+    redirect: '/module/index',
+    name: '模块',
+    children: [
+      { path: 'index', name: 'Module', component: Module }
     ]
   }
 ]

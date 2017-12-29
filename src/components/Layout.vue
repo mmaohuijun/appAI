@@ -23,6 +23,9 @@
               <MenuItem name="3" @click.native="gotoEntities">
                 词库
               </MenuItem>
+              <MenuItem name="4" @click.native="gotoModules">
+                模块
+              </MenuItem>
             </div>
         </Menu>
         <router-view></router-view>
@@ -127,6 +130,10 @@ export default {
     // 查看某应用下 所有词库
     gotoEntities () {
       this.$router.push({ name: 'Entities', params: { appId: this.getAppId } })
+    },
+    // 跳转模态页面
+    gotoModules () {
+      this.$router.push({ name: 'Module' })
     }
   },
   created () {
