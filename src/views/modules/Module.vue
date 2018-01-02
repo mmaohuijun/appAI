@@ -1,13 +1,12 @@
 <template>
   <div>
-    <Select>
-      <Option></Option>
+    所有应用
+    <Select style="width:500px;">
+      <Option v-for="item in appList" :value="item.value" :key="item.id">{{item.value}}</Option>
     </Select>
     <Button>训练</Button>
     <div>
-      <Table>
-
-      </Table>
+      <Table :columns="column" :data="data"></Table>
     </div>
   </div>
 </template>
@@ -16,7 +15,30 @@
 export default {
   name: 'Module',
   data () {
-    return {}
+    return {
+      appList: [],
+      column: [
+        {
+          title: 'Name',
+          key: 'name'
+        },
+        {
+          title: 'Age',
+          key: 'age'
+        },
+        {
+          title: 'Address',
+          key: 'address'
+        }
+      ],
+      data: [
+        {
+          name: 'aaa',
+          age: 18,
+          address
+        }
+      ]
+    }
   }
 }
 </script>

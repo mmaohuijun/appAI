@@ -4,7 +4,7 @@
       <h2>场景列表</h2>
       <input type="text" placeholder="搜索">   
       <ul v-if="hasIntents" v-for="(item, index) in intentList" :key="index">    
-        <li><a href="" @click.prevent="gotoEdit">{{item.name}}</a></li>
+        <li><a href="" @click.prevent="gotoEdit(index)">{{item.name}}</a></li>
       </ul>
       <p v-else>当前场景列表为空！</p>
     </aside>
@@ -116,7 +116,7 @@ export default {
         text: '' // 提问语料
       },
       ruleIntentsForm: { // 场景表单的验证规则
-        intentName: [
+        name: [
           { required: true, message: '场景名称不能为空', trigger: 'blur' }
         ]
       },
@@ -145,22 +145,25 @@ export default {
   },
   methods: {
     // 编辑某个场景
-    gotoEdit () {
-      this.$router.push('/editIntents')
+    gotoEdit (index) {
+      // this.$router.push('/editIntents')
+      this.$store.dispatch('setIntentId', this.intentList[index].id)
+      this.$router.push({ name: 'EditIntents', params: { appId: this.getAppId } })
+      this.getIntentsDetail()
     },
     saveCreate (name) {
       this.$refs[name].validate((valid) => {
         if (!valid) {
           this.$Message.error('提交失败')
         } else {
-          this.$Message.success('提交成功')
-        }
-      })
-      this.$axios.post('intent/add', this.getSaveData()).then(response => {
-        // console.log(response)
-        if (response.data === null) {
-          this.$Message.success('提交成功')
-          this.getIntentsList()
+          this.$axios.post('intent/add', this.getSaveData()).then(response => {
+            console.log(response)
+            // if (response.data === null) {
+              this.$Message.success('提交成功')
+              this.getIntentsList()
+            // }
+          })
+          // this.$Message.success('提交成功')
         }
       })
     },
