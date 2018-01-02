@@ -31,7 +31,7 @@ export default {
   methods: {
     // 注册
     toRegister () {
-      this.$axios.post('regist', { username: this.username, password: this.password }).then(response => {
+      this.$axios.post('user/regist', { username: this.username, password: this.password }).then(response => {
         console.log(response)
       })
     },
@@ -39,7 +39,10 @@ export default {
     toLogin () {
       this.$axios.post('login', { username: this.username, password: this.password }).then(response => {
         if (response.data === null) {
+          // 登录成功时 将用户名保存下用作标识用户身份的id
+          this.$store.dispatch('setUserName', this.username)
           this.$router.push({ name: 'Application' })
+          
         }
       })
     }

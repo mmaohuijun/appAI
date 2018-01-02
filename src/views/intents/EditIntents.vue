@@ -46,7 +46,7 @@
             <tbody>
               <tr v-for="(item, index) in item.entitys" :key="index" :ask-list="item">
                 <td><input type="text" v-model="item.entity"></td>
-                <td @click="toEditSelect(index)">{{ item.type }}</td>
+                <td>{{ item.type }}</td>
                 <td>{{ item.value }}</td>
                 <td><button @click.prevent="deleteEntityLine(index)">删除</button></td>
               </tr>
@@ -312,12 +312,6 @@ export default {
       this.showActionList = true
       this.slotList.push({ typeName: this.slotList.typeName, dictName: this.slotList.dictName })
     },
-    // 编辑下拉框的值
-    toEditSelect (entityId, tbindex) {
-      this.editSelect = true
-      this.hasEntities = true
-      this.changeSelect(entityId, tbindex)
-    },
     // 输入框得到焦点
     focusInput (i) {
       // this.inputIndex = i
@@ -328,7 +322,7 @@ export default {
         if (this.askList[i].entitys.length > 0) {
           this.showAsk = true
         }
-      }     
+      }
     },
     blurInput () {
       console.log('blurInput')

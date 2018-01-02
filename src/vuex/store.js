@@ -12,7 +12,8 @@ const store = new Vuex.Store({
     appName: '', // 选中的应用 名称
     intentId: '', // 选中的场景 id
     entityId: '', // 选中的词库 id
-    hasIntents: false // 是否有场景
+    hasIntents: false, // 是否有场景
+    userName: '' // 用户id
   },
   getters: {
     getAppId: () => {
@@ -26,6 +27,9 @@ const store = new Vuex.Store({
     },
     getAppName: () => {
       return $Storage.sessionStorage.getItem('appName')
+    },
+    getUserName: () => {
+      return $Storage.localStorage.getItem('userName')
     }
   },
   mutations: {
@@ -44,6 +48,9 @@ const store = new Vuex.Store({
     HAS_INTENTS (state) {
       state.hasIntents = true
       // $Storage.sessionStorage.setItem('hasIntents', true)
+    },
+    SET_USERNAME (state, name) {
+      state.userName = name
     }
   },
   actions: {
@@ -73,6 +80,14 @@ const store = new Vuex.Store({
     },
     hasIntents ({ commit }) {
       commit('HAS_INTENTS')
+    },
+    setUserName ({ dispatch, commit }, name) {
+      dispatch('clearUserName')
+      commit('SET_USERNAME', name)
+      $Storage.localStorage.setItem('userName', name)
+    },
+    clearUserName () {
+      $Storage.localStorage.removeItem('userName')
     }
   }
 })

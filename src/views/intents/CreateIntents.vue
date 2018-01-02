@@ -160,6 +160,7 @@ export default {
         // console.log(response)
         if (response.data === null) {
           this.$Message.success('提交成功')
+          this.getIntentsList()
         }
       })
     },
@@ -200,8 +201,6 @@ export default {
         if (response.data.list.length > 0) {
           this.hasIntents = true
           this.intentList = response.data.list
-        } else {
-          this.hasIntents = false
         }
       })
     },

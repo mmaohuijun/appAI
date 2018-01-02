@@ -35,6 +35,7 @@
 </template>
 
 <script>
+// import $Storage from '../../api/storage.js'
 export default {
   name: 'CreateApp',
   data () {
@@ -44,7 +45,8 @@ export default {
         isPrivate: '', // 是否公开 0/1
         defReply: '', // 默认回复
         describe: '', // 应用描述
-        storage: '' // 知识库选择
+        storage: '', // 知识库选择
+        createBy: this.$store.getters.getUserName
       },
       storageList: [
         {
@@ -76,7 +78,7 @@ export default {
       // this.defaultReplyList.splice(index, 1)
     },
     saveCreate (name) {
-      // console.log('saveCreate')
+      console.log(this.createAppForm.createBy)
       this.$refs[name].validate((valid) => {
         if (!valid) {
           this.$Message.error('提交失败')
@@ -86,7 +88,8 @@ export default {
             isPrivate: this.createAppForm.isPrivate,
             defReply: this.createAppForm.defReply,
             describe: this.createAppForm.describe,
-            storage: this.createAppForm.storage
+            storage: this.createAppForm.storage,
+            createBy: this.createAppForm.createBy
           }
           // console.log('data', data)
           this.$axios.post('app/add', data).then(response => {

@@ -1,7 +1,7 @@
 <template>
   <div class="layout">
     <Menu mode="horizontal" theme="dark" active-name="1" @on-select="selectMenu">
-            <div class="layout-logo"></div>
+            <div class="layout-logo"><img src="../assets/logo.png" alt="" style="width:40px;margin-left:15px; "></div>
             <div class="layout-nav">
               <Submenu name="3">
                   <template slot="title">
@@ -24,7 +24,7 @@
                 词库
               </MenuItem>
               <MenuItem name="4" @click.native="gotoModules">
-                模块
+                模型
               </MenuItem>
             </div>
         </Menu>
@@ -149,13 +149,13 @@ export default {
         margin-bottom: 30px;
     }
     .layout-logo {
-        width: 100px;
-        height: 30px;
-        background: #5b6270;
+        // width: 100px;
+        // height: 30px;
+        // background: #5b6270;
         border-radius: 3px;
         float: left;
         position: relative;
-        top: 15px;
+        top: 2px;
         left: 20px;
     }
     .layout-nav {

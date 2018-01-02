@@ -1,12 +1,23 @@
 <template>
   <div>
-    模块
+    <Select>
+      <Option></Option>
+    </Select>
+    <Button>训练</Button>
+    <div>
+      <Table>
+
+      </Table>
+    </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'Module'  
+  name: 'Module',
+  data () {
+    return {}
+  }
 }
 </script>
 
