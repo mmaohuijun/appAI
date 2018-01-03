@@ -36,6 +36,7 @@ export default {
   name: 'Entities',
   data () {
     return {
+      appId: '',
       showModal: false, // 删除模态框
       name: '', // 搜索词库 关键字
       ifEntities: false, // 是否存在词库
@@ -55,10 +56,18 @@ export default {
     // 获取词库列表
     getEntitiesList () {
       // console.log(this.$store.getters.getAppId)
-      this.$axios.post('dict/list', { name: this.name, appId: this.$store.getters.getAppId }).then(response => {
+      console.log(this.getAppId)
+      console.log(this.$store.state.appId)
+      this.appId = this.$store.state.appId
+      if (!this.appId) {
+        this.appId = this.$store.getters.getAppId
+      }
+      this.$axios.post('dict/list', { name: this.name, appId: this.appId }).then(response => {
         if (response.data.dictList.length > 0) {
           this.entitiesList = response.data.dictList
           this.ifEntities = true
+        } else {
+          this.ifEntities = false
         }
       })
     },
@@ -77,9 +86,9 @@ export default {
       this.$axios.post('dict/del', { id: this.delId }).then(response => {
         if (response.data === null) {
           this.$Message.success('提交成功！')
+          this.getEntitiesList()
         }
       })
-      this.$router.go(0)
     }
   },
   created () {

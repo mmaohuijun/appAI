@@ -42,7 +42,6 @@ export default {
           // 登录成功时 将用户名保存下用作标识用户身份的id
           this.$store.dispatch('setUserName', this.username)
           this.$router.push({ name: 'Application' })
-          
         }
       })
     }

@@ -4,11 +4,14 @@
       <h2>词库列表</h2>
       <input type="text" placeholder="搜索">   
       <ul v-if="hasEntities">    
-        <li v-for="(item, index) in entitiesList" :key="index" @click="gotoEdit(index)">
+        <li 
+          v-for="(item, index) in entitiesList" 
+          :key="index" 
+          @click="gotoEdit(index)">
           <a>{{item.name}}</a>
         </li>
       </ul>
-      <p v-else>当前词库列表为空！</p>
+      <p v-else class="empty-list">当前词库列表为空！</p>
     </aside>
     <Form class="form" ref="createEntitiesForm" :model="createEntitiesForm" :rules="ruleEntitiesForm">
       <Form-item label="词库名称" prop="name">
@@ -94,7 +97,6 @@ export default {
             name: this.createEntitiesForm.name,
             id: this.id,
             synonymyFlag: 0
-            // wordList: this.createEntitiesForm.wordList
           }
           this._.each(this.createEntitiesForm.wordList, (ele, index) => {
             data[`wordList[${index}].keyword`] = ele.keyword
@@ -119,6 +121,9 @@ export default {
           this.hasEntities = true
         }
       })
+        // this.createEntitiesForm.wordList.push({ keyword: this.createEntitiesForm.wordList.keyword })
+    },
+    initEntitiesDetail () {
       this.createEntitiesForm.wordList.push({ keyword: this.createEntitiesForm.wordList.keyword })
     },
     addKeyLine () {
@@ -134,6 +139,7 @@ export default {
   },
   created () {
     this.getEntitiesList()
+    this.initEntitiesDetail()
     document.addEventListener('keyup', this.enterAddLine)
   },
   destroyed () {
@@ -194,6 +200,9 @@ export default {
   // 右侧表单
   .form {
     flex-grow: 1;
+    .choosed {
+      background: #333;
+    }
   }
   .add-keywords-tbl {
     width: 100%;

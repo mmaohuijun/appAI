@@ -40,7 +40,7 @@ export default {
     return {
       name: '', // 场景列表 搜索关键词
       appId: '', // 应用id
-      ifIntents: false, // 是否存在场景
+      ifIntents: true, // 是否存在场景
       intentList: [],
       showModal: false, // 显示删除 模态框
       delId: '' // 删除场景id
@@ -72,6 +72,8 @@ export default {
         if (response.data.list.length > 0) {
           this.intentList = response.data.list
           this.ifIntents = true
+        } else {
+          this.ifIntents = false
         }
       })
     },
@@ -85,13 +87,22 @@ export default {
       this.$axios.post('intent/del', { appId: this.appId, id: this.delId }).then(response => {
         if (response.data === null) {
           this.$Message.success('提交成功！')
+          this.getIntentsList()
         }
       })
-      this.$router.go(0)
     }
   },
   created () {
     this.getIntentsList()
+  },
+  // 两个路由渲染同个组件 实例会被服用
+  // 组件的生命周期钩子不会再被调用
+  // 监控$route对象 对路由参数的变化做出响应
+  watch: {
+    '$route' (to, from) {
+      console.log(to, from)
+      this.getIntentsList()
+    }
   }
 }
 </script>

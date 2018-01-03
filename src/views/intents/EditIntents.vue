@@ -6,7 +6,7 @@
       <ul v-if="hasIntents" v-for="(item, index) in intentList" :key="index">    
         <li><a href="" @click.prevent="gotoEdit(index)">{{item.name}}</a></li>
       </ul>
-      <p v-else>当前场景列表为空！</p>
+      <p v-else class="empty-list">当前场景列表为空！</p>
     </aside>
     <Form class="form" ref="createIntentsForm" :model="createIntentsForm" :rules="ruleIntentsForm">
       <Form-item label="场景名称" prop="name">
@@ -118,7 +118,7 @@ export default {
         text: '' // 提问语料
       },
       ruleIntentsForm: { // 场景表单的验证规则
-        intentName: [
+        name: [
           { required: true, message: '场景名称不能为空', trigger: 'blur' }
         ]
       },
@@ -159,13 +159,12 @@ export default {
         if (!valid) {
           this.$Message.error('提交失败')
         } else {
-          this.$Message.success('提交成功')
-        }
-      })
-      this.$axios.post('intent/add', this.getSaveData()).then(response => {
-        // console.log(response)
-        if (response.data === null) {
-          this.$Message.success('提交成功')
+          this.$axios.post('intent/add', this.getSaveData()).then(response => {
+            // console.log(response)
+            if (response.data === null) {
+              this.$Message.success('提交成功')
+            }
+          })
         }
       })
     },

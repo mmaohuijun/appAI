@@ -3,10 +3,18 @@
     <aside>
       <h2>场景列表</h2>
       <input type="text" placeholder="搜索">   
-      <ul v-if="hasIntents" v-for="(item, index) in intentList" :key="index">    
+      <!-- <ul v-if="hasIntents" v-for="(item, index) in intentList" :key="index">    
         <li><a href="" @click.prevent="gotoEdit(index)">{{item.name}}</a></li>
+      </ul> -->
+      <ul v-if="hasIntents">
+        <li 
+          v-for="(item, index) in intentList"
+          :key="index"
+          @click="gotoEdit(index)">
+          <a>{{item.name}}</a>
+          </li>
       </ul>
-      <p v-else>当前场景列表为空！</p>
+      <p v-else class="empty-list">当前场景列表为空！</p>
     </aside>
     <Form class="form" ref="createIntentsForm" :model="createIntentsForm" :rules="ruleIntentsForm">
       <Form-item label="场景名称" prop="name">
@@ -126,7 +134,7 @@ export default {
       hasEntities: false, // 是否有词库
       hasSelected: false, // 已经选取有效字段
       showSlect: false,
-      showActionList: false,
+      showActionList: true,
       askList: [],
       textIndex: '', // 选中的text index
       editSelect: false, // 是否为编辑下拉列表值
@@ -159,11 +167,9 @@ export default {
           this.$axios.post('intent/add', this.getSaveData()).then(response => {
             console.log(response)
             // if (response.data === null) {
-              this.$Message.success('提交成功')
-              this.getIntentsList()
-            // }
+            this.$Message.success('提交成功')
+            this.getIntentsList()
           })
-          // this.$Message.success('提交成功')
         }
       })
     },
@@ -194,6 +200,11 @@ export default {
       })
       return data
     },
+    // 初始化intent详情
+    initIntentDetail () {
+      this.askList.push({ text: this.askList.text })
+      this.slotList.push({ typeName: this.slotList.typeName, dictName: this.slotList.dictName })
+    },
     // 左侧场景列表
     getIntentsList () {
       this.appId = this.$store.state.appId
@@ -204,6 +215,8 @@ export default {
         if (response.data.list.length > 0) {
           this.hasIntents = true
           this.intentList = response.data.list
+        } else {
+          this.hasIntents = false
         }
       })
     },
@@ -265,9 +278,9 @@ export default {
     },
     delSlotList (index) {
       this.slotList.splice(index, 1)
-      if (this.slotList.length < 1) {
-        this.showActionList = false
-      }
+      // if (this.slotList.length < 1) {
+      //   this.showActionList = false
+      // }
     },
     // 添加一行 用户提问
     addAskList () {
@@ -290,6 +303,7 @@ export default {
   created () {
     // // console.log(this.getAppId)
     this.getIntentsList()
+    this.initIntentDetail()
     this.getEntitiesList()
   },
   watch: {

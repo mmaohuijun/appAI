@@ -89,7 +89,7 @@ export default {
             defReply: this.createAppForm.defReply,
             describe: this.createAppForm.describe,
             storage: this.createAppForm.storage,
-            createBy: this.createAppForm.createBy
+            // createBy: this.createAppForm.createBy
           }
           // console.log('data', data)
           this.$axios.post('app/add', data).then(response => {
@@ -97,6 +97,7 @@ export default {
           })
           this.$Message.success('提交成功')
           this.$router.push({ name: 'Application' })
+          // this.$router.push({ name: Intents, params: { appId: this.appId } })
         }
       })
     }

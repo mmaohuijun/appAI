@@ -4,11 +4,14 @@
       <h2>词库列表</h2>
       <input type="text" placeholder="搜索">   
       <ul v-if="hasEntities">    
-        <li v-for="(item, index) in entitiesList" :key="index" @click="gotoEdit(index)">
+        <li 
+          v-for="(item, index) in entitiesList" 
+          :key="index" 
+          @click="gotoEdit(index)">
           <a>{{item.name}}</a>
         </li>
       </ul>
-      <p v-else>当前词库列表为空！</p>
+      <p v-else class="empty-list">当前词库列表为空！</p>
     </aside>
     <Form class="form" ref="createEntitiesForm" :model="createEntitiesForm" :rules="ruleEntitiesForm">
       <Form-item label="词库名称" prop="name">
@@ -17,12 +20,15 @@
       <Form-item>
         <table class="add-keywords-tbl">
           <tr v-for="(item, index) in createEntitiesForm.wordList" :key="index">
-            <td>
+            <td style="position: relative">
               <input 
               placeholder="添加关键词"
               type="text" 
               v-focus="addLine"
               v-model="item.keyword">
+              <a href="" @click.prevent="delLine(index)" v-if="index!==0">
+                <Icon type="trash-a" class="icon-trash"></Icon>
+              </a>    
             </td>
           </tr>      
         </table>
@@ -62,7 +68,8 @@ export default {
         ]
       },
       // 词库详情
-      entitiesDetail: {}
+      entitiesDetail: {},
+      hasChoosed: false
     }
   },
   computed: {
@@ -116,6 +123,7 @@ export default {
     },
     // 修改某个词库
     gotoEdit (index) {
+      this.hasChoosed = true
       let selectEntity = this.entitiesList[index].id
       this.$store.dispatch('setEntityId', this.entitiesList[index].id)
       this.getEntitiesDetail(selectEntity)
@@ -150,6 +158,11 @@ export default {
     addLine () {
       this.createEntitiesForm.wordList.push({ keyword: this.createEntitiesForm.wordList.keyword })
       // console.log(this.createEntitiesForm.wordList)
+    },
+    // 删除一行
+    delLine (index) {
+      console.log(index)
+      this.createEntitiesForm.wordList.splice(index, 1)
     },
     // enter 添加一行
     enterAddLine (event) {
@@ -230,6 +243,12 @@ export default {
     td {
       padding: 5px 20px;
       border: 1px solid #ccc;
+
+      &:hover {
+        .icon-trash {
+          display: block;
+        }
+      }
     }
 
     input {
@@ -237,5 +256,16 @@ export default {
       outline: none;
       border: none;
     }
+  }
+  .icon-trash {
+    position: absolute;
+    top: 30%;
+    right: 15px;
+    font-size: 16px;
+    color: #333;
+    display: none;
+  }
+  .choosed {
+    background: #333;
   }
 </style>

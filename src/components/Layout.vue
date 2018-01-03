@@ -5,7 +5,7 @@
             <div class="layout-nav">
               <Submenu name="3">
                   <template slot="title">
-                      <Icon type="stats-bars"></Icon>
+                      <!-- <Icon type="stats-bars"></Icon> -->
                       {{this.getAppName}}
                   </template>
                     <MenuItem name="createApp" @click.native="gotoCreateApp">创建应用</MenuItem>
@@ -13,7 +13,7 @@
                     <MenuGroup title="所有应有">
                       <MenuItem :name="index"  v-for="(item, index) in appList" :key="item.id" @click.native="gotoIntents(index)">
                         {{item.name}}
-                        <Icon type="gear-a" class="drop-down-list"></Icon>
+                        <Icon class="drop-down-list"></Icon>
                       </MenuItem>
                     </MenuGroup>
               </Submenu>
@@ -122,7 +122,7 @@ export default {
         this.$store.dispatch('setAppName', this.appList[index].name)
         this.$router.push({ name: 'Intents', params: { appId: this.appList[index].id } })
         // 强制页面刷新 修改
-        this.$router.go(0)
+        // this.$router.go(0)
       } else {
         this.$router.push({ name: 'Intents', params: { appId: this.getAppId } })
       }
@@ -138,6 +138,11 @@ export default {
   },
   created () {
     this.getAppList()
+  },
+  watch: {
+    '$route' (to, from) {
+      // console.log(to, from)
+    }
   }
 }
 </script>
@@ -291,5 +296,10 @@ export default {
       margin-left: 300px;
     }
   }
+  // 空列表
+  .empty-list {
+  padding: 15px;
+  border-top: 1px solid #ccc;
+}
     
 </style>
