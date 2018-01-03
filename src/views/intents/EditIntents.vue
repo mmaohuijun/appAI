@@ -274,7 +274,6 @@ export default {
           // console.log('no index')
         }
       }
-
       this.askList[this.textIndex].entitys.push({ entity: entity, type: type, value: value })
       this.slotList.push({ typeName: entity, dictName: type })
       // console.log(this.askList)

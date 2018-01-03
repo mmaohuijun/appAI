@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Layout from '../components/Layout'
+import store from '../vuex/store.js'
 // 登录
 const Login = () => import('../views/login/Login')
 // 应用
@@ -31,7 +32,8 @@ const normalRouter = [
       { path: 'index', name: 'Application', component: Application },
       { path: 'create', name: 'CreateApp', component: CreateApp },
       { path: ':appId/editApp', name: 'EditApp', component: EditApp }
-    ]
+    ],
+    meta: { requiresLogin: true }
   },
   {
     path: '/intents',
@@ -42,7 +44,8 @@ const normalRouter = [
       { path: ':appId/index', name: 'Intents', component: Intents },
       { path: 'create', name: 'CreateIntents', component: CreateIntents },
       { path: ':appId/editIntents', name: 'EditIntents', component: EditIntents }
-    ]
+    ],
+    meta: { requiresLogin: true }
   },
   {
     path: '/entities',
@@ -53,7 +56,8 @@ const normalRouter = [
       { path: ':appId/index', name: 'Entities', component: Entities },
       { path: 'create', name: 'CreateEntities', component: CreateEntities },
       { path: ':appId/editEntities', name: 'EditEntities', component: EditEntities }
-    ]
+    ],
+    meta: { requiresLogin: true }
   },
   {
     path: '/module',
@@ -62,11 +66,26 @@ const normalRouter = [
     name: '模块',
     children: [
       { path: 'index', name: 'Module', component: Module }
-    ]
+    ],
+    meta: { requiresLogin: true }
   }
 ]
 
 export const router = new Router({
   mode: 'history',
   routes: normalRouter
+})
+
+router.beforeEach((to, from, next) => {
+  if (to.matched.some(record => record.meta.requiresLogin)) {
+    if (!store.state.userName) {
+      next({
+        path: '/'
+      })
+    } else {
+      next()
+    }
+  } else {
+    next()
+  }
 })
