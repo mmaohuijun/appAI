@@ -49,6 +49,9 @@ export default {
   computed: {
     getAppId () {
       return this.$store.getters.getAppId
+    },
+    ifHasIntents () {
+      return this.intentList.length > 0
     }
   },
   methods: {
@@ -71,9 +74,9 @@ export default {
         // // console.log(response.data.list.length)
         if (response.data.list.length > 0) {
           this.intentList = response.data.list
-          this.ifIntents = true
         } else {
           this.ifIntents = false
+          // this.$router.push({ name: 'NoIntents', params: { appId: this.appId } })
         }
       })
     },
@@ -92,7 +95,7 @@ export default {
       })
     }
   },
-  created () {
+  mounted () {
     this.getIntentsList()
   },
   // 两个路由渲染同个组件 实例会被服用

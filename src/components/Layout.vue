@@ -6,7 +6,7 @@
               <Submenu name="3">
                   <template slot="title">
                       <!-- <Icon type="stats-bars"></Icon> -->
-                      {{this.getAppName}}
+                      {{this.getAppName || '所有应用'}}
                   </template>
                     <MenuItem name="createApp" @click.native="gotoCreateApp">创建应用</MenuItem>
                     <MenuItem name="showApp" @click.native="gotoApp">查看所有应用</MenuItem>

@@ -10,6 +10,7 @@ const EditApp = () => import('../views/apps/EditApp')
 const CreateApp = () => import('../views/apps/CreateApp')
 // 场景
 const Intents = () => import('../views/intents/Intents')
+const NoIntents = () => import('../views/intents/NoIntents')
 const EditIntents = () => import('../views/intents/EditIntents')
 const CreateIntents = () => import('../views/intents/CreateIntents')
 // 词库
@@ -42,6 +43,7 @@ const normalRouter = [
     name: '场景',
     children: [
       { path: ':appId/index', name: 'Intents', component: Intents },
+      { path: ':appId/nindex', name: 'NoIntents', component: NoIntents },
       { path: 'create', name: 'CreateIntents', component: CreateIntents },
       { path: ':appId/editIntents', name: 'EditIntents', component: EditIntents }
     ],
