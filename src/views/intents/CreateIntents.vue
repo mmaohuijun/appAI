@@ -145,7 +145,12 @@ export default {
   },
   computed: {
     getAppId () {
-      return this.$store.getters.getAppId
+      // return this.$store.getters.getAppId
+      this.appId = this.$store.state.appId
+      if (!this.appId) {
+        this.appId = this.$store.getters.getAppId
+      }
+      return this.appId
     },
     getIntentId () {
       return this.$store.getters.getIntentId

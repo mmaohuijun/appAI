@@ -39,14 +39,22 @@ export default {
       appId: '',
       showModal: false, // 删除模态框
       name: '', // 搜索词库 关键字
-      ifEntities: false, // 是否存在词库
+      ifEntities: this.ifHasEntities, // 是否存在词库
       entitiesList: [], // 词库列表
       delId: '' // 要删除的词库id
     }
   },
   computed: {
     getAppId () {
-      return this.$store.getters.appId
+      // return this.$store.getters.appId
+      this.appId = this.$store.state.appId
+      if (!this.appId) {
+        this.appId = this.$store.getters.getAppId
+      }
+      return this.appId
+    },
+    ifHasEntities () {
+      return this.entitiesList.length > 0
     }
   },
   methods: {
@@ -79,7 +87,7 @@ export default {
     gotoEditEntities (index) {
       let SelectEntity = this.entitiesList[index].id
       this.$store.dispatch('setEntityId', SelectEntity)
-      this.$router.push({ name: 'EditEntities', params: { appId: SelectEntity } })
+      this.$router.push({ name: 'EditEntities', params: { appId: this.getAppId } })
     },
     // 删除词库
     delEntities () {

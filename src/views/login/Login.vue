@@ -24,8 +24,8 @@ export default {
   name: 'Login',
   data () {
     return {
-      username: '',
-      password: ''
+      username: 'mao',
+      password: '123456'
     }
   },
   methods: {

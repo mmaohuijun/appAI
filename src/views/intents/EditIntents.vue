@@ -3,8 +3,16 @@
     <aside>
       <h2>场景列表</h2>
       <input type="text" placeholder="搜索">   
-      <ul v-if="hasIntents" v-for="(item, index) in intentList" :key="index">    
+      <!-- <ul v-if="hasIntents" v-for="(item, index) in intentList" :key="index">    
         <li><a href="" @click.prevent="gotoEdit(index)">{{item.name}}</a></li>
+      </ul> -->
+      <ul v-if="hasIntents">
+        <li 
+        v-for="(item, index) in intentList" 
+        :key="index"
+        @click="gotoEdit(index)">
+        <a>{{item.name}}</a>
+        </li>
       </ul>
       <p v-else class="empty-list">当前场景列表为空！</p>
     </aside>
@@ -112,6 +120,7 @@ export default {
     return {
       appId: '', // 应用id
       intentId: '',
+      selectIntent: '',
       name: '', // 搜素场景关键词
       createIntentsForm: { // 创建场景 表单
         name: '', // 场景名称
@@ -140,19 +149,30 @@ export default {
   },
   computed: {
     getAppId () {
-      return this.$store.getters.getAppId
+      // return this.$store.getters.getAppId
+      this.appId = this.$store.state.appId
+      if (!this.appId) {
+        this.appId = this.$store.getters.getAppId
+      }
+      return this.appId
     },
     getIntentId () {
-      return this.$store.getters.getIntentId
+      // return this.$store.getters.getIntentId
+      this.intentId = this.$store.state.intentId
+      if (!this.intentId) {
+        this.intentId = this.$store.getters.getIntentId
+      }
+      return this.intentId
     }
   },
   methods: {
     // 编辑某个场景
     gotoEdit (index) {
       // this.$router.push('/editIntents')
+      let selectIntent = this.intentList[index].id
       this.$store.dispatch('setIntentId', this.intentList[index].id)
       this.$router.push({ name: 'EditIntents', params: { appId: this.getAppId } })
-      this.getIntentsDetail()
+      this.getIntentsDetail(selectIntent)
     },
     saveCreate (name) {
       this.$refs[name].validate((valid) => {
@@ -222,13 +242,13 @@ export default {
       })
     },
     // 获取某场景详情
-    getIntentsDetail () {
-      this.intentId = this.$store.state.intentId
-        // if (this.intnetId === null) {
+    getIntentsDetail (selectIntent) {
+      this.intentId = selectIntent
+        // if (!this.intnetId) {
         //   this.intentId = this.getIntentId
         // }
-      console.log('intent', this.$store.getters.getIntentId)
-      this.$axios.post('intent/detail', { id: this.intentId }).then(response => {
+        console.log('intent', this.intentId)
+      this.$axios.post('intent/detail', { id: this.getIntentId }).then(response => {
         if (response.data) {
           // console.log(response.data)
           var data = response.data.intent
@@ -328,7 +348,7 @@ export default {
     }
   },
   created () {
-    // // console.log(this.getAppId)
+    console.log(this.getIntentId)
     this.getIntentsList()
     this.getIntentsDetail()
     this.getEntitiesList()

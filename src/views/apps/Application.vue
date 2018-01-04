@@ -47,6 +47,13 @@ export default {
       this.$store.dispatch('setAppId', appId)
       this.$store.dispatch('setAppName', this.appList[index].name)
       this.$router.push({ name: 'Intents', params: { appId: appId } })
+      // this.$axios.post('intent/list', { appId: appId, name: '' }).then(response => {
+      //   if (response.data.list.length > 0) {
+      //     this.$router.push({ name: 'Intents', params: { appId: appId } })
+      //   } else {
+      //     this.$router.push({ name: 'NoIntents', params: { appId: appId } })
+      //   }
+      // })
     },
     // 跳转到 编辑页面
     gotoEditApp (index) {

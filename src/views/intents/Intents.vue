@@ -3,7 +3,7 @@
     <div class="app-header">      
       <h1>场景</h1>
     </div> 
-    <div v-if="ifIntents">
+    <div v-if ="ifIntents">
       <Input placeholder="搜索" icon="search"></Input>
       <ul class="list-group">
       <li @click="gotoEditIntents(index)" v-for="(item, index) in intentList" :key="index">
@@ -40,7 +40,7 @@ export default {
     return {
       name: '', // 场景列表 搜索关键词
       appId: '', // 应用id
-      ifIntents: true, // 是否存在场景
+      ifIntents: this.ifHasIntents, // 是否存在场景
       intentList: [],
       showModal: false, // 显示删除 模态框
       delId: '' // 删除场景id
@@ -48,7 +48,14 @@ export default {
   },
   computed: {
     getAppId () {
-      return this.$store.getters.getAppId
+     this.appId = this.$store.state.appId
+      if (!this.appId) {
+        this.appId = this.$store.getters.getAppId
+      }
+      return this.appId
+    },
+    ifHasIntents () {
+      return this.$store.state.hasIntents || false
     }
   },
   methods: {
@@ -58,17 +65,14 @@ export default {
     gotoEditIntents (index) {
       // console.log(this.intentList[index].id)
       this.$store.dispatch('setIntentId', this.intentList[index].id)
-      this.$router.push({ name: 'EditIntents', params: this.getAppId })
+      console.log('appId', this.getAppId)
+      this.$router.push({ name: 'EditIntents', params: { appId: this.getAppId } })
     },
     // 获取场景列表
     getIntentsList () {
-      this.appId = this.$store.state.appId
-      if (!this.appId) {
-        this.appId = this.getAppId
-      }
-      // this.appId = $Storage.sessionStorage.getItem('appId')
-      this.$axios.post('intent/list', { appId: this.appId, name: this.name }).then(response => {
-        // // console.log(response.data.list.length)
+      this.$axios.post('intent/list', { appId: this.getAppId, name: this.name }).then(response => {
+        // // console.log(response.data.list.length
+
         if (response.data.list.length > 0) {
           this.intentList = response.data.list
           this.ifIntents = true
@@ -102,6 +106,9 @@ export default {
     '$route' (to, from) {
       console.log(to, from)
       this.getIntentsList()
+    },
+    'ifIntents' (newV, oldV) {
+      console.log('newV', newV, 'oldVal', oldV)
     }
   }
 }

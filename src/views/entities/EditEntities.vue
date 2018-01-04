@@ -21,7 +21,7 @@
         <table class="add-keywords-tbl">
           <tr v-for="(item, index) in createEntitiesForm.wordList" :key="index">
             <td style="position: relative">
-              <input 
+              <input
               placeholder="添加关键词"
               type="text" 
               v-focus="addLine"
@@ -48,6 +48,7 @@ export default {
     return {
       // 应用id
       appId: '',
+      entityId: '',
       // 搜索词库列表 关键词
       name: '',
       // 词库id
@@ -77,7 +78,12 @@ export default {
       return this.$store.getters.getAppId
     },
     getEntityId () {
-      return this.$store.getters.getEntityId
+      // return this.$store.getters.getEntityId
+      this.entityId = this.$store.state.entityId
+      if (!this.entityId) {
+        this.entityId = this.$store.getters.getEntityId
+      }
+      return this.entityId
     }
   },
   directives: {
@@ -105,11 +111,11 @@ export default {
     },
     // 获取某词库详情
     getEntitiesDetail (selectEntity) {
-      this.id = selectEntity
+      this.entityId = selectEntity
       if (!selectEntity) {
-        this.id = this.getEntityId
+        this.entityId = this.getEntityId
       }
-      this.$axios.post('dict/detail', { id: this.id }).then(response => {
+      this.$axios.post('dict/detail', { id: this.getEntityId   }).then(response => {
         if (response.data) {
           let data = response.data.detail
           this.createEntitiesForm.name = data.name
