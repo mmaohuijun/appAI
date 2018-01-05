@@ -86,8 +86,8 @@
               <td>
                 <input type="text" placeholder="添加参数名称..." v-model="item.typeName">
               </td>
-              <td>
-                <input type="text" placeholder="选择类型" v-model="item.dictName" @click="hasEntities=true">
+              <td @click="editActionList(index)">
+                <span>{{item.dictName || '请选择类型...'}}</span>
               </td>
               <td>
                 <input type="text" v-model=" '${ ' + item.typeName + '}'">
@@ -101,7 +101,7 @@
             </tr>         
           </tbody>
         </table>
-        <Select v-if="hasEntities" @on-change="changeSelect" :key="index">
+        <Select v-if="hasEntities" @on-change="onSelectAction" :key="index">
             <Option v-for="item in entitiesList" :value="item.id" :key="item.id">{{item.name}}</Option>
         </Select>
         <a href="" @click.prevent="addActionList">添加一行</a>
@@ -144,7 +144,8 @@ export default {
       textIndex: '', // 选中的text index
       editSelect: false, // 是否为编辑下拉列表值
       actionName: '', // 动作名称
-      selector: '' // 鼠标划取的词
+      selector: '', // 鼠标划取的词
+      editActionIndex: '' // 正在编辑第几行 动作列表
     }
   },
   computed: {
@@ -168,7 +169,6 @@ export default {
   methods: {
     // 编辑某个场景
     gotoEdit (index) {
-      // this.$router.push('/editIntents')
       let selectIntent = this.intentList[index].id
       this.$store.dispatch('setIntentId', this.intentList[index].id)
       this.$router.push({ name: 'EditIntents', params: { appId: this.getAppId } })
@@ -282,15 +282,25 @@ export default {
           this.hasSelected = true
           this.showActionList = true
           entity = this.entitiesList[index].pinyin
-          // type = this.selector
-          // value = this.entitiesList[index].name
           type = this.entitiesList[index].name
           value = this.selector
         }
       }
-      this.getEntitityDetail(entityId)
       this.askList[this.textIndex].entitys.push({ entity: entity, type: type, value: value })
-      this.slotList.push({ typeName: entity, dictName: type })
+      if (this.ifAddActionList(entity)) {
+        this.slotList.push({ typeName: entity, dictName: type })
+      }
+    },
+    // 判断用户提问中添加的slot 在动作列表中是否已经存在
+    // 若已存在 就不重复添加
+    ifAddActionList (entity) {
+      console.log('ifAddActionList')
+      for (let i = 0; i < this.slotList.length; i++) {
+        if (this.slotList[i].typeName === entity) {
+          return false
+        }
+      }
+      return true
     },
     // 通过entitiesList的 id 获取其他值
     getEntitityType (entityId) {
@@ -315,21 +325,10 @@ export default {
         this.hasSelected = false
       }
     },
-    delSlotList (index) {
-      this.slotList.splice(index, 1)
-      if (this.slotList.length < 1) {
-        this.showActionList = false
-      }
-    },
     // 添加一行 用户提问
     addAskList () {
       this.askList.push({ text: this.askList.text, entitys: [] })
       // this.askList[0].entitys.push({ entity: this.askList.entitys.entity, type: this.askList.entitys.type, value: this.askList.entitys.value })
-    },
-    // 添加一行 动作列表
-    addActionList () {
-      this.showActionList = true
-      this.slotList.push({ typeName: this.slotList.typeName, dictName: this.slotList.dictName })
     },
     // 输入框得到焦点
     focusInput (i) {
@@ -343,19 +342,48 @@ export default {
     },
     blurInput () {
       this.showAsk = false
+    },
+    // 选中某一项
+    onSelectAction (id) {
+      let typeName, dictName
+      console.log('onSelectAction', id)
+      for (let i = 0; i < this.entitiesList.length; i++) {
+        if (id === this.entitiesList[i].id) {
+          dictName = this.entitiesList[i].name
+          typeName = this.entitiesList[i].pinyin
+        }
+      }
+      if (this.editActionIndex === '') {
+        console.log('自定义参数')
+        this.slotList.push({ typeName: typeName, dictName: dictName })
+      } else {
+        console.log('正在编辑')
+        this.slotList[this.editActionIndex] = { typeName: typeName, dictName: dictName }
+        this.editActionIndex = ''
+      }
+      this.hasEntities = false
+    },
+    // 添加动作列表
+    addActionList () {
+      this.slotList.push({ typeName: this.slotList.typeName, dictName: this.slotList.dictName })
+    },
+    // 编辑动作列表
+    editActionList (index) {
+      this.hasEntities = true
+      this.editActionIndex = index    
+    },
+    // 删除动作列表
+    delSlotList (index) {
+      this.slotList.splice(index, 1)
+      if (this.slotList.length < 1) { 
+        this.slotList[0] = { typeName: this.slotList.typeName, dictName: this.slotList.dictName }
+      }
     }
   },
   created () {
     this.getIntentsList()
     this.getIntentsDetail()
     this.getEntitiesList()
-  },
-  watch: {
-    'slotList': function (oldVal, newVal) {
-      if (!newVal) {
-        this.slotList.push({ typeName: this.slotList.typeName, dictName: this.slotList.dictName })
-      }
-    }
   }
 }
 </script>
