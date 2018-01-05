@@ -3,7 +3,7 @@
     <div class="app-header">      
       <h1>词库</h1>
     </div>
-    <div v-if="ifEntities">
+    <div v-if="ifEntities===0">
       <Input placeholder="搜索" icon="search"></Input>
       <ul class="list-group">
         <li @click="gotoEditEntities(index)" v-for="(item, index) in entitiesList" :key="index">
@@ -24,10 +24,11 @@
         <p>删除后无法恢复</p>
       </Modal>
     </div>
-    <div class="no-list" v-else>
+    <div class="no-list" v-else-if="ifEntities===1">
       <p>还没有词库，先<a href="" @click.prevent="gotoCreateEntities">创建第一个</a>词库</p>
       <p>详细了解词库，<a href="">查看文档</a></p>
     </div>
+    <div v-else></div>
   </div>
 </template>
 
@@ -39,7 +40,7 @@ export default {
       appId: '',
       showModal: false, // 删除模态框
       name: '', // 搜索词库 关键字
-      ifEntities: this.ifHasEntities, // 是否存在词库
+      ifEntities: 2, // 是否存在词库
       entitiesList: [], // 词库列表
       delId: '' // 要删除的词库id
     }
@@ -73,9 +74,9 @@ export default {
       this.$axios.post('dict/list', { name: this.name, appId: this.appId }).then(response => {
         if (response.data.dictList.length > 0) {
           this.entitiesList = response.data.dictList
-          this.ifEntities = true
+          this.ifEntities = 0
         } else {
-          this.ifEntities = false
+          this.ifEntities = 1
         }
       })
     },

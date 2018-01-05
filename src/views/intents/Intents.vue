@@ -3,7 +3,7 @@
     <div class="app-header">      
       <h1>场景</h1>
     </div> 
-    <div v-if ="ifIntents">
+    <div v-if="ifIntents===0">
       <Input placeholder="搜索" icon="search"></Input>
       <ul class="list-group">
       <li @click="gotoEditIntents(index)" v-for="(item, index) in intentList" :key="index">
@@ -24,10 +24,11 @@
           <p>删除后无法恢复</p>
         </Modal>
     </div> 
-    <div v-else class="no-list">
+    <div v-else-if="ifIntents===1" class="no-list">
       <p>还没有场景，先<a href="" @click.prevent="gotoCreateIntents">创建第一个</a>场景</p>
       <p>详细了解场景，<a href="">查看文档</a></p>
     </div>
+    <div v-else></div>
   </div>
   
 </template>
@@ -40,7 +41,7 @@ export default {
     return {
       name: '', // 场景列表 搜索关键词
       appId: '', // 应用id
-      ifIntents: this.ifHasIntents, // 是否存在场景
+      ifIntents: 2, // 是否存在场景
       intentList: [],
       showModal: false, // 显示删除 模态框
       delId: '' // 删除场景id
@@ -75,9 +76,9 @@ export default {
 
         if (response.data.list.length > 0) {
           this.intentList = response.data.list
-          this.ifIntents = true
+          this.ifIntents = 0
         } else {
-          this.ifIntents = false
+          this.ifIntents = 1
           // this.$router.push({ name: 'NoIntents', params: { appId: this.appId } })
         }
       })
@@ -100,7 +101,7 @@ export default {
   mounted () {
     this.getIntentsList()
   },
-  // 两个路由渲染同个组件 实例会被服用
+  // 两个路由渲染同个组件 实例会被复用
   // 组件的生命周期钩子不会再被调用
   // 监控$route对象 对路由参数的变化做出响应
   watch: {

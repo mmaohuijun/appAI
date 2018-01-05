@@ -56,7 +56,7 @@
                 <td><input type="text" v-model="item.entity"></td>
                 <td>{{ item.type }}</td>
                 <td>{{ item.value }}</td>
-                <td><button @click.prevent="deleteEntityLine(index)">删除</button></td>
+                <td><button @click.prevent="deleteEntityLine(index)" class="del-btn">删除</button></td>
               </tr>
             </tbody>
           </table>         
@@ -93,7 +93,7 @@
                 <input type="text" v-model=" '${ ' + item.typeName + '}'">
               </td>
               <td>
-                <button @click.prevent="delSlotList(index)">删除</button>
+                <button @click.prevent="delSlotList(index)" class="del-btn">删除</button>
               </td>
               <!-- <td>
                 <input type="text" placeholder="编辑提示语" v-model="item.message">
@@ -251,6 +251,15 @@ export default {
           var data = response.data.intent
           this.createIntentsForm.name = data.name
           this.askList = data.askList
+          // 由于后台没有返回这个值 三层嵌套啊 坑死 T T
+          for (let index = 0; index < this.entitiesList.length; index++) {
+            for (let i = 0; i < this.askList.length; i++) {
+              for (let j = 0; j < this.askList[i].entitys.length; j++) {
+                if (this.askList[i].entitys[j].entity === this.entitiesList[index].pinyin)
+                this.askList[i].entitys[j].type = this.entitiesList[index].name
+              }
+            }
+          }  
           if (this.askList.length < 1) {
             this.askList.push({ text: this.askList.text })
           }
@@ -423,6 +432,16 @@ export default {
     outline: none;
     border: none;
     padding: 10px 15px;
+  }
+}
+// 删除按钮
+.del-btn {
+  outline: none;
+  border: none;
+  padding: 2px 20px;
+  
+  &:hover {
+    cursor: pointer;
   }
 }
 </style>
