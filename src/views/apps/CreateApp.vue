@@ -35,7 +35,6 @@
 </template>
 
 <script>
-// import $Storage from '../../api/storage.js'
 export default {
   name: 'CreateApp',
   data () {
@@ -69,7 +68,6 @@ export default {
   },
   methods: {
     addOneReply () {
-      // console.log('addOneReply')
       this.nextReplyId ++
       this.defaultReplyList.push({value: this.defaultReply, id: this.nextReplyId})
     },
@@ -89,11 +87,9 @@ export default {
             defReply: this.createAppForm.defReply,
             describe: this.createAppForm.describe,
             storage: this.createAppForm.storage,
-            // createBy: this.createAppForm.createBy
+            createBy: this.createAppForm.createBy
           }
-          // console.log('data', data)
           this.$axios.post('app/add', data).then(response => {
-            // console.log(response)
           })
           this.$Message.success('提交成功')
           this.$router.push({ name: 'Application' })

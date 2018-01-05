@@ -180,7 +180,6 @@ export default {
           this.$Message.error('提交失败')
         } else {
           this.$axios.post('intent/add', this.getSaveData()).then(response => {
-            // console.log(response)
             if (response.data === null) {
               this.$Message.success('提交成功')
             }
@@ -247,10 +246,8 @@ export default {
         // if (!this.intnetId) {
         //   this.intentId = this.getIntentId
         // }
-        console.log('intent', this.intentId)
       this.$axios.post('intent/detail', { id: this.getIntentId }).then(response => {
         if (response.data) {
-          // console.log(response.data)
           var data = response.data.intent
           this.createIntentsForm.name = data.name
           this.askList = data.askList
@@ -267,7 +264,6 @@ export default {
     },
     // 鼠标选中 表单中的文字
     selectText (index) {
-      console.log('selectText', index)
       this.textIndex = index
       let selector = window.getSelection().toString()
       if (this.entitiesList.length > 0) {
@@ -290,21 +286,26 @@ export default {
           // value = this.entitiesList[index].name
           type = this.entitiesList[index].name
           value = this.selector
-        } else {
-          // console.log('no index')
         }
       }
+      this.getEntitityDetail(entityId)
       this.askList[this.textIndex].entitys.push({ entity: entity, type: type, value: value })
       this.slotList.push({ typeName: entity, dictName: type })
-      // console.log(this.askList)
+    },
+    // 通过entitiesList的 id 获取其他值
+    getEntitityType (entityId) {
+      for (let index = 0; index < this.entitiesList.length; index ++) {
+        if (this.entitiesList[index].id === entityId) {
+          let type = this.entitiesList[index].name
+        }
+      }
+      console.log(type)
     },
     deleteAskList (index) {
-      // console.log('askList', index)
       this.askList.splice(index, 1)
     },
     // 删除一行
     deleteEntityLine (index) {
-      // console.log(index)
       this.askList[this.textIndex].entitys.splice(index, 1)
       this.slotList.splice(index, 1)
       if (this.askList[this.textIndex].entitys.length < 1) {
@@ -334,8 +335,6 @@ export default {
     focusInput (i) {
       // this.inputIndex = i
       this.textIndex = i
-      console.log('focusInput')
-      console.log(this.askList[i])
       if (this.askList[i].entitys) {
         if (this.askList[i].entitys.length > 0) {
           this.showAsk = true
@@ -343,19 +342,16 @@ export default {
       }
     },
     blurInput () {
-      console.log('blurInput')
       this.showAsk = false
     }
   },
   created () {
-    console.log(this.getIntentId)
     this.getIntentsList()
     this.getIntentsDetail()
     this.getEntitiesList()
   },
   watch: {
     'slotList': function (oldVal, newVal) {
-      // console.log('watch', oldVal, newVal)
       if (!newVal) {
         this.slotList.push({ typeName: this.slotList.typeName, dictName: this.slotList.dictName })
       }

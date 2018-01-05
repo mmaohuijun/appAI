@@ -48,7 +48,7 @@ export default {
   },
   computed: {
     getAppId () {
-     this.appId = this.$store.state.appId
+      this.appId = this.$store.state.appId
       if (!this.appId) {
         this.appId = this.$store.getters.getAppId
       }

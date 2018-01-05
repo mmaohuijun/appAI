@@ -58,10 +58,7 @@ export default {
     // 跳转到 编辑页面
     gotoEditApp (index) {
       let appId = this.appList[index].id
-      // console.log('appId', appId)
-      // this.$store.commit('initAppId', appId)
       this.$store.dispatch('setAppId', appId)
-      // this.appId = $Storage.sessionStorage.getItem('appId')
       this.$router.push({ name: 'EditApp', params: { appId: appId } })
     },
     gotoCreateApp () {

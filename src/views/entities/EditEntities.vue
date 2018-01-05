@@ -115,7 +115,7 @@ export default {
       if (!selectEntity) {
         this.entityId = this.getEntityId
       }
-      this.$axios.post('dict/detail', { id: this.getEntityId   }).then(response => {
+      this.$axios.post('dict/detail', { id: this.getEntityId }).then(response => {
         if (response.data) {
           let data = response.data.detail
           this.createEntitiesForm.name = data.name
