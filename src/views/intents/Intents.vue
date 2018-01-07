@@ -41,7 +41,7 @@ export default {
     return {
       name: '', // 场景列表 搜索关键词
       appId: '', // 应用id
-      ifIntents: 3, // 是否存在场景
+      ifIntents: 2, // 是否存在场景
       intentList: [],
       showModal: false, // 显示删除 模态框
       delId: '' // 删除场景id
