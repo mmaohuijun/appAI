@@ -8,7 +8,7 @@ const $axios = axios.create({
     // 'Content-Type': 'application/x-www-form-urlencoded'
     'Content-Type': 'application/x-www-form-urlencoded; application/json;charset=UTF-8'
   },
-  withCredentials: false,
+  withCredentials: true,
   transformRequest: [function (data) {
     return data instanceof FormData ? data : qs.stringify(data)
   }]

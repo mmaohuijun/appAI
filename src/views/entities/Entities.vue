@@ -4,7 +4,7 @@
       <h1>词库</h1>
     </div>
     <div v-if="ifEntities===0">
-      <Input placeholder="搜索" icon="search"></Input>
+      <Input placeholder="搜索" icon="search" v-model="name" @on-click="getEntitiesList"></Input>
       <ul class="list-group">
         <li @click="gotoEditEntities(index)" v-for="(item, index) in entitiesList" :key="index">
           <a>{{item.name}}</a>

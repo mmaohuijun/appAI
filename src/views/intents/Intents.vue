@@ -4,7 +4,7 @@
       <h1>场景</h1>
     </div> 
     <div v-if="ifIntents===0">
-      <Input placeholder="搜索" icon="search"></Input>
+      <Input placeholder="搜索" icon="search" @on-click="getIntentsList" v-model="name"></Input>
       <ul class="list-group">
       <li @click="gotoEditIntents(index)" v-for="(item, index) in intentList" :key="index">
         <a>{{item.name}}</a>

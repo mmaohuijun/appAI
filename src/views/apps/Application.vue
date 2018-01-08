@@ -4,7 +4,7 @@
       <h1>所有应用</h1>
     </div>
     <div v-if="ifApps===0">
-      <Input placeholder="搜索" icon="search"></Input>
+      <Input placeholder="搜索" icon="search" v-model="name" @on-click="getAppList"></Input>
       <ul class="list-group">
         <li @click="gotoIntents(index)" v-for="(item, index) in this.appList" :key="index">
           <a>{{item.name}}</a>
@@ -48,13 +48,6 @@ export default {
       this.$store.dispatch('setAppId', appId)
       this.$store.dispatch('setAppName', this.appList[index].name)
       this.$router.push({ name: 'Intents', params: { appId: appId } })
-      // this.$axios.post('intent/list', { appId: appId, name: '' }).then(response => {
-      //   if (response.data.list.length > 0) {
-      //     this.$router.push({ name: 'Intents', params: { appId: appId } })
-      //   } else {
-      //     this.$router.push({ name: 'NoIntents', params: { appId: appId } })
-      //   }
-      // })
     },
     // 跳转到 编辑页面
     gotoEditApp (index) {

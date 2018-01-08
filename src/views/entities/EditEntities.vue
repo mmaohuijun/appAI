@@ -2,7 +2,7 @@
   <div class="create-box">
     <aside>
       <h2>词库列表</h2>
-      <input type="text" placeholder="搜索">   
+      <input type="text" placeholder="搜索" v-model="name">   
       <ul v-if="hasEntities">    
         <li 
           v-for="(item, index) in entitiesList" 
@@ -175,6 +175,11 @@ export default {
       if (event.key === 'Enter' || event.keyCode === 13) {
         this.addLine()
       }
+    }
+  },
+  watch: {
+    'name' (newV, oldV) {
+      this.getEntitiesList()
     }
   },
   created () {

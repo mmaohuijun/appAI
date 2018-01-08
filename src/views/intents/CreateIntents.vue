@@ -2,7 +2,7 @@
   <div class="create-box">
     <aside>
       <h2>场景列表</h2>
-      <input type="text" placeholder="搜索">   
+      <input type="text" placeholder="搜索" v-model="name">   
       <!-- <ul v-if="hasIntents" v-for="(item, index) in intentList" :key="index">    
         <li><a href="" @click.prevent="gotoEdit(index)">{{item.name}}</a></li>
       </ul> -->
@@ -316,6 +316,9 @@ export default {
       if (!newVal) {
         this.slotList.push({ typeName: this.slotList.typeName, dictName: this.slotList.dictName })
       }
+    },
+    'name' (newV, oldV) {
+      this.getIntentsList()
     }
   }
 }

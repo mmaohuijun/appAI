@@ -2,7 +2,7 @@
   <div class="create-box">
     <aside>
       <h2>场景列表</h2>
-      <input type="text" placeholder="搜索">   
+      <input type="text" placeholder="搜索" v-model="name">   
       <!-- <ul v-if="hasIntents" v-for="(item, index) in intentList" :key="index">    
         <li><a href="" @click.prevent="gotoEdit(index)">{{item.name}}</a></li>
       </ul> -->
@@ -307,6 +307,7 @@ export default {
       if (this.ifAddActionList(entity)) {
         this.slotList.push({ typeName: entity, dictName: type })
       }
+      this.selector = ''
     },
     // 判断用户提问中添加的slot 在动作列表中是否已经存在
     // 若已存在 就不重复添加
@@ -350,6 +351,7 @@ export default {
     // 输入框得到焦点
     focusInput (i) {
       this.textIndex = i
+      this.hasEntities = false
       if (this.askList[i].entitys) {
         if (this.askList[i].entitys.length > 0) {
           this.showAsk = true
@@ -403,6 +405,17 @@ export default {
     this.getIntentsList()
     this.getIntentsDetail()
     this.getEntitiesList()
+  },
+  watch: {
+    'name' (newV, oldV) {
+      this.getIntentsList()
+    },
+    'selector' (newV, oldV) {
+      console.log(newV, oldV)
+      if (!newV) {
+        this.hasEntities = false
+      }
+    }
   }
 }
 </script>

@@ -137,6 +137,11 @@ export default {
       }
     }
   },
+  watch: {
+    'name' (newV, oldV) {
+      this.getEntitiesList()
+    }
+  },  
   created () {
     this.getEntitiesList()
     this.initEntitiesDetail()
