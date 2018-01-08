@@ -46,7 +46,7 @@ export default {
     // 获取训练表格值
     getTransList (id) {
       this.selectId = id
-      this.$axios.post('train/list', { id: id }).then(response => {
+      this.$axios.post('train/list', { id: id || '' }).then(response => {
         if (response.data) {
           this.trainList = response.data.trainList
         }
@@ -65,6 +65,7 @@ export default {
   },
   created () {
     this.getAppList()
+    this.getTransList()
   }
 }
 </script>

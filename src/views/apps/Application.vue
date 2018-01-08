@@ -3,7 +3,7 @@
     <div class="app-header">      
       <h1>所有应用</h1>
     </div>
-    <div v-if="ifApps">
+    <div v-if="ifApps===0">
       <Input placeholder="搜索" icon="search"></Input>
       <ul class="list-group">
         <li @click="gotoIntents(index)" v-for="(item, index) in this.appList" :key="index">
@@ -17,10 +17,11 @@
       </ul>
       <Button type="primary" size="large" @click="gotoCreateApp">创建应用</Button>
     </div>
-    <div v-else class="no-list">
+    <div v-else-if="ifApps===1" class="no-list">
       <p>还没有词库，先<a href="" @click.prevent="gotoCreateApp">创建第一个</a>应用</p>
       <p>详细了解应用，<a href="">查看文档</a></p>
     </div>
+    <div v-else></div>
   </div>
 </template>
 
@@ -32,7 +33,7 @@ export default {
     return {
       appList: [], // 应用列表
       name: '' || null, // 搜索关键字
-      ifApps: false // 是否有应用
+      ifApps: 2 // 是否有应用
     }
   },
   computed: {
@@ -69,7 +70,9 @@ export default {
         if (response.data) {
           if (response.data.list.length > 0) {
             this.appList = response.data.list
-            this.ifApps = true
+            this.ifApps = 0
+          } else {
+            this.ifApps = 1
           }
         }
       })

@@ -40,27 +40,28 @@
           <Select v-if="hasEntities&&index === textIndex" @on-change="changeSelect">
             <Option v-for="item in entitiesList" :value="item.id" :key="item.id">{{item.name}}</Option>
           </Select>
-
-        <div v-if="showAsk&&index === textIndex || hasSelected&&index === textIndex ">
-          <table class="action-tbl" >
-            <thead>
-              <tr>
-                <th>名称</th>
-                <th>类型</th>
-                <th>取值</th>
-                <th>操作</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(item, index) in item.entitys" :key="index" :ask-list="item">
-                <td><input type="text" v-model="item.entity"></td>
-                <td>{{ item.type }}</td>
-                <td>{{ item.value }}</td>
-                <td><button @click.prevent="deleteEntityLine(index)" class="del-btn">删除</button></td>
-              </tr>
-            </tbody>
-          </table>         
-        </div>              
+        <transition name="fade">
+          <div v-if="showAsk&&index === textIndex || hasSelected&&index === textIndex ">
+            <table class="action-tbl" >
+              <thead>
+                <tr>
+                  <th>名称</th>
+                  <th>类型</th>
+                  <th>取值</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(item, index) in item.entitys" :key="index" :ask-list="item">
+                  <td><input type="text" v-model="item.entity"></td>
+                  <td>{{ item.type }}</td>
+                  <td>{{ item.value }}</td>
+                  <td><button @click.prevent="deleteEntityLine(index)" class="del-btn">删除</button></td>
+                </tr>
+              </tbody>
+            </table>         
+          </div>  
+        </transition>            
       </div>
       <a href="" @click.prevent="addAskList">添加一行</a> 
       </Form-item>
@@ -136,7 +137,6 @@ export default {
       entitiesList: [], // 词库列表
       hasEntities: false, // 是否有词库
       hasSelected: false, // 已经选取有效字段
-      showSlect: false,
       showActionList: true,
       askList: [],
       showAsk: false, // 显示表格
@@ -145,7 +145,8 @@ export default {
       editSelect: false, // 是否为编辑下拉列表值
       actionName: '', // 动作名称
       selector: '', // 鼠标划取的词
-      editActionIndex: '' // 正在编辑第几行 动作列表
+      editActionIndex: '', // 正在编辑第几行 动作列表
+      index: ''
     }
   },
   computed: {
@@ -255,13 +256,14 @@ export default {
           for (let index = 0; index < this.entitiesList.length; index++) {
             for (let i = 0; i < this.askList.length; i++) {
               for (let j = 0; j < this.askList[i].entitys.length; j++) {
-                if (this.askList[i].entitys[j].entity === this.entitiesList[index].pinyin)
-                this.askList[i].entitys[j].type = this.entitiesList[index].name
+                if (this.askList[i].entitys[j].entity === this.entitiesList[index].pinyin) {
+                  this.askList[i].entitys[j].type = this.entitiesList[index].name
+                }
               }
             }
-          }  
+          }
           if (this.askList.length < 1) {
-            this.askList.push({ text: this.askList.text })
+            this.askList.push({ text: this.askList.text, entitys: [] })
           }
           this.slotList = data.slotList
           if (this.slotList.length < 1) {
@@ -273,6 +275,7 @@ export default {
     },
     // 鼠标选中 表单中的文字
     selectText (index) {
+      console.log('selectText', index)
       this.textIndex = index
       let selector = window.getSelection().toString()
       if (this.entitiesList.length > 0) {
@@ -281,6 +284,7 @@ export default {
           this.selector = selector
         }
       }
+      console.log('selectText', selector)
     },
     // 选中的Option变化时触发
     changeSelect (entityId) {
@@ -288,14 +292,18 @@ export default {
       let entity, type, value
       for (let index = 0; index < this.entitiesList.length; index++) {
         if (this.entitiesList[index].id === entityId) {
-          this.hasSelected = true
-          this.showActionList = true
+          // this.hasSelected = true
+          // this.showActionList = true
           entity = this.entitiesList[index].pinyin
           type = this.entitiesList[index].name
           value = this.selector
         }
+        // this.hasSelected = true
       }
       this.askList[this.textIndex].entitys.push({ entity: entity, type: type, value: value })
+      this.hasSelected = true
+      console.log('hasSelected', this.hasSelected)
+      // console.log(this.askList[this.textIndex])
       if (this.ifAddActionList(entity)) {
         this.slotList.push({ typeName: entity, dictName: type })
       }
@@ -313,12 +321,12 @@ export default {
     },
     // 通过entitiesList的 id 获取其他值
     getEntitityType (entityId) {
-      for (let index = 0; index < this.entitiesList.length; index ++) {
+      for (let index = 0; index < this.entitiesList.length; index++) {
         if (this.entitiesList[index].id === entityId) {
           let type = this.entitiesList[index].name
+          console.log(type)
         }
       }
-      console.log(type)
     },
     deleteAskList (index) {
       this.askList.splice(index, 1)
@@ -341,11 +349,13 @@ export default {
     },
     // 输入框得到焦点
     focusInput (i) {
-      // this.inputIndex = i
       this.textIndex = i
       if (this.askList[i].entitys) {
         if (this.askList[i].entitys.length > 0) {
           this.showAsk = true
+        } else {
+          this.showAsk = false
+          this.hasSelected = false
         }
       }
     },
@@ -379,12 +389,12 @@ export default {
     // 编辑动作列表
     editActionList (index) {
       this.hasEntities = true
-      this.editActionIndex = index    
+      this.editActionIndex = index
     },
     // 删除动作列表
     delSlotList (index) {
       this.slotList.splice(index, 1)
-      if (this.slotList.length < 1) { 
+      if (this.slotList.length < 1) {
         this.slotList[0] = { typeName: this.slotList.typeName, dictName: this.slotList.dictName }
       }
     }
