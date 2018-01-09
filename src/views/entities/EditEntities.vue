@@ -64,7 +64,7 @@ export default {
       hasEntities: false,
       // 表单验证规则
       ruleEntitiesForm: {
-        entitiesName: [
+        name: [
           { required: true, message: '词库名称不能为空', trigger: 'blur' }
         ]
       },

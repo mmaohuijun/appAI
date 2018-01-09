@@ -2,17 +2,14 @@
   <div class="create-box">
     <aside>
       <h2>场景列表</h2>
-      <input type="text" placeholder="搜索" v-model="name">   
-      <!-- <ul v-if="hasIntents" v-for="(item, index) in intentList" :key="index">    
-        <li><a href="" @click.prevent="gotoEdit(index)">{{item.name}}</a></li>
-      </ul> -->
+      <input type="text" placeholder="搜索" v-model="name">
       <ul v-if="hasIntents">
         <li 
-          v-for="(item, index) in intentList"
-          :key="index"
-          @click="gotoEdit(index)">
-          <a>{{item.name}}</a>
-          </li>
+        v-for="(item, index) in intentList" 
+        :key="index"
+        @click="gotoEdit(index)">
+        <a>{{item.name}}</a>
+        </li>
       </ul>
       <p v-else class="empty-list">当前场景列表为空！</p>
     </aside>
@@ -25,7 +22,9 @@
         <div>
           <div class="input-box">
             <input 
-            @select="selectText(index)" 
+            @focus="focusInput(index)"
+            @blur="blurInput"
+            @select="selectText(index)"
             class="my-input" 
             type="text" 
             placeholder="添加用户提问语料" 
@@ -38,27 +37,28 @@
           <Select v-if="hasEntities&&index === textIndex" @on-change="changeSelect">
             <Option v-for="item in entitiesList" :value="item.id" :key="item.id">{{item.name}}</Option>
           </Select>
-
-        <div v-if="hasSelected&&index === textIndex">
-          <table class="action-tbl" >
-            <thead>
-              <tr>
-                <th>名称</th>
-                <th>类型</th>
-                <th>取值</th>
-                <th>操作</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(item, index) in item.entitys" :key="index" :ask-list="item">
-                <td><input type="text" v-model="item.entity"></td>
-                <td @click="toEditSelect(index)">{{ item.type }}</td>
-                <td>{{ item.value }}</td>
-                <td><button @click.prevent="deleteEntityLine(index)">删除</button></td>
-              </tr>
-            </tbody>
-          </table>         
-        </div>              
+        <transition name="fade">
+          <div v-if="showAsk&&index === textIndex || hasSelected&&index === textIndex ">
+            <table class="action-tbl" >
+              <thead>
+                <tr>
+                  <th>名称</th>
+                  <th>类型</th>
+                  <th>取值</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(item, index) in item.entitys" :key="index" :ask-list="item">
+                  <td><input type="text" v-model="item.entity"></td>
+                  <td>{{ item.type }}</td>
+                  <td>{{ item.value }}</td>
+                  <td><button @click.prevent="deleteEntityLine(index)" class="del-btn">删除</button></td>
+                </tr>
+              </tbody>
+            </table>         
+          </div>  
+        </transition>            
       </div>
       <a href="" @click.prevent="addAskList">添加一行</a> 
       </Form-item>
@@ -84,14 +84,14 @@
               <td>
                 <input type="text" placeholder="添加参数名称..." v-model="item.typeName">
               </td>
-              <td>
-                <input type="text" placeholder="选择类型" v-model="item.dictName" @click="hasEntities=true">
+              <td @click="editActionList(index)">
+                <span>{{item.dictName || '请选择类型...'}}</span>
               </td>
               <td>
                 <input type="text" v-model=" '${ ' + item.typeName + '}'">
               </td>
               <td>
-                <button @click.prevent="delSlotList(index)">删除</button>
+                <button @click.prevent="delSlotList(index)" class="del-btn">删除</button>
               </td>
               <!-- <td>
                 <input type="text" placeholder="编辑提示语" v-model="item.message">
@@ -99,7 +99,7 @@
             </tr>         
           </tbody>
         </table>
-        <Select v-if="hasEntities" @on-change="changeSelect" :key="index">
+        <Select v-if="hasEntities" @on-change="onSelectAction" :key="index">
             <Option v-for="item in entitiesList" :value="item.id" :key="item.id">{{item.name}}</Option>
         </Select>
         <a href="" @click.prevent="addActionList">添加一行</a>
@@ -118,6 +118,7 @@ export default {
     return {
       appId: '', // 应用id
       intentId: '',
+      selectIntent: '',
       name: '', // 搜素场景关键词
       createIntentsForm: { // 创建场景 表单
         name: '', // 场景名称
@@ -133,14 +134,16 @@ export default {
       entitiesList: [], // 词库列表
       hasEntities: false, // 是否有词库
       hasSelected: false, // 已经选取有效字段
-      showSlect: false,
       showActionList: true,
       askList: [],
+      showAsk: false, // 显示表格
+      slotList: [],
       textIndex: '', // 选中的text index
       editSelect: false, // 是否为编辑下拉列表值
-      slotList: [],
       actionName: '', // 动作名称
-      selector: '' // 鼠标划取的词
+      selector: '', // 鼠标划取的词
+      editActionIndex: '', // 正在编辑第几行 动作列表
+      index: ''
     }
   },
   computed: {
@@ -153,16 +156,21 @@ export default {
       return this.appId
     },
     getIntentId () {
-      return this.$store.getters.getIntentId
+      // return this.$store.getters.getIntentId
+      this.intentId = this.$store.state.intentId
+      if (!this.intentId) {
+        this.intentId = this.$store.getters.getIntentId
+      }
+      return this.intentId
     }
   },
   methods: {
     // 编辑某个场景
     gotoEdit (index) {
-      // this.$router.push('/editIntents')
+      let selectIntent = this.intentList[index].id
       this.$store.dispatch('setIntentId', this.intentList[index].id)
       this.$router.push({ name: 'EditIntents', params: { appId: this.getAppId } })
-      this.getIntentsDetail()
+      this.getIntentsDetail(selectIntent)
     },
     saveCreate (name) {
       this.$refs[name].validate((valid) => {
@@ -170,10 +178,9 @@ export default {
           this.$Message.error('提交失败')
         } else {
           this.$axios.post('intent/add', this.getSaveData()).then(response => {
-            console.log(response)
-            // if (response.data === null) {
-            this.$Message.success('提交成功')
-            this.getIntentsList()
+            if (response.data === null) {
+              this.$Message.success('提交成功')
+            }
           })
         }
       })
@@ -185,9 +192,11 @@ export default {
         appId: this.getAppId,
         actionName: this.actionName,
         name: this.createIntentsForm.name,
-        rank: ''
+        rank: '',
+        id: this.getIntentId
       }
       this._.each(this.slotList, (ele, index) => {
+        data[`slotList[${index}].id`] = this.slotList[index].id
         data[`slotList[${index}].defValue`] = ele.defValue
         data[`slotList[${index}].dictName`] = ele.dictName
         data[`slotList[${index}].flag`] = ele.flag
@@ -196,6 +205,7 @@ export default {
       })
       // // asklist
       this._.each(this.askList, (ele, index) => {
+        data[`askList[${index}].id`] = this.askList[index].id
         data[`askList[${index}].text`] = ele.text
         data[`askList[${index}].intent`] = this.createIntentsForm.name
         this._.each(ele.entitys, (ele2, index2) => {
@@ -204,11 +214,6 @@ export default {
         })
       })
       return data
-    },
-    // 初始化intent详情
-    initIntentDetail () {
-      this.askList.push({ text: this.askList.text })
-      this.slotList.push({ typeName: this.slotList.typeName, dictName: this.slotList.dictName })
     },
     // 左侧场景列表
     getIntentsList () {
@@ -235,7 +240,7 @@ export default {
     },
     // 鼠标选中 表单中的文字
     selectText (index) {
-      // console.log('selectText', index)
+      console.log('selectText', index)
       this.textIndex = index
       let selector = window.getSelection().toString()
       if (this.entitiesList.length > 0) {
@@ -244,34 +249,56 @@ export default {
           this.selector = selector
         }
       }
+      console.log('selectText', selector)
     },
     // 选中的Option变化时触发
     changeSelect (entityId) {
       this.hasEntities = false
-      let index, entity, type, value
-      for (index = 0; index < this.entitiesList.length; index++) {
+      let entity, type, value
+      for (let index = 0; index < this.entitiesList.length; index++) {
         if (this.entitiesList[index].id === entityId) {
-          this.hasSelected = true
-          this.showActionList = true
+          // this.hasSelected = true
+          // this.showActionList = true
           entity = this.entitiesList[index].pinyin
           type = this.entitiesList[index].name
           value = this.selector
-        } else {
-          // console.log('no index')
+        }
+        // this.hasSelected = true
+      }
+      this.askList[this.textIndex].entitys.push({ entity: entity, type: type, value: value })
+      this.hasSelected = true
+      console.log('hasSelected', this.hasSelected)
+      // console.log(this.askList[this.textIndex])
+      if (this.ifAddActionList(entity)) {
+        this.slotList.push({ typeName: entity, dictName: type })
+      }
+      this.selector = ''
+    },
+    // 判断用户提问中添加的slot 在动作列表中是否已经存在
+    // 若已存在 就不重复添加
+    ifAddActionList (entity) {
+      console.log('ifAddActionList')
+      for (let i = 0; i < this.slotList.length; i++) {
+        if (this.slotList[i].typeName === entity) {
+          return false
         }
       }
-
-      this.askList[this.textIndex].entitys.push({ entity: entity, type: type, value: value })
-      this.slotList.push({ typeName: entity, dictName: type })
-      // console.log(this.askList)
+      return true
+    },
+    // 通过entitiesList的 id 获取其他值
+    getEntitityType (entityId) {
+      for (let index = 0; index < this.entitiesList.length; index++) {
+        if (this.entitiesList[index].id === entityId) {
+          let type = this.entitiesList[index].name
+          console.log(type)
+        }
+      }
     },
     deleteAskList (index) {
-      // console.log('askList', index)
       this.askList.splice(index, 1)
     },
     // 删除一行
     deleteEntityLine (index) {
-      // console.log(index)
       this.askList[this.textIndex].entitys.splice(index, 1)
       this.slotList.splice(index, 1)
       if (this.askList[this.textIndex].entitys.length < 1) {
@@ -281,44 +308,77 @@ export default {
         this.hasSelected = false
       }
     },
-    delSlotList (index) {
-      this.slotList.splice(index, 1)
-      // if (this.slotList.length < 1) {
-      //   this.showActionList = false
-      // }
-    },
     // 添加一行 用户提问
     addAskList () {
       this.askList.push({ text: this.askList.text, entitys: [] })
       // this.askList[0].entitys.push({ entity: this.askList.entitys.entity, type: this.askList.entitys.type, value: this.askList.entitys.value })
     },
-    // 添加一行 动作列表
+    // 输入框得到焦点
+    focusInput (i) {
+      this.textIndex = i
+      this.hasEntities = false
+      if (this.askList[i].entitys) {
+        if (this.askList[i].entitys.length > 0) {
+          this.showAsk = true
+        } else {
+          this.showAsk = false
+          this.hasSelected = false
+        }
+      }
+    },
+    blurInput () {
+      this.showAsk = false
+    },
+    // 选中某一项
+    onSelectAction (id) {
+      let typeName, dictName
+      console.log('onSelectAction', id)
+      for (let i = 0; i < this.entitiesList.length; i++) {
+        if (id === this.entitiesList[i].id) {
+          dictName = this.entitiesList[i].name
+          typeName = this.entitiesList[i].pinyin
+        }
+      }
+      if (this.editActionIndex === '') {
+        console.log('自定义参数')
+        this.slotList.push({ typeName: typeName, dictName: dictName })
+      } else {
+        console.log('正在编辑')
+        this.slotList[this.editActionIndex] = { typeName: typeName, dictName: dictName }
+        this.editActionIndex = ''
+      }
+      this.hasEntities = false
+    },
+    // 添加动作列表
     addActionList () {
-      // console.log('addActionList')
-      this.showActionList = true
       this.slotList.push({ typeName: this.slotList.typeName, dictName: this.slotList.dictName })
     },
-    // 编辑下拉框的值
-    toEditSelect (entityId, tbindex) {
-      this.editSelect = true
+    // 编辑动作列表
+    editActionList (index) {
       this.hasEntities = true
-      this.changeSelect(entityId, tbindex)
+      this.editActionIndex = index
+    },
+    // 删除动作列表
+    delSlotList (index) {
+      this.slotList.splice(index, 1)
+      if (this.slotList.length < 1) {
+        this.slotList[0] = { typeName: this.slotList.typeName, dictName: this.slotList.dictName }
+      }
     }
   },
   created () {
-    // // console.log(this.getAppId)
     this.getIntentsList()
-    this.initIntentDetail()
     this.getEntitiesList()
   },
   watch: {
-    'slotList': function (oldVal, newVal) {
-      if (!newVal) {
-        this.slotList.push({ typeName: this.slotList.typeName, dictName: this.slotList.dictName })
-      }
-    },
     'name' (newV, oldV) {
       this.getIntentsList()
+    },
+    'selector' (newV, oldV) {
+      console.log(newV, oldV)
+      if (!newV) {
+        this.hasEntities = false
+      }
     }
   }
 }
@@ -359,6 +419,16 @@ export default {
     outline: none;
     border: none;
     padding: 10px 15px;
+  }
+}
+// 删除按钮
+.del-btn {
+  outline: none;
+  border: none;
+  padding: 2px 20px;
+  
+  &:hover {
+    cursor: pointer;
   }
 }
 </style>
