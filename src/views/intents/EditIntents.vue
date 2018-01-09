@@ -275,7 +275,6 @@ export default {
     },
     // 鼠标选中 表单中的文字
     selectText (index) {
-      console.log('selectText', index)
       this.textIndex = index
       let selector = window.getSelection().toString()
       if (this.entitiesList.length > 0) {
@@ -284,7 +283,6 @@ export default {
           this.selector = selector
         }
       }
-      console.log('selectText', selector)
     },
     // 选中的Option变化时触发
     changeSelect (entityId) {
@@ -307,7 +305,6 @@ export default {
       if (this.ifAddActionList(entity)) {
         this.slotList.push({ typeName: entity, dictName: type })
       }
-      this.selector = ''
     },
     // 判断用户提问中添加的slot 在动作列表中是否已经存在
     // 若已存在 就不重复添加
@@ -411,10 +408,12 @@ export default {
       this.getIntentsList()
     },
     'selector' (newV, oldV) {
-      console.log(newV, oldV)
       if (!newV) {
         this.hasEntities = false
       }
+    },
+    'askList' (newV, oldV) {
+      console.log(this.askList)
     }
   }
 }

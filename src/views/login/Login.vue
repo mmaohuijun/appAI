@@ -38,7 +38,8 @@ export default {
     // 登录
     toLogin () {
       this.$axios.post('login', { username: this.username, password: this.password }).then(response => {
-        if (response.resCode === '000') {
+        console.log(response)
+        if (response.status.code === '200') {
           // 登录成功时 将用户名保存下用作标识用户身份的id
           this.$store.dispatch('setUserName', this.username)
           this.$router.push({ name: 'Application' })

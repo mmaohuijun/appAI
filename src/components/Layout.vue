@@ -106,7 +106,6 @@ export default {
     },
     // 查看所有应用
     gotoApp () {
-      console.log('gotoApp')
       this.$router.push('/apps/index')
     },
     // 创建应用

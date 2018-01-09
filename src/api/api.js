@@ -15,7 +15,7 @@ const $axios = axios.create({
 })
 
 const responseStatus = {
-  ok: '000', // 操作成功
+  ok: '200', // 操作成功
   sessionInvalid: '003', // 会话已失效
   noAuthority: '004', // 权限不足
   customError: '998' // 后台自定义错误
@@ -33,9 +33,8 @@ $axios.interceptors.request.use(function (config) {
 // 添加响应拦截器
 $axios.interceptors.response.use(function (response) {
   // 对响应数据做点什么
-  const resCode = response.data.resCode
-  const retMsg = response.data.retMsg
-
+  const resCode = response.data.status.code
+  const retMsg = response.data.status.msg
   if (resCode === responseStatus.ok) {
     return response.data
   } else {
