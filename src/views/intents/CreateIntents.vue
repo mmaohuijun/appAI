@@ -170,7 +170,6 @@ export default {
       let selectIntent = this.intentList[index].id
       this.$store.dispatch('setIntentId', this.intentList[index].id)
       this.$router.push({ name: 'EditIntents', params: { appId: this.getAppId } })
-      this.getIntentsDetail(selectIntent)
     },
     saveCreate (name) {
       this.$refs[name].validate((valid) => {
@@ -180,6 +179,7 @@ export default {
           this.$axios.post('intent/add', this.getSaveData()).then(response => {
             if (response.data === null) {
               this.$Message.success('提交成功')
+              this.getIntentsList()
             }
           })
         }
@@ -193,7 +193,7 @@ export default {
         actionName: this.actionName,
         name: this.createIntentsForm.name,
         rank: '',
-        id: this.getIntentId
+        id: ''
       }
       this._.each(this.slotList, (ele, index) => {
         data[`slotList[${index}].id`] = this.slotList[index].id

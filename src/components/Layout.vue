@@ -10,7 +10,7 @@
                   </template>
                     <MenuItem name="createApp" @click.native="gotoCreateApp">创建应用</MenuItem>
                     <MenuItem name="showApp" @click.native="gotoApp">查看所有应用</MenuItem>
-                    <MenuGroup title="所有应有">
+                    <MenuGroup title="所有应用">
                       <MenuItem :name="index"  v-for="(item, index) in appList" :key="item.id" @click.native="gotoIntents(index)">
                         {{item.name}}
                         <Icon class="drop-down-list"></Icon>
@@ -26,6 +26,9 @@
               <MenuItem name="4" @click.native="gotoModules">
                 模型
               </MenuItem>
+            </div>
+            <div class="layout-logout">
+              <a href="" @click.prevent="logout">退出</a>
             </div>
         </Menu>
         <router-view></router-view>
@@ -94,6 +97,7 @@ export default {
     },
     getIntentsList (appId) {
       // this.appId = $Storage.sessionStorage.getItem('appId')
+      console.log('getIntentsList', appId)
       this.$axios.post('intent/list', { appId: appId, name: '' }).then(response => {
         // console.log(response.data.list.length)
         if (response.data.list.length > 0) {
@@ -114,7 +118,6 @@ export default {
     },
     // 查看某应用下 所有场景
     gotoIntents (index) {
-      console.log('gotoIntents', index)
       if (index !== -1) {
         console.log('index', index)
         this.$store.dispatch('setAppId', this.appList[index].id)
@@ -133,6 +136,15 @@ export default {
     // 跳转模态页面
     gotoModules () {
       this.$router.push({ name: 'Module' })
+    },
+    // 退出
+    logout () {
+      this.$axios.post('logout').then(response => {
+        if (response.status.code === '200') {
+          this.$router.push({ name: 'Login' })
+          this.$store.dispatch('clearUserName')
+        }
+      })
     }
   },
   created () {
@@ -182,6 +194,15 @@ export default {
       padding: 30px 30px 0 30px;
       border: none;
       margin-top: 50px;
+    }
+    .layout-logout {
+      float: right;
+      margin-right: 15px;
+
+      a {
+        color: #fff;
+        text-decoration: underline
+      }
     }
 
     /* 没有应用、场景、词库列表 apps/intents/entities */ 

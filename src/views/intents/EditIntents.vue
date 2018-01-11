@@ -90,9 +90,9 @@
               <td @click="editActionList(index)">
                 <span>{{item.dictName || '请选择类型...'}}</span>
               </td>
-              <td>
-                <input type="text" v-model=" '${ ' + item.typeName + '}'">
-              </td>
+              <td>{{'${ ' + item.typeName + '}'}}</td>
+                <!-- <input type="text" disabled v-model=" '${ ' + item.typeName + '}'"> -->
+              <!-- </td> -->
               <td>
                 <button @click.prevent="delSlotList(index)" class="del-btn">删除</button>
               </td>

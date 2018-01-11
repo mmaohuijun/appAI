@@ -22,7 +22,7 @@ const Module = () => import('../views/modules/Module')
 Vue.use(Router)
 
 const normalRouter = [
-  { path: '/', component: Login },
+  { path: '/', name: 'Login', component: Login },
   {
     path: '/apps',
     component: Layout,
