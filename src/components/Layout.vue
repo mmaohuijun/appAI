@@ -1,37 +1,87 @@
 <template>
   <div class="layout">
-    <Menu mode="horizontal" theme="dark" active-name="1" @on-select="selectMenu">
-            <div class="layout-logo"><img src="../assets/logo.png" alt="" style="width:40px;margin-left:15px; "></div>
-            <div class="layout-nav">
-              <Submenu name="3">
-                  <template slot="title">
-                      <!-- <Icon type="stats-bars"></Icon> -->
-                      {{this.getAppName || '所有应用'}}
-                  </template>
-                    <MenuItem name="createApp" @click.native="gotoCreateApp">创建应用</MenuItem>
-                    <MenuItem name="showApp" @click.native="gotoApp">查看所有应用</MenuItem>
-                    <MenuGroup title="所有应用">
-                      <MenuItem :name="index"  v-for="(item, index) in appList" :key="item.id" @click.native="gotoIntents(index)">
-                        {{item.name}}
-                        <Icon class="drop-down-list"></Icon>
-                      </MenuItem>
-                    </MenuGroup>
-              </Submenu>
-              <MenuItem name="2" @click.native="gotoIntents(-1)">
-                场景
-              </MenuItem>  
-              <MenuItem name="3" @click.native="gotoEntities">
-                词库
-              </MenuItem>
-              <MenuItem name="4" @click.native="gotoModules">
-                模型
-              </MenuItem>
-            </div>
-            <div class="layout-logout">
-              <a href="" @click.prevent="logout">退出</a>
-            </div>
+    <Layout>
+      <Header class="header">
+        <Menu mode="horizontal" active-name="1" @on-select="selectMenu">
+          <div class="layout-logo">
+            <img src="../assets/logo.png" alt="">
+          </div>
+          <div class="layout-logout">
+            <p>
+              Hi,{{this.$store.getters.getUserName}}
+              <Dropdown>
+                  <a href="javascript:void(0)">
+                      设置
+                      <Icon type="arrow-down-b" style="margin-left: 5px;"></Icon>
+                  </a>
+                  <DropdownMenu slot="list">
+                      <DropdownItem>修改密码</DropdownItem>
+                      <DropdownItem @click.native="logout">安全退出</DropdownItem>
+                  </DropdownMenu>
+              </Dropdown>  
+            </p>
+          </div>
         </Menu>
-        <router-view></router-view>
+      </Header>
+      <Layout>
+        <Sider class="sider">
+            <Menu active-name="1-1" :open-names="['1']">
+                <Submenu name="1">
+                    <template slot="title">
+                        <Icon type="ios-navigate"></Icon>
+                        模型管理
+                    </template>
+                    <MenuItem name="1-1">应用</MenuItem>
+                    <MenuItem name="1-2">场景</MenuItem>
+                    <MenuItem name="1-3">词库</MenuItem>
+                    <MenuItem name="1-4">模型</MenuItem>
+                </Submenu>
+                <Submenu name="2">
+                    <template slot="title">
+                        <Icon type="ios-keypad"></Icon>
+                        碎片化平台
+                    </template>
+                    <MenuItem name="2-1">Option 1</MenuItem>
+                    <MenuItem name="2-2">Option 2</MenuItem>
+                </Submenu>
+                <Submenu name="3">
+                    <template slot="title">
+                        <Icon type="ios-analytics"></Icon>
+                        微服务管理
+                    </template>
+                    <MenuItem name="3-1">Option 1</MenuItem>
+                    <MenuItem name="3-2">Option 2</MenuItem>
+                </Submenu>
+                <Submenu name="4">
+                  <template slot="title">
+                    <Icon type="ios-analytics"></Icon>
+                    流程管理
+                  </template>
+                </Submenu>
+                <Submenu name="5">
+                  <template slot="title">
+                    <Icon type="ios-analytics"></Icon>
+                    权限管理
+                  </template>
+                </Submenu>
+                <Submenu name="6">
+                  <template slot="title">
+                    <Icon type="ios-analytics"></Icon>
+                    数据安全管理
+                  </template>
+                </Submenu>
+
+            </Menu>
+          </Sider>
+          <Content class="content" :style="{padding: '0 16px 16px'}">
+            <div class="content-wrapper">
+              <router-view></router-view>
+              <p class="footer">微构科技, 版权所有 &copy;2017-2027</p>
+            </div>      
+        </Content>
+      </Layout>
+    </Layout>
+    <!-- <router-view></router-view> -->
   </div>
 </template>
 
@@ -163,20 +213,106 @@ export default {
   .layout {
         background: #f5f7f9;
         margin-bottom: 30px;
-    }
-    .layout-logo {
-        // width: 100px;
-        // height: 30px;
-        // background: #5b6270;
-        border-radius: 3px;
-        float: left;
-        position: relative;
-        top: 2px;
-        left: 20px;
-    }
-    .layout-nav {
-        width: 420px;
-        margin: 0 auto;
+
+        .header {
+          .ivu-menu {
+            position: fixed;
+            z-index: 900;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 75px;
+            background: #0396FF;
+            line-height: 75px;
+          }
+          .layout-logo{
+            border-radius: 3px;
+            float: left;
+            position: relative;
+            top: 2px;
+            left: 20px;
+            img {
+              width: 180px;
+              margin-top: 13px;
+            }
+          }
+          .layout-logout {
+            float: right;
+            margin-right: 35px;
+            &>p {
+              color: #fff;
+            }
+            a {
+              text-decoration: none;
+              margin-left: 5px;
+            }
+          }
+        }
+
+        .sider {
+          &>ul.ivu-menu {
+            position: fixed;
+            top: 74px;
+            left: 0;
+            height: 100%;
+            width: 240px;
+            // background: #2D90D7;
+            background: -webkit-linear-gradient(left top, #003C90 , #2D90D7); 
+            color: #fff;
+
+            .ivu-menu-submenu-title:hover {
+              background: #03376A;
+            }
+            &>li.ivu-menu-opened {
+              background: #03376A;
+              li.ivu-menu-item {
+                height: 35px;
+                box-sizing: border-box;
+                padding-top: 7px;
+                padding-left: 60px;
+                &:before {
+                  content: '';
+                  width: 4px;
+                  height: 4px;
+                  background: #fff;
+                  position: absolute;
+                  border-radius: 50%;
+                  left: 50px;
+                  top: 14px;
+                }
+                &:hover {
+                  background: #0396FF
+                }
+              }
+              li.ivu-menu-item-selected {
+                background: #0396FF;
+                color: #fff;
+              }
+            }  
+          }
+
+          & ul.ivu-menu {
+            color: #fff;
+          }
+        }
+
+        .content {
+          &>div.content-wrapper {
+            position: fixed;
+            top: 75px;
+            right: 0;
+            width: ~'calc(100% - 240px)';
+            height: 100%;
+            background: #F2F2F2;
+          }
+
+          .footer {
+            position: absolute;
+            left: 50px;
+            bottom: 100px;
+            color: #666;
+          }
+        }
     }
     .drop-down-list { 
       float: right;
