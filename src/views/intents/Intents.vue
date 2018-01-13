@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <!-- <div>
     <div class="app-header">      
       <h1>场景</h1>
     </div> 
@@ -29,8 +29,49 @@
       <p>详细了解场景，<a href="">查看文档</a></p>
     </div>
     <div v-else></div>
+  </div> -->
+  <div class="content-body">
+    <div class="content-body-header">
+      <div class="">
+        <span style="padding-right: 15px;">时间</span>
+        <DatePicker 
+          type="date" 
+          @on-change="dateChange"
+          placeholder="Select date" 
+          style="width: 200px">
+        </DatePicker>
+        <Input 
+          @on-click="getIntentsList"
+          v-model="name"
+          icon="ios-clock-outline" 
+          placeholder="应用名称" 
+          style="width: 200px">
+        </Input>
+      </div>
+    </div>
+
+      <Table 
+        @on-row-click="gotoEditIntents"
+        :columns="columnIntent" 
+        :data="intentList">
+      </Table>
+      <Page 
+        :total="total" 
+        :current="pageNo" 
+        :page-size="pageSize" 
+        show-elevator 
+        @on-change="pageChange"
+        style="padding-top: 30px; text-align: center;">
+      </Page>
+      <Modal
+        v-model="showModal"
+        @on-ok="delIntents"
+        title="删除场景">
+          <p>确定删除场景吗</p>
+          <p>删除后无法恢复</p>
+        </Modal>
+ 
   </div>
-  
 </template>
 
 <script>
@@ -44,7 +85,71 @@ export default {
       ifIntents: 2, // 是否存在场景
       intentList: [],
       showModal: false, // 显示删除 模态框
-      delId: '' // 删除场景id
+      delId: '', // 删除场景id
+      columnIntent: [
+        {
+          title: '场景名称',
+          key: 'name'
+        },
+        {
+          title: '修改时间',
+          key: 'updateDate'
+        },
+        {
+          title: '创建时间',
+          key: 'createDate'
+        },
+        {
+          title: '操作',
+          key: 'action',
+          width: 150,
+          align: 'center',
+          render: (h, params) => {
+            const that = this
+            return h('div', [
+              h('Button', {
+                props: {
+                  type: 'text',
+                  icon: 'edit',
+                  size: 'small'
+                },
+                style: {
+                  marginRight: '5px',
+                  color: '#999',
+                  fontSize: '22px'
+                },
+                on: {
+                  click () {
+                    console.log(params)
+                    that.gotoEditIntents(params.row)
+                  }
+                }
+              }),
+              h('Button', {
+                props: {
+                  type: 'text',
+                  icon: 'trash-a',
+                  size: 'small'
+                },
+                style: {
+                  color: '#999',
+                  fontSize: '22px'
+                },
+                on: {
+                  click () {
+                    console.log('delete')
+                    that.del(params.row)
+                  }
+                }
+              })
+            ])
+          }
+        }
+      ],
+      date: '', // 日期
+      pageSize: 10, // 每页显示行数
+      pageNo: 1, // 显示页数
+      total: 0 //总信息条数
     }
   },
   computed: {
@@ -63,15 +168,24 @@ export default {
     gotoCreateIntents () {
       this.$router.push({ name: 'CreateIntents' })
     },
-    gotoEditIntents (index) {
+    gotoEditIntents (params) {
+      console.log(params)
+      let intentId = params.id
       // console.log(this.intentList[index].id)
-      this.$store.dispatch('setIntentId', this.intentList[index].id)
+      this.$store.dispatch('setIntentId', intentId)
       console.log('appId', this.getAppId)
       this.$router.push({ name: 'EditIntents', params: { appId: this.getAppId } })
     },
     // 获取场景列表
     getIntentsList () {
-      this.$axios.post('intent/list', { appId: this.getAppId, name: this.name }).then(response => {
+      let data = {
+        appId: this.getAppId,
+        name: this.name,
+        pageSize: this.pageSize,
+        pageNo: this.pageNo,
+        date: this.date
+      }
+      this.$axios.post('intent/list', data).then(response => {
         // // console.log(response.data.list.length
 
         if (response.data.list.length > 0) {
@@ -85,9 +199,9 @@ export default {
     },
     // 编辑某个场景
     // 删除某个场景
-    del (index) {
+    del (params) {
       this.showModal = true
-      this.delId = this.intentList[index].id
+      this.delId = params.id
     },
     delIntents () {
       this.$axios.post('intent/del', { appId: this.appId, id: this.delId }).then(response => {
@@ -96,6 +210,15 @@ export default {
           this.getIntentsList()
         }
       })
+    },
+    dateChange (date) {
+      this.date = date
+      this.pageNo = 1
+      this.getIntentsList()
+    },
+    pageChange (pageNo) {
+      this.pageNo = pageNo
+      this.getIntentsList()
     }
   },
   mounted () {

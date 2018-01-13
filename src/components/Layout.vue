@@ -1,31 +1,29 @@
 <template>
   <div class="layout">
-    <Layout>
-      <Header class="header">
-        <Menu mode="horizontal" active-name="1" @on-select="selectMenu">
-          <div class="layout-logo">
-            <img src="../assets/logo.png" alt="">
-          </div>
-          <div class="layout-logout">
-            <p>
-              Hi,{{this.$store.getters.getUserName}}
-              <Dropdown>
-                  <a href="javascript:void(0)">
-                      设置
-                      <Icon type="arrow-down-b" style="margin-left: 5px;"></Icon>
-                  </a>
-                  <DropdownMenu slot="list">
-                      <DropdownItem>修改密码</DropdownItem>
-                      <DropdownItem @click.native="logout">安全退出</DropdownItem>
-                  </DropdownMenu>
-              </Dropdown>  
-            </p>
-          </div>
-        </Menu>
-      </Header>
-      <Layout>
-        <Sider class="sider">
-            <Menu active-name="1-1" :open-names="['1']">
+    <div class="header">
+      <Menu mode="horizontal" active-name="1" @on-select="selectMenu">
+        <div class="layout-logo">
+          <img src="../assets/logo.png" alt="">
+        </div>
+        <div class="layout-logout">
+          <p>
+            Hi,{{this.$store.getters.getUserName}}
+            <Dropdown>
+                <a href="javascript:void(0)">
+                    设置
+                    <Icon type="arrow-down-b" style="margin-left: 5px;"></Icon>
+                </a>
+                <DropdownMenu slot="list">
+                    <DropdownItem>修改密码</DropdownItem>
+                    <DropdownItem @click.native="logout">安全退出</DropdownItem>
+                </DropdownMenu>
+            </Dropdown>  
+          </p>
+        </div>
+      </Menu>
+    </div>
+        <div class="sider">
+            <Menu active-name="1-1" :open-names="['1']" @on-select="chooseMenu">
                 <Submenu name="1">
                     <template slot="title">
                         <Icon type="ios-navigate"></Icon>
@@ -70,17 +68,16 @@
                     数据安全管理
                   </template>
                 </Submenu>
-
             </Menu>
-          </Sider>
-          <Content class="content" :style="{padding: '0 16px 16px'}">
+          </div>
+          <div class="content">
             <div class="content-wrapper">
               <router-view></router-view>
-              <p class="footer">微构科技, 版权所有 &copy;2017-2027</p>
-            </div>      
-        </Content>
-      </Layout>
-    </Layout>
+              <!-- <div class="footer">微构科技，版权所有</div> -->
+            </div>  
+            <div class="footer">微构科技，版权所有</div>    
+          </div>
+          <!-- <div class="footer">微构科技，版权所有</div> -->
     <!-- <router-view></router-view> -->
   </div>
 </template>
@@ -126,15 +123,17 @@ export default {
     }
   },
   methods: {
-    // 导航栏所有应用列表
-    getAppList () {
-      let name = ''
-      this.$axios.post('app/list', {name: name}).then(response => {
-        if (response.data) {
-          this.appList = response.data.list
-          // this.$store.dispatch('setAppId', this.appList[0].id)
-        }
-      })
+    chooseMenu (name) {
+      console.log(name)
+      if (name === '1-1') {
+        this.gotoApp()
+      } else if (name === '1-2') {
+        this.gotoIntents()
+      } else if (name === '1-3') {
+        this.gotoEntities()
+      } else if (name === '1-4') {
+        this.gotoModules()
+      }
     },
     // 场景 词库 菜单
     selectMenu (name) {
@@ -167,17 +166,8 @@ export default {
       this.$router.push({ name: 'CreateApp' })
     },
     // 查看某应用下 所有场景
-    gotoIntents (index) {
-      if (index !== -1) {
-        console.log('index', index)
-        this.$store.dispatch('setAppId', this.appList[index].id)
-        this.$store.dispatch('setAppName', this.appList[index].name)
-        this.$router.push({ name: 'Intents', params: { appId: this.appList[index].id } })
-        // 强制页面刷新 修改
-        // this.$router.go(0)
-      } else {
-        this.$router.push({ name: 'Intents', params: { appId: this.getAppId } })
-      }
+    gotoIntents () {
+      this.$router.push({ name: 'Intents', params: { appId: this.getAppId } })
     },
     // 查看某应用下 所有词库
     gotoEntities () {
@@ -197,9 +187,6 @@ export default {
       })
     }
   },
-  created () {
-    this.getAppList()
-  },
   watch: {
     '$route' (to, from) {
       // console.log(to, from)
@@ -209,12 +196,18 @@ export default {
 </script>
 
 <style lang="less">
+  html, body {
+    width: 100%;
+    height: 100%;
+  }
   // 导航条样式
   .layout {
-        background: #f5f7f9;
-        margin-bottom: 30px;
+        // background: #f5f7f9;
+        // margin-bottom: 30px;
+        height: 100%;
 
         .header {
+          height: 75px;
           .ivu-menu {
             position: fixed;
             z-index: 900;
@@ -250,12 +243,17 @@ export default {
         }
 
         .sider {
-          &>ul.ivu-menu {
-            position: fixed;
+          position: fixed;
             top: 74px;
             left: 0;
             height: 100%;
             width: 240px;
+          &>ul.ivu-menu {
+            // position: fixed;
+            // top: 74px;
+            // left: 0;
+            height: 100%;
+            // width: 240px;
             // background: #2D90D7;
             background: -webkit-linear-gradient(left top, #003C90 , #2D90D7); 
             color: #fff;
@@ -297,21 +295,51 @@ export default {
         }
 
         .content {
+          position: fixed;
+          top: 75px;
+          right: 0;
+          width: ~'calc(100% - 240px)';
+          height: ~'calc(100% - 75px)';    
+          background: #F2F2F2;
+            overflow: auto;      
           &>div.content-wrapper {
-            position: fixed;
-            top: 75px;
-            right: 0;
-            width: ~'calc(100% - 240px)';
-            height: 100%;
-            background: #F2F2F2;
-          }
+            min-height: ~'calc(100% - 50px)';
+            margin-bottom: 50px;
+            // box-sizing: border-box;
+            background: #fff;
+            // position: fixed;
+            // top: 75px;
+            // right: 0;
+            // width: ~'calc(100% - 240px)';
+            // height: ~'calc(100% - 75px)';
+            // background: #F2F2F2;
+            // overflow: auto;
 
-          .footer {
-            position: absolute;
-            left: 50px;
-            bottom: 100px;
-            color: #666;
+            div.content-body {
+              background: #fff;
+              padding: 15px 20px 40px 20px;
+              // margin-bottom: 50px;
+              min-height: 100%;
+              // box-sizing: border-box;
+
+              div.content-body-header {
+                height: 60px;
+              }
+
+
+                .ivu-table-wrapper {
+                  min-height: ~'calc(100% - 90px)'
+                  // height: ~'calc(100% - 32px)';
+                }
+
+            }
           }
+        }
+        .footer {
+          position: absolute;
+          left: 30px;
+          bottom: 20px;
+          color: #666;
         }
     }
     .drop-down-list { 
@@ -325,12 +353,12 @@ export default {
       left: 0;
       width: 100%;
     }
-    .layout>div {
-      background: #fff;
-      padding: 30px 30px 0 30px;
-      border: none;
-      margin-top: 50px;
-    }
+    // .layout>div {
+    //   background: #fff;
+    //   padding: 30px 30px 0 30px;
+    //   border: none;
+    //   margin-top: 50px;
+    // }
     .layout-logout {
       float: right;
       margin-right: 15px;
@@ -341,6 +369,24 @@ export default {
       }
     }
 
+    .ivu-icon-edit, .ivu-icon-trash-a {
+      font-size: 16px;
+      cursor: pointer;
+      color: #4EB1FB;
+    }
+    .ivu-table-wrapper {
+      border: none;
+      
+      .ivu-table th {
+        background: #fff;
+      }
+      .ivu-table:after {
+        width: 0;
+      }
+      .ivu-table th, .ivu-table td {
+        border-bottom: 1px solid #F0F3F7
+      }
+    }
     /* 没有应用、场景、词库列表 apps/intents/entities */ 
     .no-list {
       text-align: center;

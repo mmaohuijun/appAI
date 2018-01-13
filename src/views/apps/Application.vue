@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <!-- <div>
     <div class="app-header">      
       <h1>所有应用</h1>
     </div>
@@ -22,6 +22,41 @@
       <p>详细了解应用，<a href="">查看文档</a></p>
     </div>
     <div v-else></div>
+  </div> -->
+  <div class="content-body">
+    <div class="content-body-header">
+      <div class="">
+        <span style="padding-right: 15px;">时间</span>
+        <DatePicker 
+          type="date" 
+          @on-change="dateChange"
+          placeholder="Select date" 
+          style="width: 200px">
+        </DatePicker>
+        <Input 
+          @on-click="getAppList"
+          v-model="name"
+          icon="ios-clock-outline" 
+          placeholder="应用名称" 
+          style="width: 200px">
+        </Input>
+      </div>
+    </div>
+
+      <Table 
+        @on-row-click="gotoIntents"
+        :columns="columnApp" 
+        :data="appList">
+      </Table>
+      <Page 
+        :total="total" 
+        :current="pageNo" 
+        :page-size="pageSize" 
+        show-elevator 
+        @on-change="pageChange"
+        style="padding-top: 30px; text-align: center;">
+      </Page>
+ 
   </div>
 </template>
 
@@ -33,7 +68,74 @@ export default {
     return {
       appList: [], // 应用列表
       name: '' || null, // 搜索关键字
-      ifApps: 2 // 是否有应用
+      ifApps: 2, // 是否有应用
+      columnApp: [
+        {
+          title: '应用名称',
+          key: 'name'
+        },
+        {
+          title: '修改时间',
+          key: 'updateDate'
+        },
+        {
+          title: '创建时间',
+          key: 'createDate'
+        },
+        {
+          title: '创建者',
+          key: 'createBy'
+        },
+        {
+          title: 'Action',
+          key: 'action',
+          width: 150,
+          align: 'center',
+          render: (h, params) => {
+            const that = this
+            return h('div', [
+              h('Button', {
+                props: {
+                  type: 'text',
+                  icon: 'edit',
+                  size: 'small'
+                },
+                style: {
+                  marginRight: '5px',
+                  color: '#999',
+                  fontSize: '22px'
+                },
+                on: {
+                  click() {
+                    console.log(params)
+                    that.gotoEditApp(params.index)
+                  }
+                }
+              }),
+              h('Button', {
+                props: {
+                  type: 'text',
+                  icon: 'trash-a',
+                  size: 'small'
+                },
+                style: {
+                  color: '#999',
+                  fontSize: '22px'
+                },
+                on: {
+                  click() {
+                    console.log('delete')
+                  }
+                }
+              })
+            ])
+          }
+        }
+      ],
+      date: '', // 日期
+      pageSize: 10, // 每页显示行数
+      pageNo: 1, // 显示页数
+      total: 0 //总信息条数
     }
   },
   computed: {
@@ -43,11 +145,13 @@ export default {
   },
   methods: {
     // 跳转到场景
-    gotoIntents (index) {
-      let appId = this.appList[index].id
-      this.$store.dispatch('setAppId', appId)
-      this.$store.dispatch('setAppName', this.appList[index].name)
-      this.$router.push({ name: 'Intents', params: { appId: appId } })
+    gotoIntents (params) {
+      console.log(params)
+      // let appId = params.id
+      // let appId = this.appList[index].id
+      this.$store.dispatch('setAppId', params.id)
+      this.$store.dispatch('setAppName', params.name)
+      this.$router.push({ name: 'Intents', params: { appId: params.id } })
     },
     // 跳转到 编辑页面
     gotoEditApp (index) {
@@ -59,16 +163,33 @@ export default {
       this.$router.push({ name: 'CreateApp' })
     },
     getAppList () {
-      this.$axios.post('app/list', { name: this.name }).then(response => {
+      let data = {
+        name: this.name,
+        date: this.date,
+        pageSize: this.pageSize,
+        pageNo: this.pageNo
+      }
+      this.$axios.post('app/list', data).then(response => {
         if (response.data) {
           if (response.data.list.length > 0) {
             this.appList = response.data.list
-            this.ifApps = 0
+            this.total = response.data.total
+            // this.ifApps = 0
           } else {
-            this.ifApps = 1
+            this.appList = []
+            // this.ifApps = 1
           }
         }
       })
+    },
+    dateChange (date) {
+      this.date = date
+      this.pageNo = 1
+      this.getAppList()
+    },
+    pageChange (pageNo) {
+      this.pageNo = pageNo
+      this.getAppList()
     }
   },
   created () {
