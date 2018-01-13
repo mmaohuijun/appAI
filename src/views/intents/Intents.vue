@@ -49,9 +49,12 @@
         </Input>
       </div>
     </div>
-
+    <div class="breadList">
+      <span>{{ this.getAppName }}</span>
+      <span>></span>
+      <span>场景列表</span>
+    </div>
       <Table 
-        @on-row-click="gotoEditIntents"
         :columns="columnIntent" 
         :data="intentList">
       </Table>
@@ -149,7 +152,8 @@ export default {
       date: '', // 日期
       pageSize: 10, // 每页显示行数
       pageNo: 1, // 显示页数
-      total: 0 //总信息条数
+      total: 0, //总信息条数
+      appName: ''
     }
   },
   computed: {
@@ -159,6 +163,13 @@ export default {
         this.appId = this.$store.getters.getAppId
       }
       return this.appId
+    },
+    getAppName () {
+      this.appName = this.$store.state.appName
+      if (!this.appName) {
+        this.appName = this.$store.getters.getAppName
+      }
+      return this.appName
     },
     ifHasIntents () {
       return this.$store.state.hasIntents || false
@@ -190,9 +201,10 @@ export default {
 
         if (response.data.list.length > 0) {
           this.intentList = response.data.list
-          this.ifIntents = 0
+          // this.ifIntents = 0
         } else {
-          this.ifIntents = 1
+          // this.ifIntents = 1
+          this.intentList = []
           // this.$router.push({ name: 'NoIntents', params: { appId: this.appId } })
         }
       })
@@ -240,6 +252,8 @@ export default {
 </script>
 
 <style lang="less">
-
+  .breadList {
+    margin-bottom: 15px;
+  }
 </style>
 

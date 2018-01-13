@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <!-- <div>
     <div class="app-header">      
       <h1>词库</h1>
     </div>
@@ -29,6 +29,51 @@
       <p>详细了解词库，<a href="">查看文档</a></p>
     </div>
     <div v-else></div>
+  </div> -->
+  <div class="content-body">
+    <div class="content-body-header">
+      <div class="">
+        <span style="padding-right: 15px;">时间</span>
+        <DatePicker 
+          type="date" 
+          @on-change="dateChange"
+          placeholder="Select date" 
+          style="width: 200px">
+        </DatePicker>
+        <Input 
+          @on-click="getEntitiesList"
+          v-model="name"
+          icon="ios-clock-outline" 
+          placeholder="应用名称" 
+          style="width: 200px">
+        </Input>
+      </div>
+    </div>
+    <div class="breadList">
+      <span>{{ this.getAppName }}</span>
+      <span>></span>
+      <span>词库列表</span>
+    </div>
+      <Table 
+        :columns="columnEntities" 
+        :data="entitiesList">
+      </Table>
+      <Page 
+        :total="total" 
+        :current="pageNo" 
+        :page-size="pageSize" 
+        show-elevator 
+        @on-change="pageChange"
+        style="padding-top: 30px; text-align: center;">
+      </Page>
+      <Modal
+        v-model="showModal"
+        @on-ok="delEntities"
+        title="删除场景">
+          <p>确定删除场景吗</p>
+          <p>删除后无法恢复</p>
+        </Modal>
+ 
   </div>
 </template>
 
@@ -42,7 +87,72 @@ export default {
       name: '', // 搜索词库 关键字
       ifEntities: 2, // 是否存在词库
       entitiesList: [], // 词库列表
-      delId: '' // 要删除的词库id
+      delId: '', // 要删除的词库id
+      columnEntities: [
+        {
+          title: '词库名称',
+          key: 'name'
+        },
+        {
+          title: '修改时间',
+          key: 'updateDate'
+        },
+        {
+          title: '创建时间',
+          key: 'createDate'
+        },
+        {
+          title: '操作',
+          key: 'action',
+          width: 150,
+          align: 'center',
+          render: (h, params) => {
+            const that = this
+            return h('div', [
+              h('Button', {
+                props: {
+                  type: 'text',
+                  icon: 'edit',
+                  size: 'small'
+                },
+                style: {
+                  marginRight: '5px',
+                  color: '#999',
+                  fontSize: '22px'
+                },
+                on: {
+                  click () {
+                    console.log(params)
+                    that.gotoEditEntities(params.row)
+                  }
+                }
+              }),
+              h('Button', {
+                props: {
+                  type: 'text',
+                  icon: 'trash-a',
+                  size: 'small'
+                },
+                style: {
+                  color: '#999',
+                  fontSize: '22px'
+                },
+                on: {
+                  click () {
+                    console.log('delete')
+                    that.showM(params.row)
+                  }
+                }
+              })
+            ])
+          }
+        }
+      ],
+      date: '', // 日期
+      pageSize: 10, // 每页显示行数
+      pageNo: 1, // 显示页数
+      total: 0, //总信息条数
+      appName: ''
     }
   },
   computed: {
@@ -53,6 +163,13 @@ export default {
         this.appId = this.$store.getters.getAppId
       }
       return this.appId
+    },
+    getAppName () {
+      this.appName = this.$store.state.appName
+      if (!this.appName) {
+        this.appName = this.$store.getters.getAppName
+      }
+      return this.appName
     },
     ifHasEntities () {
       return this.entitiesList.length > 0
@@ -67,28 +184,36 @@ export default {
       // console.log(this.$store.getters.getAppId)
       console.log(this.getAppId)
       console.log(this.$store.state.appId)
-      this.appId = this.$store.state.appId
-      if (!this.appId) {
-        this.appId = this.$store.getters.getAppId
+      // this.appId = this.$store.state.appId
+      // if (!this.appId) {
+      //   this.appId = this.$store.getters.getAppId
+      // }
+      let data = {
+        appId: this.appId,
+        name: this.name,
+        date: this.date,
+        pageSize: this.pageSize,
+        pageNo: this.pageNo
       }
-      this.$axios.post('dict/list', { name: this.name, appId: this.appId }).then(response => {
+      this.$axios.post('dict/list', data).then(response => {
         if (response.data.dictList.length > 0) {
           this.entitiesList = response.data.dictList
-          this.ifEntities = 0
+          // this.ifEntities = 0
         } else {
-          this.ifEntities = 1
+          this.entitiesList = []
+          // this.ifEntities = 1
         }
       })
     },
-    showM (index) {
+    showM (params) {
       this.showModal = true
-      this.delId = this.entitiesList[index].id
+      this.delId = params.id
     },
     // 编辑词库
-    gotoEditEntities (index) {
-      let SelectEntity = this.entitiesList[index].id
-      this.$store.dispatch('setEntityId', SelectEntity)
-      this.$router.push({ name: 'EditEntities', params: { appId: this.getAppId } })
+    gotoEditEntities (params) {
+    let SelectEntity = params.id
+    this.$store.dispatch('setEntityId', SelectEntity)
+    this.$router.push({ name: 'EditEntities', params: { appId: this.getAppId } })
     },
     // 删除词库
     delEntities () {
@@ -98,6 +223,15 @@ export default {
           this.getEntitiesList()
         }
       })
+    },
+    dateChange (date) {
+      this.date = date
+      this.pageNo = 1
+      this.getEntitiesList()
+    },
+    pageChange (pageNo) {
+      this.pageNo = pageNo
+      this.getEntitiesList()
     }
   },
   created () {

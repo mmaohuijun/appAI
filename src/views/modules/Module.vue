@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <!-- <div>
     所有应用
     <Select style="width:500px;" @on-change="getTransList">
       <Option v-for="item in appList" :value="item.id" :key="item.id" >{{item.name}}</Option>
@@ -8,6 +8,46 @@
     <div class="train-tbl">
       <Table :columns="column" :data="trainList"></Table>
     </div>
+  </div> -->
+  <div class="content-body">
+    <div class="content-body-header">
+      <div class="">
+        <span style="padding-right: 15px;">时间</span>
+        <DatePicker 
+          type="date" 
+          @on-change="dateChange"
+          placeholder="Select date" 
+          style="width: 200px">
+        </DatePicker>
+        <Input 
+          @on-click="getAppList"
+          v-model="name"
+          icon="ios-clock-outline" 
+          placeholder="应用名称" 
+          style="width: 200px">
+        </Input>
+      </div>
+    </div>
+    <div>
+      <Select style="width:500px;" @on-change="getTransList">
+        <Option v-for="item in appList" :value="item.id" :key="item.id" >{{item.name}}</Option>
+      </Select>
+      <Button @click="doTrain" style="float: right" size="large">训练</Button>      
+    </div>
+
+      <Table 
+        :columns="column" 
+        :data="trainList">
+      </Table>
+      <Page 
+        :total="total" 
+        :current="pageNo" 
+        :page-size="pageSize" 
+        show-elevator 
+        @on-change="pageChange"
+        style="padding-top: 30px; text-align: center;">
+      </Page>
+ 
   </div>
 </template>
 
