@@ -6,12 +6,13 @@
         <Input 
           @on-click="getEntitiesList"
           v-model="name"
-          icon="ios-clock-outline" 
+          icon="search" 
           placeholder="应用名称" 
           style="width: 200px">
         </Input>
       </div>
     </div> 
+
     <div>
       <h2 class="list-header">词库列表</h2>
       <div style="display: flex" >

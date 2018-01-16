@@ -1,116 +1,126 @@
 <template>
-  <div class="create-box">
-    <aside>
-      <h2>场景列表</h2>
-      <input type="text" placeholder="搜索" v-model="name">   
-      <!-- <ul v-if="hasIntents" v-for="(item, index) in intentList" :key="index">    
-        <li><a href="" @click.prevent="gotoEdit(index)">{{item.name}}</a></li>
-      </ul> -->
-      <ul v-if="hasIntents">
-        <li 
-        v-for="(item, index) in intentList" 
-        :key="index"
-        @click="gotoEdit(index)">
-        <a>{{item.name}}</a>
-        </li>
-      </ul>
-      <p v-else class="empty-list">当前场景列表为空！</p>
-    </aside>
-    <Form class="form" ref="createIntentsForm" :model="createIntentsForm" :rules="ruleIntentsForm">
-      <Form-item label="场景名称" prop="name">
-        <Input v-model="createIntentsForm.name"></Input>
-      </Form-item>
-      <Form-item label="用户提问"><br>
-      <div v-for="(item, index) in askList" :key="index" style="margin-bottom: 10px;" class="ask-box">
-        <div>
-          <div class="input-box">
-            <input 
-            @focus="focusInput(index)"
-            @blur="blurInput"
-            @select="selectText(index)"
-            class="my-input" 
-            type="text" 
-            placeholder="添加用户提问语料" 
-            v-model="item.text"/>
-            <div @click="deleteAskList(index)">
-              <Icon v-show="index!==0" type="trash-a" class="trash-icon"></Icon>
-            </div>          
-          </div>    
-        </div>        
-          <Select v-if="hasEntities&&index === textIndex" @on-change="changeSelect">
-            <Option v-for="item in entitiesList" :value="item.id" :key="item.id">{{item.name}}</Option>
-          </Select>
-        <transition name="fade">
-          <div v-if="showAsk&&index === textIndex || hasSelected&&index === textIndex ">
-            <table class="action-tbl" >
-              <thead>
-                <tr>
-                  <th>名称</th>
-                  <th>类型</th>
-                  <th>取值</th>
-                  <th>操作</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="(item, index) in item.entitys" :key="index" :ask-list="item">
-                  <td><input type="text" v-model="item.entity"></td>
-                  <td>{{ item.type }}</td>
-                  <td>{{ item.value }}</td>
-                  <td><button @click.prevent="deleteEntityLine(index)" class="del-btn">删除</button></td>
-                </tr>
-              </tbody>
-            </table>         
-          </div>  
-        </transition>            
+  <div class="content-body">
+    <div class="content-body-header">
+      <div class="">
+        <span style="padding-right: 15px;">关键词</span>
+        <Input 
+          @on-click="getEntitiesList"
+          v-model="name"
+          icon="search" 
+          placeholder="应用名称" 
+          style="width: 200px">
+        </Input>
       </div>
-      <a href="" @click.prevent="addAskList">添加一行</a> 
-      </Form-item>
+    </div> 
+    <div class="list-header">场景列表</div>
+    <div style="display: flex">
+      <aside>
+        <ul v-if="hasIntents">
+          <li 
+          v-for="(item, index) in intentList" 
+          :key="index"
+          @click="gotoEdit(index)">
+          <a>{{item.name}}</a>
+          </li>
+        </ul>
+        <p v-else class="empty-list">当前场景列表为空！</p>
+      </aside>
+      <Form class="form" ref="createIntentsForm" :model="createIntentsForm" :rules="ruleIntentsForm">
+        <Form-item label="场景名称" prop="name">
+          <Input v-model="createIntentsForm.name"></Input>
+        </Form-item>
+        <Form-item label="用户提问"><br>
+        <div v-for="(item, index) in askList" :key="index" style="margin-bottom: 10px;" class="ask-box">
+          <div>
+            <div class="input-box">
+              <input 
+              @focus="focusInput(index)"
+              @blur="blurInput"
+              @select="selectText(index)"
+              class="my-input" 
+              type="text" 
+              placeholder="添加用户提问语料" 
+              v-model="item.text"/>
+              <div @click="deleteAskList(index)">
+                <Icon v-show="index!==0" type="trash-a" class="trash-icon"></Icon>
+              </div>          
+            </div>    
+          </div>        
+            <Select v-if="hasEntities&&index === textIndex" @on-change="changeSelect">
+              <Option v-for="item in entitiesList" :value="item.id" :key="item.id">{{item.name}}</Option>
+            </Select>
+          <transition name="fade">
+            <div v-if="showAsk&&index === textIndex || hasSelected&&index === textIndex ">
+              <table class="action-tbl" >
+                <thead>
+                  <tr>
+                    <th>名称</th>
+                    <th>类型</th>
+                    <th>取值</th>
+                    <th>操作</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(item, index) in item.entitys" :key="index" :ask-list="item">
+                    <td><input type="text" v-model="item.entity"></td>
+                    <td>{{ item.type }}</td>
+                    <td>{{ item.value }}</td>
+                    <td><button @click.prevent="deleteEntityLine(index)" class="del-btn">删除</button></td>
+                  </tr>
+                </tbody>
+              </table>         
+            </div>  
+          </transition>            
+        </div>
+        <a href="" @click.prevent="addAskList">添加一行</a> 
+        </Form-item>
 
-      <Form-item label="动作">
-        <input type="text" class="my-input" placeholder="请输入动作名称" v-model="actionName">
-      </Form-item>
-      <Form-item>
-        <table class="action-tbl" v-if="showActionList">
-          <thead>
-            <!-- <td>是否必须</td> -->
-            <td>参数名称</td>
-            <td>类型</td>
-            <td>取值</td>
-            <!-- <td>提示语</td> -->
-            <td>操作</td>
-          </thead>
-          <tbody>
-            <!-- <td>
-              <input type="checkbox">
-            </td> -->
-            <tr v-for="(item, index) in slotList" :key="index">
-              <td>
-                <input type="text" placeholder="添加参数名称..." v-model="item.typeName">
-              </td>
-              <td @click="editActionList(index)">
-                <span>{{item.dictName || '请选择类型...'}}</span>
-              </td>
-              <td>{{'${ ' + item.typeName + '}'}}</td>
-                <!-- <input type="text" disabled v-model=" '${ ' + item.typeName + '}'"> -->
-              <!-- </td> -->
-              <td>
-                <button @click.prevent="delSlotList(index)" class="del-btn">删除</button>
-              </td>
+        <Form-item label="动作">
+          <input type="text" class="my-input" placeholder="请输入动作名称" v-model="actionName">
+        </Form-item>
+        <Form-item>
+          <table class="action-tbl" v-if="showActionList">
+            <thead>
+              <!-- <td>是否必须</td> -->
+              <td>参数名称</td>
+              <td>类型</td>
+              <td>取值</td>
+              <!-- <td>提示语</td> -->
+              <td>操作</td>
+            </thead>
+            <tbody>
               <!-- <td>
-                <input type="text" placeholder="编辑提示语" v-model="item.message">
+                <input type="checkbox">
               </td> -->
-            </tr>         
-          </tbody>
-        </table>
-        <Select v-if="hasEntities" @on-change="onSelectAction" :key="index">
-            <Option v-for="item in entitiesList" :value="item.id" :key="item.id">{{item.name}}</Option>
-        </Select>
-        <a href="" @click.prevent="addActionList">添加一行</a>
-      </Form-item>
-      <Form-item>
-        <Button type="primary" size="large" @click="saveCreate('createIntentsForm')">保存</Button>
-      </Form-item>
-    </Form>
+              <tr v-for="(item, index) in slotList" :key="index">
+                <td>
+                  <input type="text" placeholder="添加参数名称..." v-model="item.typeName">
+                </td>
+                <td @click="editActionList(index)">
+                  <span>{{item.dictName || '请选择类型...'}}</span>
+                </td>
+                <td>{{'${ ' + item.typeName + '}'}}</td>
+                  <!-- <input type="text" disabled v-model=" '${ ' + item.typeName + '}'"> -->
+                <!-- </td> -->
+                <td>
+                  <button @click.prevent="delSlotList(index)" class="del-btn">删除</button>
+                </td>
+                <!-- <td>
+                  <input type="text" placeholder="编辑提示语" v-model="item.message">
+                </td> -->
+              </tr>         
+            </tbody>
+          </table>
+          <Select v-if="hasEntities" @on-change="onSelectAction" :key="index">
+              <Option v-for="item in entitiesList" :value="item.id" :key="item.id">{{item.name}}</Option>
+          </Select>
+          <a href="" @click.prevent="addActionList">添加一行</a>
+        </Form-item>
+        <Form-item>
+          <Button type="primary" size="large" @click="saveCreate('createIntentsForm')">保存</Button>
+        </Form-item>
+      </Form>
+    </div>
   </div>
 </template>
 

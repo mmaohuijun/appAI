@@ -22,7 +22,7 @@
         <Input 
           @on-click="getAppList"
           v-model="name"
-          icon="ios-clock-outline" 
+          icon="search" 
           placeholder="应用名称" 
           style="width: 200px">
         </Input>

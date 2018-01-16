@@ -282,7 +282,7 @@ export default {
                 }
 
                 &:hover {
-                  background: #0396FF
+                  background: multiply(#0396FF, #ccc) 
                 }
               }
 
@@ -330,27 +330,12 @@ export default {
             }
         }
     }
-    .drop-down-list { 
-      float: right;
-      padding-left: 150px;
-      margin-top:-15px;
-    }
-    // .layout>ul {
-    //   position: fixed;
-    //   top: 0;
-    //   left: 0;
-    //   width: 100%;
-    // }
-    // .layout>div {
-    //   background: #fff;
-    //   padding: 30px 30px 0 30px;
-    //   border: none;
-    //   margin-top: 50px;
-    // }
+    .ivu-menu-horizontal.ivu-menu-light:after {
+        background: #0396FF;
+      }
     .layout-logout {
       float: right;
       margin-right: 15px;
-
       a {
         color: #fff;
         text-decoration: underline
@@ -371,6 +356,9 @@ export default {
       .ivu-table:after {
         width: 0;
       }
+      .ivu-table:before {
+        background-color: #F0F3F7;
+      }
       .ivu-table th, .ivu-table td {
         border-bottom: 1px solid #F0F3F7
       }
@@ -384,10 +372,9 @@ export default {
     padding: 15px;
   }
   aside {
-    width: 300px;
+    width: 240px;
     border: 1px solid #ccc;
     padding: 0 0 15px 0;
-    margin-right: 15px;
     border-bottom: none;
     border-top: none;
     position: absolute;
@@ -430,7 +417,7 @@ export default {
   
   // 右侧表单
   .form {
-    margin-left: 330px;
+    margin-left: 260px;
     flex-grow: 1;
     .choosed {
       background: #333;
@@ -452,118 +439,6 @@ export default {
       border: none;
     }
   }
-
-//     /* 没有应用、场景、词库列表 apps/intents/entities */ 
-//     .no-list {
-//       text-align: center;
-//       font-size: 16px;
-//       margin-top: 100px;
-//     }
-//     .app-header {
-//     float: left;
-//     margin-top: 20px;
-//     margin-bottom: 20px;
-//     clear: both;
-//     h1 {
-//       clear: both
-//     }  
-//   }
-//   // 有列表情况 apps/intents/entities
-//   .lf {
-//     float: left
-//   }
-//   .rt {
-//     float: right
-//   }
-//   .list-group {
-//     margin-top: 20px;
-//     margin-bottom: 20px;
-//     border-bottom: 1px solid #ccc;
-//     li {
-//       border: 1px solid #ccc;
-//       border-bottom: none;
-//       font-size: 14px;
-//       padding:8px 10px;
-
-//       a {
-//         color: #333;
-//       }
-
-//       &:hover {
-//       // cursor: pointer
-//       }
-
-//       &:hover .app-icon {
-//         display: block;
-//       }
-//     }  
-//   }
-//   .app-icon {
-//     position: relative;
-//     top: 2px;
-//     display: none;
-//     font-size: 16px;
-//     color: #333;
-//   }
-//   // 添加/编辑页面 create/edit
-//   .create-box {
-//       .my-input {
-//       outline: none;
-//       border: 1px solid #ccc;
-//       width: 100%;
-//       padding: 5px;
-//       margin-bottom: 1px;
-//     }
-    // 左侧侧边栏 列表
-    // aside {
-    //   width: 300px;
-    //   border: 1px solid #ccc;
-    //   padding: 15px 0;
-    //   margin-right: 15px;
-    //   border-bottom: none;
-    //   position: fixed;
-    //   left: 0;
-    //   top: 60px;
-    //   height: 100%;
-    //   // background: #ccc;
-    //   input {
-    //   width: 290px;
-    //   outline: none;
-    //   border: none;
-    //   padding: 10px 15px;
-    //   }
-    //   h2 {
-    //     border-bottom: 1px solid #ccc;
-    //     padding-bottom: 15px;
-    //     width: 300px;
-    //     padding-left: 15px;
-    //   }
-    //   ul {
-    //     border-top: 1px solid #ccc;
-    //     li {
-    //       // border-bottom: 1px solid #ccc;       
-    //       a {
-    //         width: 100%;
-    //         display: inline-block;
-    //         padding: 8px 15px;
-    //         color: #333;
-
-    //         &:hover {
-    //           color: #fff;
-    //         }
-    //       }
-
-    //       &:hover a {
-    //         cursor: pointer;
-    //       background: #9399A6;
-    //       }
-    //     }
-    //   }
-    // }
-    // .form {
-    //   margin-left: 300px;
-    // }
-  //}
 //   // 空列表
 //   .empty-list {
 //   padding: 15px;
