@@ -7,7 +7,7 @@
           type="date" 
           @on-change="dateChange"
           placeholder="Select date" 
-          style="width: 200px">
+          style="width: 200px; margin-right: 50px">
         </DatePicker>
         <Input 
           @on-click="getEntitiesList"

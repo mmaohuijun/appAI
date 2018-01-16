@@ -457,8 +457,9 @@ export default {
   }
   td {
     width: 25%;
-    border: 1px solid #ccc;
-    padding: 10px;
+    border-bottom: 1px solid #ccc;
+    padding: 5px 0;
+    text-align: center;
   }
   input {
     outline: none;
@@ -475,5 +476,12 @@ export default {
   &:hover {
     cursor: pointer;
   }
+}
+  .my-input {
+  outline: none;
+  border: 1px solid #ccc;
+  width: 100%;
+  padding: 5px;
+  margin-bottom: 1px;
 }
 </style>

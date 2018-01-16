@@ -121,12 +121,13 @@ export default {
   methods: {
     chooseMenu (name) {
       console.log(name)
+      console.log('chooseMenu', this.getAppId)
       if (name === '1-1') {
         this.gotoApp()
       } else if (name === '1-2') {
-        this.gotoIntents()
+        this.getAppId ? this.gotoIntents() : this.$Message.warning('请先选择一个应用')
       } else if (name === '1-3') {
-        this.gotoEntities()
+        this.getAppId ? this.gotoEntities() : this.$Message.warning('请先选择一个应用')
       } else if (name === '1-4') {
         this.gotoModules()
       } else if (name === '5-1') {
@@ -369,7 +370,7 @@ export default {
     background: #0A469E;
     color: #fff;
     font-size: 16px;
-    padding: 15px;
+    padding: 10px 15px;
   }
   aside {
     width: 240px;
@@ -379,7 +380,7 @@ export default {
     border-top: none;
     position: absolute;
     left: 20px;
-    top: 129px;
+    top: 120px;
     bottom: 0px;
     background: #fff;
 
@@ -393,7 +394,7 @@ export default {
     }
     ul {
       overflow: auto;
-      border-top: 1px solid #ccc;
+      // border-top: 1px solid #ccc;
       li {
         // border-bottom: 1px solid #ccc;       
         a {
@@ -439,10 +440,30 @@ export default {
       border: none;
     }
   }
-//   // 空列表
-//   .empty-list {
-//   padding: 15px;
-//   border-top: 1px solid #ccc;
-// }
+
+.action-tbl {
+  border: 1px solid #ccc;
+  border-collapse: collapse;
+  width: 100%;
+  thead {
+    text-align: center;
+  }
+  td {
+    width: 25%;
+    border-bottom: 1px solid #ccc;
+    padding: 0px;
+    text-align: center;
+  }
+  input {
+    outline: none;
+    border: none;
+    padding: 10px 15px;
+  }
+}
+  // 空列表
+  .empty-list {
+  padding: 15px;
+  border-top: 1px solid #ccc;
+}
     
 </style>

@@ -60,4 +60,7 @@ export default {
       padding: 20px;
     }
   }
+  body {
+    height: auto;
+  }
 </style>
