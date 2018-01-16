@@ -19,6 +19,8 @@ const CreateEntities = () => import('../views/entities/CreateEntities')
 // 模块
 const Module = () => import('../views/modules/Module')
 
+// 权限
+const Auth = () => import('../views/auth/Auth')
 Vue.use(Router)
 
 const normalRouter = [
@@ -66,6 +68,16 @@ const normalRouter = [
     name: '模块',
     children: [
       { path: 'index', name: 'Module', component: Module }
+    ],
+    meta: { requiresLogin: true }
+  },
+  {
+    path: '/auth',
+    component: Layout,
+    redirect: '/auth/index',
+    name: '权限',
+    children: [
+      { path: 'index', name: 'Auth', component: Auth }
     ],
     meta: { requiresLogin: true }
   }

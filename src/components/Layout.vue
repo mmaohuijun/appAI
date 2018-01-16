@@ -61,6 +61,7 @@
                     <Icon type="ios-analytics"></Icon>
                     权限管理
                   </template>
+                  <MenuItem name="5-1">权限测试</MenuItem>
                 </Submenu>
                 <Submenu name="6">
                   <template slot="title">
@@ -71,14 +72,9 @@
             </Menu>
           </div>
           <div class="content">
-            <div class="content-wrapper">
-              <router-view></router-view>
-              <!-- <div class="footer">微构科技，版权所有</div> -->
-            </div>  
-            <div class="footer">微构科技，版权所有</div>    
+            <router-view></router-view>
+            <div class="footer">微构科技，版权所有 &copy;2017-2027</div>    
           </div>
-          <!-- <div class="footer">微构科技，版权所有</div> -->
-    <!-- <router-view></router-view> -->
   </div>
 </template>
 
@@ -133,6 +129,8 @@ export default {
         this.gotoEntities()
       } else if (name === '1-4') {
         this.gotoModules()
+      } else if (name === '5-1') {
+        this.gotoAuth()
       }
     },
     // 场景 词库 菜单
@@ -176,6 +174,10 @@ export default {
     // 跳转模态页面
     gotoModules () {
       this.$router.push({ name: 'Module' })
+    },
+    // 跳转权限页面
+    gotoAuth () {
+      this.$router.push({ name: 'Auth' })
     },
     // 退出
     logout () {
@@ -278,10 +280,12 @@ export default {
                   left: 50px;
                   top: 14px;
                 }
+                
                 &:hover {
                   background: #0396FF
                 }
               }
+
               li.ivu-menu-item-selected {
                 background: #0396FF;
                 color: #fff;
@@ -301,45 +305,29 @@ export default {
           width: ~'calc(100% - 240px)';
           height: ~'calc(100% - 75px)';    
           background: #F2F2F2;
-            overflow: auto;      
-          &>div.content-wrapper {
-            min-height: ~'calc(100% - 50px)';
-            margin-bottom: 50px;
-            // box-sizing: border-box;
-            background: #fff;
-            // position: fixed;
-            // top: 75px;
-            // right: 0;
-            // width: ~'calc(100% - 240px)';
-            // height: ~'calc(100% - 75px)';
-            // background: #F2F2F2;
-            // overflow: auto;
+          overflow: auto;  
 
             div.content-body {
               background: #fff;
               padding: 15px 20px 40px 20px;
-              // margin-bottom: 50px;
-              min-height: 100%;
-              // box-sizing: border-box;
+              min-height: ~'calc(100% - 60px)';
 
               div.content-body-header {
                 height: 60px;
               }
 
-
                 .ivu-table-wrapper {
                   min-height: ~'calc(100% - 90px)'
                   // height: ~'calc(100% - 32px)';
                 }
-
             }
-          }
-        }
-        .footer {
-          position: absolute;
-          left: 30px;
-          bottom: 20px;
-          color: #666;
+
+            .footer {
+              height: 60px;
+              line-height: 60px;
+              margin-left: 30px;
+              color: #666;
+            }
         }
     }
     .drop-down-list { 
@@ -387,121 +375,123 @@ export default {
         border-bottom: 1px solid #F0F3F7
       }
     }
-    /* 没有应用、场景、词库列表 apps/intents/entities */ 
-    .no-list {
-      text-align: center;
-      font-size: 16px;
-      margin-top: 100px;
-    }
-    .app-header {
-    float: left;
-    margin-top: 20px;
-    margin-bottom: 20px;
-    clear: both;
-    h1 {
-      clear: both
-    }  
-  }
-  // 有列表情况 apps/intents/entities
-  .lf {
-    float: left
-  }
-  .rt {
-    float: right
-  }
-  .list-group {
-    margin-top: 20px;
-    margin-bottom: 20px;
-    border-bottom: 1px solid #ccc;
-    li {
-      border: 1px solid #ccc;
-      border-bottom: none;
-      font-size: 14px;
-      padding:8px 10px;
 
-      a {
-        color: #333;
-      }
 
-      &:hover {
-      // cursor: pointer
-      }
+//     /* 没有应用、场景、词库列表 apps/intents/entities */ 
+//     .no-list {
+//       text-align: center;
+//       font-size: 16px;
+//       margin-top: 100px;
+//     }
+//     .app-header {
+//     float: left;
+//     margin-top: 20px;
+//     margin-bottom: 20px;
+//     clear: both;
+//     h1 {
+//       clear: both
+//     }  
+//   }
+//   // 有列表情况 apps/intents/entities
+//   .lf {
+//     float: left
+//   }
+//   .rt {
+//     float: right
+//   }
+//   .list-group {
+//     margin-top: 20px;
+//     margin-bottom: 20px;
+//     border-bottom: 1px solid #ccc;
+//     li {
+//       border: 1px solid #ccc;
+//       border-bottom: none;
+//       font-size: 14px;
+//       padding:8px 10px;
 
-      &:hover .app-icon {
-        display: block;
-      }
-    }  
-  }
-  .app-icon {
-    position: relative;
-    top: 2px;
-    display: none;
-    font-size: 16px;
-    color: #333;
-  }
-  // 添加/编辑页面 create/edit
-  .create-box {
-      .my-input {
-      outline: none;
-      border: 1px solid #ccc;
-      width: 100%;
-      padding: 5px;
-      margin-bottom: 1px;
-    }
-    // 左侧侧边栏 列表
-    aside {
-      width: 300px;
-      border: 1px solid #ccc;
-      padding: 15px 0;
-      margin-right: 15px;
-      border-bottom: none;
-      position: fixed;
-      left: 0;
-      top: 60px;
-      height: 100%;
-      // background: #ccc;
-      input {
-      width: 290px;
-      outline: none;
-      border: none;
-      padding: 10px 15px;
-      }
-      h2 {
-        border-bottom: 1px solid #ccc;
-        padding-bottom: 15px;
-        width: 300px;
-        padding-left: 15px;
-      }
-      ul {
-        border-top: 1px solid #ccc;
-        li {
-          // border-bottom: 1px solid #ccc;       
-          a {
-            width: 100%;
-            display: inline-block;
-            padding: 8px 15px;
-            color: #333;
+//       a {
+//         color: #333;
+//       }
 
-            &:hover {
-              color: #fff;
-            }
-          }
+//       &:hover {
+//       // cursor: pointer
+//       }
 
-          &:hover a {
-            cursor: pointer;
-          background: #9399A6;
-          }
-        }
-      }
-    }
-    .form {
-      margin-left: 300px;
-    }
-  }
-  // 空列表
-  .empty-list {
-  padding: 15px;
-  border-top: 1px solid #ccc;
-}
+//       &:hover .app-icon {
+//         display: block;
+//       }
+//     }  
+//   }
+//   .app-icon {
+//     position: relative;
+//     top: 2px;
+//     display: none;
+//     font-size: 16px;
+//     color: #333;
+//   }
+//   // 添加/编辑页面 create/edit
+//   .create-box {
+//       .my-input {
+//       outline: none;
+//       border: 1px solid #ccc;
+//       width: 100%;
+//       padding: 5px;
+//       margin-bottom: 1px;
+//     }
+//     // 左侧侧边栏 列表
+//     aside {
+//       width: 300px;
+//       border: 1px solid #ccc;
+//       padding: 15px 0;
+//       margin-right: 15px;
+//       border-bottom: none;
+//       position: fixed;
+//       left: 0;
+//       top: 60px;
+//       height: 100%;
+//       // background: #ccc;
+//       input {
+//       width: 290px;
+//       outline: none;
+//       border: none;
+//       padding: 10px 15px;
+//       }
+//       h2 {
+//         border-bottom: 1px solid #ccc;
+//         padding-bottom: 15px;
+//         width: 300px;
+//         padding-left: 15px;
+//       }
+//       ul {
+//         border-top: 1px solid #ccc;
+//         li {
+//           // border-bottom: 1px solid #ccc;       
+//           a {
+//             width: 100%;
+//             display: inline-block;
+//             padding: 8px 15px;
+//             color: #333;
+
+//             &:hover {
+//               color: #fff;
+//             }
+//           }
+
+//           &:hover a {
+//             cursor: pointer;
+//           background: #9399A6;
+//           }
+//         }
+//       }
+//     }
+//     .form {
+//       margin-left: 300px;
+//     }
+//   }
+//   // 空列表
+//   .empty-list {
+//   padding: 15px;
+//   border-top: 1px solid #ccc;
+// }
     
 </style>

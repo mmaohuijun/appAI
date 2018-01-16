@@ -47,6 +47,12 @@
           placeholder="应用名称" 
           style="width: 200px">
         </Input>
+        <Button 
+          @click="gotoCreateIntents"
+          type="primary" 
+          style="float: right;margin-right: 15px;">
+        添加
+        </Button>
       </div>
     </div>
     <div class="breadList">
@@ -152,7 +158,7 @@ export default {
       date: '', // 日期
       pageSize: 10, // 每页显示行数
       pageNo: 1, // 显示页数
-      total: 0, //总信息条数
+      total: 0, // 总信息条数
       appName: ''
     }
   },

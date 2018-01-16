@@ -167,7 +167,7 @@ export default {
   methods: {
     // 编辑某个场景
     gotoEdit (index) {
-      let selectIntent = this.intentList[index].id
+      // let selectIntent = this.intentList[index].id
       this.$store.dispatch('setIntentId', this.intentList[index].id)
       this.$router.push({ name: 'EditIntents', params: { appId: this.getAppId } })
     },

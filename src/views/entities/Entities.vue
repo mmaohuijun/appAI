@@ -47,6 +47,12 @@
           placeholder="应用名称" 
           style="width: 200px">
         </Input>
+        <Button 
+          @click="gotoCreateEntities"
+          type="primary" 
+          style="float: right;margin-right: 15px;">
+        添加
+        </Button>
       </div>
     </div>
     <div class="breadList">
@@ -151,7 +157,7 @@ export default {
       date: '', // 日期
       pageSize: 10, // 每页显示行数
       pageNo: 1, // 显示页数
-      total: 0, //总信息条数
+      total: 0, // 总信息条数
       appName: ''
     }
   },
@@ -211,9 +217,9 @@ export default {
     },
     // 编辑词库
     gotoEditEntities (params) {
-    let SelectEntity = params.id
-    this.$store.dispatch('setEntityId', SelectEntity)
-    this.$router.push({ name: 'EditEntities', params: { appId: this.getAppId } })
+      let SelectEntity = params.id
+      this.$store.dispatch('setEntityId', SelectEntity)
+      this.$router.push({ name: 'EditEntities', params: { appId: this.getAppId } })
     },
     // 删除词库
     delEntities () {

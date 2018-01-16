@@ -28,7 +28,7 @@
         </Input>
       </div>
     </div>
-    <div>
+    <div class="select-box">
       <Select style="width:500px;" @on-change="getTransList">
         <Option v-for="item in appList" :value="item.id" :key="item.id" >{{item.name}}</Option>
       </Select>
@@ -72,12 +72,23 @@ export default {
         }
       ],
       trainList: [],
-      selectId: '' // 选中的应用id
+      selectId: '', // 选中的应用id
+      date: '',
+      pageSize: 10,
+      pageNo: 1,
+      total: 0,
+      name: '' // 关键词搜索
     }
   },
   methods: {
     getAppList () {
-      this.$axios.post('app/list', { name: '' }).then(response => {
+      let data = {
+        name: this.name,
+        date: this.date,
+        pageSize: this.pageSize,
+        pageNo: this.pageNo
+      }
+      this.$axios.post('app/list', data).then(response => {
         if (response.data) {
           this.appList = response.data.list
         }
@@ -86,7 +97,14 @@ export default {
     // 获取训练表格值
     getTransList (id) {
       this.selectId = id
-      this.$axios.post('train/list', { id: id || '' }).then(response => {
+      let data = {
+        id: id || '',
+        name: this.name,
+        date: this.date,
+        pageSize: this.pageSize,
+        pageNo: this.pageNo
+      }
+      this.$axios.post('train/list', data).then(response => {
         if (response.data) {
           this.trainList = response.data.trainList
         }
@@ -101,6 +119,15 @@ export default {
           this.$Message.success('训练失败！')
         }
       })
+    },
+    dateChange (date) {
+      this.date = date
+      this.pageNo = 1
+      this.getEntitiesList()
+    },
+    pageChange (pageNo) {
+      this.pageNo = pageNo
+      this.getEntitiesList()
     }
   },
   created () {
@@ -113,6 +140,12 @@ export default {
 <style>
   .train-tbl {
     margin-top: 15px;
+  }
+  .ivu-table-body {
+    overflow: hidden;
+  }
+  .select-box {
+    margin-bottom: 15px;
   }
 </style>
 
