@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="content-body">
     <Form :model="createAppForm" ref="createAppForm" :rules="ruleAppForm">
       <Form-item label="应用名称" prop="name">
         <Input class="line-input" v-model="createAppForm.name"></Input>
@@ -44,8 +44,8 @@ export default {
         isPrivate: '', // 是否公开 0/1
         defReply: '', // 默认回复
         describe: '', // 应用描述
-        storage: '', // 知识库选择
-        createBy: this.$store.getters.getUserName
+        storage: '' // 知识库选择
+        // createBy: this.$store.getters.getUserName
       },
       storageList: [
         {
@@ -100,7 +100,7 @@ export default {
   }
 }
 </script>
-<style>
+<style lang="less">
   .line-input {
     border: none;
   }

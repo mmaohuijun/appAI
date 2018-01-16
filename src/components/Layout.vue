@@ -280,7 +280,7 @@ export default {
                   left: 50px;
                   top: 14px;
                 }
-                
+
                 &:hover {
                   background: #0396FF
                 }
@@ -335,12 +335,12 @@ export default {
       padding-left: 150px;
       margin-top:-15px;
     }
-    .layout>ul {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-    }
+    // .layout>ul {
+    //   position: fixed;
+    //   top: 0;
+    //   left: 0;
+    //   width: 100%;
+    // }
     // .layout>div {
     //   background: #fff;
     //   padding: 30px 30px 0 30px;
@@ -376,6 +376,82 @@ export default {
       }
     }
 
+
+  .list-header {
+    background: #0A469E;
+    color: #fff;
+    font-size: 16px;
+    padding: 15px;
+  }
+  aside {
+    width: 300px;
+    border: 1px solid #ccc;
+    padding: 0 0 15px 0;
+    margin-right: 15px;
+    border-bottom: none;
+    border-top: none;
+    position: absolute;
+    left: 20px;
+    top: 129px;
+    bottom: 0px;
+    background: #fff;
+
+    input {
+      outline: none;
+      border: none;
+      // border-right: 1px solid #ccc;
+      width: 290px;
+      padding: 10px 15px;
+      // box-sizing: border-box;
+    }
+    ul {
+      overflow: auto;
+      border-top: 1px solid #ccc;
+      li {
+        // border-bottom: 1px solid #ccc;       
+        a {
+          width: 100%;
+          display: inline-block;
+          padding: 8px 15px;
+          color: #333;
+
+          &:hover {
+            color: #fff;
+          }
+        }
+
+        &:hover a {
+          cursor: pointer;
+        background: #9399A6;
+        }
+      }
+    }
+  }
+  
+  // 右侧表单
+  .form {
+    margin-left: 330px;
+    flex-grow: 1;
+    .choosed {
+      background: #333;
+    }
+  }
+  .add-keywords-tbl {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid #ccc;
+
+    td {
+      padding: 5px 20px;
+      border: 1px solid #ccc;
+    }
+
+    input {
+      width: 100%;
+      outline: none;
+      border: none;
+    }
+  }
 
 //     /* 没有应用、场景、词库列表 apps/intents/entities */ 
 //     .no-list {
@@ -438,56 +514,56 @@ export default {
 //       padding: 5px;
 //       margin-bottom: 1px;
 //     }
-//     // 左侧侧边栏 列表
-//     aside {
-//       width: 300px;
-//       border: 1px solid #ccc;
-//       padding: 15px 0;
-//       margin-right: 15px;
-//       border-bottom: none;
-//       position: fixed;
-//       left: 0;
-//       top: 60px;
-//       height: 100%;
-//       // background: #ccc;
-//       input {
-//       width: 290px;
-//       outline: none;
-//       border: none;
-//       padding: 10px 15px;
-//       }
-//       h2 {
-//         border-bottom: 1px solid #ccc;
-//         padding-bottom: 15px;
-//         width: 300px;
-//         padding-left: 15px;
-//       }
-//       ul {
-//         border-top: 1px solid #ccc;
-//         li {
-//           // border-bottom: 1px solid #ccc;       
-//           a {
-//             width: 100%;
-//             display: inline-block;
-//             padding: 8px 15px;
-//             color: #333;
+    // 左侧侧边栏 列表
+    // aside {
+    //   width: 300px;
+    //   border: 1px solid #ccc;
+    //   padding: 15px 0;
+    //   margin-right: 15px;
+    //   border-bottom: none;
+    //   position: fixed;
+    //   left: 0;
+    //   top: 60px;
+    //   height: 100%;
+    //   // background: #ccc;
+    //   input {
+    //   width: 290px;
+    //   outline: none;
+    //   border: none;
+    //   padding: 10px 15px;
+    //   }
+    //   h2 {
+    //     border-bottom: 1px solid #ccc;
+    //     padding-bottom: 15px;
+    //     width: 300px;
+    //     padding-left: 15px;
+    //   }
+    //   ul {
+    //     border-top: 1px solid #ccc;
+    //     li {
+    //       // border-bottom: 1px solid #ccc;       
+    //       a {
+    //         width: 100%;
+    //         display: inline-block;
+    //         padding: 8px 15px;
+    //         color: #333;
 
-//             &:hover {
-//               color: #fff;
-//             }
-//           }
+    //         &:hover {
+    //           color: #fff;
+    //         }
+    //       }
 
-//           &:hover a {
-//             cursor: pointer;
-//           background: #9399A6;
-//           }
-//         }
-//       }
-//     }
-//     .form {
-//       margin-left: 300px;
-//     }
-//   }
+    //       &:hover a {
+    //         cursor: pointer;
+    //       background: #9399A6;
+    //       }
+    //     }
+    //   }
+    // }
+    // .form {
+    //   margin-left: 300px;
+    // }
+  //}
 //   // 空列表
 //   .empty-list {
 //   padding: 15px;

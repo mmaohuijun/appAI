@@ -1,35 +1,4 @@
 <template>
-  <!-- <div>
-    <div class="app-header">      
-      <h1>场景</h1>
-    </div> 
-    <div v-if="ifIntents===0">
-      <Input placeholder="搜索" icon="search" @on-click="getIntentsList" v-model="name"></Input>
-      <ul class="list-group">
-      <li @click="gotoEditIntents(index)" v-for="(item, index) in intentList" :key="index">
-        <a>{{item.name}}</a>
-        <div class="rt">
-          <a @click.stop="del(index)">
-            <Icon type="trash-a" class="app-icon"></Icon>
-          </a>
-        </div>
-      </li>
-    </ul>
-      <Button type="primary" size="large" @click="gotoCreateIntents">创建场景</Button>
-      <Modal
-        v-model="showModal"
-        @on-ok="delIntents"
-        title="删除场景">
-          <p>确定删除场景吗</p>
-          <p>删除后无法恢复</p>
-        </Modal>
-    </div> 
-    <div v-else-if="ifIntents===1" class="no-list">
-      <p>还没有场景，先<a href="" @click.prevent="gotoCreateIntents">创建第一个</a>场景</p>
-      <p>详细了解场景，<a href="">查看文档</a></p>
-    </div>
-    <div v-else></div>
-  </div> -->
   <div class="content-body">
     <div class="content-body-header">
       <div class="">

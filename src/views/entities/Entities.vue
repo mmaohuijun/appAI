@@ -1,35 +1,4 @@
 <template>
-  <!-- <div>
-    <div class="app-header">      
-      <h1>词库</h1>
-    </div>
-    <div v-if="ifEntities===0">
-      <Input placeholder="搜索" icon="search" v-model="name" @on-click="getEntitiesList"></Input>
-      <ul class="list-group">
-        <li @click="gotoEditEntities(index)" v-for="(item, index) in entitiesList" :key="index">
-          <a>{{item.name}}</a>
-          <div class="rt">
-            <a @click.stop="showM(index)">
-              <Icon type="trash-a" class="app-icon"></Icon>
-            </a>
-          </div>
-        </li>
-      </ul>
-      <Button type="primary" size="large" @click="gotoCreateEntities">创建词库</Button>
-      <Modal
-        v-model="showModal"
-        title="删除场景"
-        @on-ok="delEntities(index)">
-        <p>确定删除场景吗</p>
-        <p>删除后无法恢复</p>
-      </Modal>
-    </div>
-    <div class="no-list" v-else-if="ifEntities===1">
-      <p>还没有词库，先<a href="" @click.prevent="gotoCreateEntities">创建第一个</a>词库</p>
-      <p>详细了解词库，<a href="">查看文档</a></p>
-    </div>
-    <div v-else></div>
-  </div> -->
   <div class="content-body">
     <div class="content-body-header">
       <div class="">
@@ -79,7 +48,6 @@
           <p>确定删除场景吗</p>
           <p>删除后无法恢复</p>
         </Modal>
- 
   </div>
 </template>
 

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="content-body">
     <Form :model="createAppForm" ref="createAppForm" :rules="ruleAppForm">
       <Form-item label="应用名称" prop="name">
         <Input class="line-input" v-model="createAppForm.name"></Input>
@@ -48,7 +48,7 @@
             <p>你确定要删除这个应用吗？删除后无法恢复！</p>
           </td>
           <td>
-            <Button size="large" @click="showModal=true">删除应用</Button>
+            <Button type="primary" size="large" @click="showModal=true">删除应用</Button>
           </td>
         </tr>
       </table>
@@ -154,7 +154,8 @@ export default {
     width: 100%;
     // 表头部分
     .tbl-head {
-      background: #eee;
+      background: #0A469E;
+      color: #fff;
       height: 50px;
       font-size: 18px;
     }

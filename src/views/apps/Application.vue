@@ -1,28 +1,4 @@
 <template>
-  <!-- <div>
-    <div class="app-header">      
-      <h1>所有应用</h1>
-    </div>
-    <div v-if="ifApps===0">
-      <Input placeholder="搜索" icon="search" v-model="name" @on-click="getAppList"></Input>
-      <ul class="list-group">
-        <li @click="gotoIntents(index)" v-for="(item, index) in this.appList" :key="index">
-          <a>{{item.name}}</a>
-          <div class="rt">
-            <a @click.stop="gotoEditApp(index)">
-              <Icon type="gear-a" class="app-icon"></Icon>
-            </a>
-          </div>
-        </li>
-      </ul>
-      <Button type="primary" size="large" @click="gotoCreateApp">创建应用</Button>
-    </div>
-    <div v-else-if="ifApps===1" class="no-list">
-      <p>还没有词库，先<a href="" @click.prevent="gotoCreateApp">创建第一个</a>应用</p>
-      <p>详细了解应用，<a href="">查看文档</a></p>
-    </div>
-    <div v-else></div>
-  </div> -->
   <div class="content-body">
     <div class="content-body-header">
       <div class="">
@@ -48,7 +24,13 @@
         </Button>
       </div>
     </div>
-
+      <Modal
+        v-model="showModal"
+        title="删除应用"
+        @on-ok="deleteApp">
+        <p>确定删除应用吗？</p>
+        <p>删除后无法恢复</p>
+      </Modal>
       <Table 
         @on-row-click="gotoIntents"
         :columns="columnApp" 
@@ -113,8 +95,8 @@ export default {
                 },
                 on: {
                   click () {
-                    console.log(params)
-                    that.gotoEditApp(params.index)
+                    that.clickEdit = true
+                    // that.gotoEditApp(params.index)
                   }
                 }
               }),
@@ -130,7 +112,8 @@ export default {
                 },
                 on: {
                   click () {
-                    console.log('delete')
+                    that.showModal = true
+                    // that.clickDel = true
                   }
                 }
               })
@@ -141,7 +124,10 @@ export default {
       date: '', // 日期
       pageSize: 10, // 每页显示行数
       pageNo: 1, // 显示页数
-      total: 0 // 总信息条数
+      total: 0, // 总信息条数
+      clickEdit: false,
+      showModal: false,
+      delId: ''
     }
   },
   computed: {
@@ -152,16 +138,20 @@ export default {
   methods: {
     // 跳转到场景
     gotoIntents (params) {
-      console.log(params)
-      // let appId = params.id
-      // let appId = this.appList[index].id
-      this.$store.dispatch('setAppId', params.id)
-      this.$store.dispatch('setAppName', params.name)
-      this.$router.push({ name: 'Intents', params: { appId: params.id } })
+      if (this.clickEdit) {
+        this.gotoEditApp(params.id)
+        this.clickEdit = false
+      } else if (this.showModal) {
+        this.delId = params.id
+      } else {
+        this.$store.dispatch('setAppId', params.id)
+        this.$store.dispatch('setAppName', params.name)
+        this.$router.push({ name: 'Intents', params: { appId: params.id } })
+      }
     },
     // 跳转到 编辑页面
-    gotoEditApp (index) {
-      let appId = this.appList[index].id
+    gotoEditApp (appId) {
+      console.log('appId', appId)
       this.$store.dispatch('setAppId', appId)
       this.$router.push({ name: 'EditApp', params: { appId: appId } })
     },
@@ -187,6 +177,19 @@ export default {
           }
         }
       })
+    },
+    // 删除应用
+    deleteApp () {
+      if (this.delId) {
+        this.$axios.post('app/del', { id: this.delId }).then(response => {
+          if (response.data === null) {
+            this.$Message.success('删除成功！')
+            this.getAppList()
+            // this.$router.push({ name: 'Application' })
+          }
+        })
+      }
+      this.delId = ''  
     },
     dateChange (date) {
       this.date = date

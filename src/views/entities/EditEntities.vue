@@ -1,5 +1,5 @@
 <template>
-  <div class="create-box">
+  <!-- <div class="create-box">
     <aside>
       <h2>词库列表</h2>
       <input type="text" placeholder="搜索" v-model="name">   
@@ -38,6 +38,60 @@
         <Button type="primary" size="large" @click="saveCreate('createEntitiesForm')">保存</Button>
       </Form-item>
     </Form>
+  </div> -->
+  <div class="content-body ">
+    <div class="content-body-header">
+      <div class="">
+        <span style="padding-right: 15px;">关键词</span>
+        <Input 
+          @on-click="getEntitiesList"
+          v-model="name"
+          icon="ios-clock-outline" 
+          placeholder="应用名称" 
+          style="width: 200px">
+        </Input>
+      </div>
+    </div> 
+    <div>
+      <h2 class="list-header">词库列表</h2>
+      <div style="display: flex" >
+        <aside>
+          <ul v-if="hasEntities">
+            <li 
+              v-for="(item, index) in entitiesList" 
+              :key="index" 
+              @click="gotoEdit(index)">
+              <a>{{item.name}}</a>
+            </li>
+          </ul>
+          <p v-else class="empty-list">当前词库列表为空！</p>
+        </aside>
+        <Form class="form" ref="createEntitiesForm" :model="createEntitiesForm" :rules="ruleEntitiesForm">
+          <Form-item label="词库名称" prop="name">
+            <Input v-model="createEntitiesForm.name"></Input>
+          </Form-item>
+          <Form-item>
+            <table class="add-keywords-tbl">
+              <tr v-for="(item, index) in createEntitiesForm.wordList" :key="index">
+                <td>
+                  <input 
+                  placeholder="添加关键词" 
+                  type="text" 
+                  v-focus="addLine"
+                  v-model="item.keyword">
+                </td>
+              </tr>      
+            </table>
+            <a href="" @click.prevent="addLine">添加一行</a>
+          </Form-item>
+          <Form-item>
+            <Button type="primary" size="large" @click="saveCreate('createEntitiesForm')">保存</Button>
+          </Form-item>
+        </Form>         
+      </div>
+       
+     </div> 
+
   </div>
 </template>
 
@@ -78,7 +132,6 @@ export default {
       return this.$store.getters.getAppId
     },
     getEntityId () {
-      // return this.$store.getters.getEntityId
       this.entityId = this.$store.state.entityId
       if (!this.entityId) {
         this.entityId = this.$store.getters.getEntityId
@@ -195,78 +248,8 @@ export default {
 
 <style lang="less">
   // 左侧侧边栏
-  .create-box {
-    display: flex;
-  }
-  aside {
-    // float: left;
-    width: 300px;
-    border: 1px solid #ccc;
-    padding: 15px 0;
-    margin-right: 15px;
-    border-bottom: none;
-
-    h2 {
-      border-bottom: 1px solid #ccc;
-      padding-bottom: 15px;
-      width: 300px;
-      padding-left: 15px;
-    }
-    input {
-      outline: none;
-      border: none;
-      // border-right: 1px solid #ccc;
-      width: 290px;
-      padding: 10px 15px;
-      // box-sizing: border-box;
-    }
-    ul {
-      border-top: 1px solid #ccc;
-      li {
-        // border-bottom: 1px solid #ccc;       
-        a {
-          width: 100%;
-          display: inline-block;
-          padding: 8px 15px;
-          color: #333;
-
-          &:hover {
-            color: #fff;
-          }
-        }
-
-        &:hover a {
-          cursor: pointer;
-        background: #9399A6;
-        }
-      }
-    }
-  }
-  // 右侧表单
-  .form {
-    flex-grow: 1;
-  }
-  .add-keywords-tbl {
-    width: 100%;
-    border-collapse: collapse;
-    border: 1px solid #ccc;
-
-    td {
-      padding: 5px 20px;
-      border: 1px solid #ccc;
-
-      &:hover {
-        .icon-trash {
-          display: block;
-        }
-      }
-    }
-
-    input {
-      width: 100%;
-      outline: none;
-      border: none;
-    }
+  .content-body {
+    position: relative
   }
   .icon-trash {
     position: absolute;
