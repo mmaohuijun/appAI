@@ -1,44 +1,4 @@
 <template>
-  <!-- <div class="create-box">
-    <aside>
-      <h2>词库列表</h2>
-      <input type="text" placeholder="搜索" v-model="name">   
-      <ul v-if="hasEntities">    
-        <li 
-          v-for="(item, index) in entitiesList" 
-          :key="index" 
-          @click="gotoEdit(index)">
-          <a>{{item.name}}</a>
-        </li>
-      </ul>
-      <p v-else class="empty-list">当前词库列表为空！</p>
-    </aside>
-    <Form class="form" ref="createEntitiesForm" :model="createEntitiesForm" :rules="ruleEntitiesForm">
-      <Form-item label="词库名称" prop="name">
-        <Input v-model="createEntitiesForm.name"></Input>
-      </Form-item>
-      <Form-item>
-        <table class="add-keywords-tbl">
-          <tr v-for="(item, index) in createEntitiesForm.wordList" :key="index">
-            <td style="position: relative">
-              <input
-              placeholder="添加关键词"
-              type="text" 
-              v-focus="addLine"
-              v-model="item.keyword">
-              <a href="" @click.prevent="delLine(index)" v-if="index!==0">
-                <Icon type="trash-a" class="icon-trash"></Icon>
-              </a>    
-            </td>
-          </tr>      
-        </table>
-        <a href="" @click.prevent="addLine">添加一行</a>
-      </Form-item>
-      <Form-item>
-        <Button type="primary" size="large" @click="saveCreate('createEntitiesForm')">保存</Button>
-      </Form-item>
-    </Form>
-  </div> -->
   <div class="content-body ">
     <div class="content-body-header">
       <div class="">

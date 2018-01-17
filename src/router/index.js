@@ -103,7 +103,8 @@ const normalRouter = [
     name: '用户权限',
     children: [
       { path: 'index', name: 'UserAuth', component: UserAuth },
-      { path: 'edit', name: 'EditUserAuth', component: EditUserAuth }
+      { path: 'edit', name: 'EditUserAuth', component: EditUserAuth },
+      { path: 'create', name: 'CreateUserAuth', component: EditUserAuth }
     ],
     meta: { requiresLogin: true }
   },
@@ -125,7 +126,8 @@ const normalRouter = [
     name: '密级权限',
     children: [
       { path: 'index', name: 'SecurityAuth', component: SecurityAuth },
-      { path: 'edit', name: 'EditSecurityAuth', component: EditSecurityAuth }
+      { path: 'edit', name: 'EditSecurityAuth', component: EditSecurityAuth },
+      { path: 'create', name: 'CreateSecurityAuth', component: EditSecurityAuth }
     ],
     meta: { requiresLogin: true }
   },

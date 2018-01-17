@@ -8,12 +8,12 @@ Vue.use(Vuex)
 const store = new Vuex.Store({
   // 定义状态
   state: {
+    userName: '', // 用户id
     appId: '', // 选择的应用id
     appName: '', // 选中的应用 名称
     intentId: '', // 选中的场景 id
     entityId: '', // 选中的词库 id
-    hasIntents: false, // 是否有场景
-    userName: '' // 用户id
+    userAuthId: 0 // 选中用户权限id
   },
   getters: {
     getAppId: () => {
@@ -30,6 +30,9 @@ const store = new Vuex.Store({
     },
     getUserName: () => {
       return $Storage.localStorage.getItem('userName')
+    },
+    getUserAuthId: () => {
+      return $Storage.sessionStorage.getItem('userAuthId')
     }
   },
   mutations: {
@@ -45,12 +48,11 @@ const store = new Vuex.Store({
     SET_ENTITYID (state, id) {
       state.entityId = id
     },
-    HAS_INTENTS (state) {
-      state.hasIntents = true
-      // $Storage.sessionStorage.setItem('hasIntents', true)
-    },
     SET_USERNAME (state, name) {
       state.userName = name
+    },
+    SET_USERAUTHID (state, id) {
+      state.userAuthId = id
     }
   },
   actions: {
@@ -78,9 +80,6 @@ const store = new Vuex.Store({
     clearAppName () {
       $Storage.sessionStorage.removeItem('appName')
     },
-    hasIntents ({ commit }) {
-      commit('HAS_INTENTS')
-    },
     setUserName ({ dispatch, commit }, name) {
       dispatch('clearUserName')
       commit('SET_USERNAME', name)
@@ -88,6 +87,10 @@ const store = new Vuex.Store({
     },
     clearUserName () {
       $Storage.localStorage.removeItem('userName')
+    },
+    setUserAuthId ({ commit }, id) {
+      commit('SET_USERAUTHID', id)
+      $Storage.sessionStorage.setItem('userAuthId', id)
     }
   }
 })

@@ -23,7 +23,7 @@
       </Menu>
     </div>
         <div class="sider">
-            <Menu active-name="1-1" :open-names="['1']" @on-select="chooseMenu">
+            <Menu active-name="1-1"  @on-select="chooseMenu">
                 <Submenu name="1">
                     <template slot="title">
                         <Icon type="ios-navigate"></Icon>
