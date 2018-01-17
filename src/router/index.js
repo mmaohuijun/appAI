@@ -21,6 +21,21 @@ const Module = () => import('../views/modules/Module')
 
 // 权限
 const Auth = () => import('../views/auth/Auth')
+const UserAuth = () => import('../views/auth/userAuth/UserAuth')
+const EditUserAuth = () => import('../views/auth/userAuth/EditUserAuth')
+
+const RoleAuth = () => import('../views/auth/roleAuth/RoleAuth')
+const EditRoleAuth = () => import('../views/auth/roleAuth/EditRoleAuth')
+
+const SecurityAuth = () => import('../views/auth/securityAuth/SecurityAuth')
+const EditSecurityAuth = () => import('../views/auth/securityAuth/EditSecurityAuth')
+
+const TeamAuth = () => import('../views/auth/teamAuth/TeamAuth')
+const EditTeamAuth = () => import('../views/auth/teamAuth/EditTeamAuth')
+
+const ThemeAuth = () => import('../views/auth/themeAuth/ThemeAuth')
+const EditThemeAuth = () => import('../views/auth/themeAuth/EditThemeAuth')
+
 Vue.use(Router)
 
 const normalRouter = [
@@ -78,6 +93,61 @@ const normalRouter = [
     name: '权限',
     children: [
       { path: 'index', name: 'Auth', component: Auth }
+    ],
+    meta: { requiresLogin: true }
+  },
+  {
+    path: '/auth/userAuth',
+    component: Layout,
+    redirect: '/auth/userAuth/index',
+    name: '用户权限',
+    children: [
+      { path: 'index', name: 'UserAuth', component: UserAuth },
+      { path: 'edit', name: 'EditUserAuth', component: EditUserAuth }
+    ],
+    meta: { requiresLogin: true }
+  },
+  {
+    path: '/auth/roleAuth',
+    component: Layout,
+    redirect: '/auth/roleAuth/index',
+    name: '角色权限',
+    children: [
+      { path: 'index', name: 'RoleAuth', component: RoleAuth },
+      { path: 'edit', name: 'EditRoleAuth', component: EditRoleAuth }
+    ],
+    meta: { requiresLogin: true }
+  },
+  {
+    path: '/auth/securityAuth',
+    component: Layout,
+    redirect: '/auth/securityAuth/index',
+    name: '密级权限',
+    children: [
+      { path: 'index', name: 'SecurityAuth', component: SecurityAuth },
+      { path: 'edit', name: 'EditSecurityAuth', component: EditSecurityAuth }
+    ],
+    meta: { requiresLogin: true }
+  },
+  {
+    path: '/auth/themeAuth',
+    component: Layout,
+    redirect: '/auth/themeAuth/index',
+    name: '主题权限',
+    children: [
+      { path: 'index', name: 'ThemeAuth', component: ThemeAuth },
+      { path: 'edit', name: 'EditThemeAuth', component: EditThemeAuth }
+    ],
+    meta: { requiresLogin: true }
+  },
+  {
+    path: '/auth/teamAuth',
+    component: Layout,
+    redirect: '/auth/teamAuth/index',
+    name: '组权限',
+    children: [
+      { path: 'index', name: 'TeamAuth', component: TeamAuth },
+      { path: 'edit', name: 'EditTeamAuth', component: EditTeamAuth }
     ],
     meta: { requiresLogin: true }
   }

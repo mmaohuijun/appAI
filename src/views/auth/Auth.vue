@@ -1,5 +1,6 @@
 <template>
   <div>
+    <p></p>
     <button @click="test">权限</button>
   </div>
 </template>

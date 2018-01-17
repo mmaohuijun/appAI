@@ -61,7 +61,12 @@
                     <Icon type="ios-analytics"></Icon>
                     权限管理
                   </template>
-                  <MenuItem name="5-1">权限测试</MenuItem>
+                  <MenuItem name="5-1">用户权限</MenuItem>
+                  <MenuItem name="5-2">角色权限</MenuItem>
+                  <MenuItem name="5-3">组权限</MenuItem>
+                  <MenuItem name="5-4">主题权限</MenuItem>
+                  <MenuItem name="5-5">密集权限</MenuItem>
+                  <MenuItem name="5-6">权限测试</MenuItem>                  
                 </Submenu>
                 <Submenu name="6">
                   <template slot="title">
@@ -120,18 +125,40 @@ export default {
   },
   methods: {
     chooseMenu (name) {
-      console.log(name)
-      console.log('chooseMenu', this.getAppId)
-      if (name === '1-1') {
-        this.gotoApp()
-      } else if (name === '1-2') {
-        this.getAppId ? this.gotoIntents() : this.$Message.warning('请先选择一个应用')
-      } else if (name === '1-3') {
-        this.getAppId ? this.gotoEntities() : this.$Message.warning('请先选择一个应用')
-      } else if (name === '1-4') {
-        this.gotoModules()
-      } else if (name === '5-1') {
-        this.gotoAuth()
+      // console.log(name)
+      // console.log('chooseMenu', this.getAppId)
+      // if (name === '1-1') {
+      //   this.gotoApp()
+      // } else if (name === '1-2') {
+      //   this.getAppId ? this.gotoIntents() : this.$Message.warning('请先选择一个应用')
+      // } else if (name === '1-3') {
+      //   this.getAppId ? this.gotoEntities() : this.$Message.warning('请先选择一个应用')
+      // } else if (name === '1-4') {
+      //   this.gotoModules()
+      // } else if (name === '5-1') {
+      //   this.gotoAuth()
+      // }
+      switch (name) {
+        case '1-1': this.gotoApp()
+          break
+        case '1-2': this.getAppId ? this.gotoIntents() : this.$Message.warning('请先选择一个应用')
+          break
+        case '1-3': this.getAppId ? this.gotoEntities() : this.$Message.warning('请先选择一个应用')
+          break
+        case '1-4': this.$router.push({ name: 'Module' })
+          break
+        case '5-6': this.$router.push({ name: 'Auth' })
+          break
+        case '5-1': this.$router.push({ name: 'UserAuth' })
+          break
+        case '5-2': this.$router.push({ name: 'RoleAuth' })
+          break
+        case '5-3': this.$router.push({ name: 'TeamAuth' })
+          break
+        case '5-4': this.$router.push({ name: 'ThemeAuth' })
+          break
+        case '5-5': this.$router.push({ name: 'SecurityAuth' })
+          break
       }
     },
     // 场景 词库 菜单
@@ -171,14 +198,6 @@ export default {
     // 查看某应用下 所有词库
     gotoEntities () {
       this.$router.push({ name: 'Entities', params: { appId: this.getAppId } })
-    },
-    // 跳转模态页面
-    gotoModules () {
-      this.$router.push({ name: 'Module' })
-    },
-    // 跳转权限页面
-    gotoAuth () {
-      this.$router.push({ name: 'Auth' })
     },
     // 退出
     logout () {
