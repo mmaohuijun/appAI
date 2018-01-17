@@ -34,7 +34,7 @@ export default {
   name: 'EditUserAuth',
   data () {
     return {
-      authUserId: '', // 当前修改 id
+      userAuthId: '', // 当前修改 id
       authForm: {
         name: '',
         email: '',
@@ -46,10 +46,15 @@ export default {
     }
   },
   computed: {
-    // getAuthUserId () {
-    //   this.authUserId = this.$store.state.authUserId
-    //   if (this.authUserId)
-    // }
+    getUserAuthId () {
+      this.userAuthId = this.$store.state.userAuthId
+      if (!this.userAuthId) {
+        if (this.$store.getters.getUserAuthId) {
+          this.userAuthId = this.$store.getters.getUserAuthId
+        }    
+      }
+      return this.userAuthId
+    }
   },
   methods: {
     // 获取部门列表
@@ -67,7 +72,6 @@ export default {
         name: this.authForm.name,
         email: this.authForm.email,
         phone: this.authForm.phone,
-        company: this.authForm.company,
         officeid: this.authForm.officeid
       }
       this.$axios.post('user/regist', data).then(response => {
@@ -79,14 +83,14 @@ export default {
     },
     // 获取用户权限表单详情
     getAuthDetail () {
-
-      this.$axios.post('user/detail', { id: id }).then(response => {
+      this.$axios.post('user/detail', { id: this.getUserAuthId }).then(response => {
         console.log(response)
       })
     }
   },
   mounted () {
     this.getDeptList()
+    this.getAuthDetail()
   }
 }
 </script>

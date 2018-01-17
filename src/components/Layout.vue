@@ -7,7 +7,7 @@
         </div>
         <div class="layout-logout">
           <p>
-            Hi,{{this.$store.getters.getUserName}}
+            Hi,{{this.$store.state.userName || this.$store.getters.getUserName}}
             <Dropdown>
                 <a href="javascript:void(0)">
                     设置
