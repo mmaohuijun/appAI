@@ -13,7 +13,8 @@ const store = new Vuex.Store({
     appName: '', // 选中的应用 名称
     intentId: '', // 选中的场景 id
     entityId: '', // 选中的词库 id
-    userAuthId: 0 // 选中用户权限id
+    userAuthId: '', // 选中用户权限id
+    teamAuthId: '' // 组权限  id
   },
   getters: {
     getAppId: () => {
@@ -53,6 +54,10 @@ const store = new Vuex.Store({
     },
     SET_USERAUTHID (state, id) {
       state.userAuthId = id
+    },
+    SET_TEAMAUTHID (state, id) {
+      state.teamAuthId = id
+      $Storage.sessionStorage.setItem('teamAuthId', id)
     }
   },
   actions: {
@@ -91,6 +96,9 @@ const store = new Vuex.Store({
     setUserAuthId ({ commit }, id) {
       commit('SET_USERAUTHID', id)
       $Storage.sessionStorage.setItem('userAuthId', id)
+    },
+    clearUserAuthId () {
+      $Storage.sessionStorage.removeItem('userAuthId')
     }
   }
 })

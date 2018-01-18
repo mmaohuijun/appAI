@@ -2,7 +2,7 @@
   <div class="content-body">
     <Form :model="authForm">
       <Form-item label="姓名">
-        <Input v-model="authForm.name"></Input>
+        <Input v-model="authForm.username"></Input>
       </Form-item>
       <Form-item label="email">
         <Input v-model="authForm.email"></Input>
@@ -24,7 +24,7 @@
         </Select>
       </Form-item>
       <Form-item>
-        <Button @click="saveUserAuth">提交</Button>
+        <Button type="primary" @click="saveUserAuth">提交</Button>
       </Form-item>
     </Form>
   </div>
@@ -36,7 +36,7 @@ export default {
     return {
       userAuthId: '', // 当前修改 id
       authForm: {
-        name: '',
+        username: '',
         email: '',
         phone: '',
         company: '微构科技',
@@ -47,29 +47,17 @@ export default {
   },
   computed: {
     getUserAuthId () {
-      this.userAuthId = this.$store.state.userAuthId
-      if (!this.userAuthId) {
-        if (this.$store.getters.getUserAuthId) {
-          this.userAuthId = this.$store.getters.getUserAuthId
-        }    
-      }
+      this.userAuthId = this.$store.state.userAuthId || this.$store.getters.getUserAuthId
       return this.userAuthId
     }
   },
   methods: {
-    // 获取部门列表
-    getDeptList () {
-      this.$axios.post('user/to_save').then(response => {
-        if (response.data) {
-          this.deptList = response.data.officeAllList
-        }
-      })
-    },
+ 
     // 保存用户权限
     saveUserAuth () {
       let data = {
-        id: this.id,
-        name: this.authForm.name,
+        id: this.getUserAuthId || '',
+        username: this.authForm.username,
         email: this.authForm.email,
         phone: this.authForm.phone,
         officeid: this.authForm.officeid
@@ -83,9 +71,16 @@ export default {
     },
     // 获取用户权限表单详情
     getAuthDetail () {
-      this.$axios.post('user/detail', { id: this.getUserAuthId }).then(response => {
-        console.log(response)
-      })
+      console.log('getAuthDetail', this.getUserAuthId)
+      if (this.getUserAuthId) {
+        this.$axios.post('user/detail', { id: this.getUserAuthId }).then(response => {
+          let data = response.data
+          this.authForm.username = data.username || ''
+          this.authForm.email = data.email || ''
+          this.authForm.phone = data.phone || ''
+          this.authForm.officeid = data.officeid || ''
+        })
+      }
     }
   },
   mounted () {

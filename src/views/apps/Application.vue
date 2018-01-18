@@ -201,7 +201,7 @@ export default {
       this.getAppList()
     }
   },
-  created () {
+  mounted () {
     this.getAppList()
   }
 }
