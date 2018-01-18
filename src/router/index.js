@@ -22,7 +22,7 @@ const Module = () => import('../views/modules/Module')
 // 权限
 const Auth = () => import('../views/auth/Auth')
 const UserAuth = () => import('../views/auth/userAuth/UserAuth')
-const EditUserAuth = () => import('../views/auth/userAuth/EditUserAuth')
+// const EditUserAuth = () => import('../views/auth/userAuth/EditUserAuth')
 
 const RoleAuth = () => import('../views/auth/roleAuth/RoleAuth')
 const EditRoleAuth = () => import('../views/auth/roleAuth/EditRoleAuth')
@@ -31,7 +31,7 @@ const SecurityAuth = () => import('../views/auth/securityAuth/SecurityAuth')
 const EditSecurityAuth = () => import('../views/auth/securityAuth/EditSecurityAuth')
 
 const TeamAuth = () => import('../views/auth/teamAuth/TeamAuth')
-const EditTeamAuth = () => import('../views/auth/teamAuth/EditTeamAuth')
+// const EditTeamAuth = () => import('../views/auth/teamAuth/EditTeamAuth')
 
 const ThemeAuth = () => import('../views/auth/themeAuth/ThemeAuth')
 const EditThemeAuth = () => import('../views/auth/themeAuth/EditThemeAuth')
@@ -102,9 +102,9 @@ const normalRouter = [
     redirect: '/auth/userAuth/index',
     name: '用户权限',
     children: [
-      { path: 'index', name: 'UserAuth', component: UserAuth },
-      { path: 'edit', name: 'EditUserAuth', component: EditUserAuth },
-      { path: 'create', name: 'CreateUserAuth', component: EditUserAuth }
+      { path: 'index', name: 'UserAuth', component: UserAuth }
+      // { path: 'edit', name: 'EditUserAuth', component: EditUserAuth },
+      // { path: 'create', name: 'CreateUserAuth', component: EditUserAuth }
     ],
     meta: { requiresLogin: true }
   },
@@ -148,8 +148,8 @@ const normalRouter = [
     redirect: '/auth/teamAuth/index',
     name: '组权限',
     children: [
-      { path: 'index', name: 'TeamAuth', component: TeamAuth },
-      { path: 'edit', name: 'EditTeamAuth', component: EditTeamAuth }
+      { path: 'index', name: 'TeamAuth', component: TeamAuth }
+      // { path: 'edit', name: 'EditTeamAuth', component: EditTeamAuth }
     ],
     meta: { requiresLogin: true }
   }

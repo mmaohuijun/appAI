@@ -118,7 +118,6 @@ export default {
                     that.showEdit = true
                     // that.$store.dispatch('setUserAuthId', params.row.id)
                     // that.$router.push({ name: 'EditUserAuth' })
-                    
                   }
                 }
               }),
@@ -154,7 +153,7 @@ export default {
         email: '',
         phone: '',
         company: '微构科技',
-        officeid: 0,
+        officeid: ''
       }
     }
   },
@@ -199,6 +198,7 @@ export default {
     getAuthDetail () {
       this.$axios.post('user/detail', { id: this.saveId }).then(response => {
         let data = response.data
+        console.log(data)
         this.authForm.username = data.username || ''
         this.authForm.email = data.email || ''
         this.authForm.phone = data.phone || ''
@@ -221,9 +221,9 @@ export default {
           this.getAuthList()
         }
       })
-    },   
+    },
     // 重置表单
-    handleReset(name) {
+    handleReset (name) {
       console.log('resetFields')
       this.$refs[name].resetFields()
     },

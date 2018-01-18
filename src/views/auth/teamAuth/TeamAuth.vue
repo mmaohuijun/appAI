@@ -24,16 +24,16 @@
     <Modal
       v-model="showEdit"
       title="编辑组权限">
-      <Form :model="authForm" :label-width="60">
-        <Form-item label="部门名称">
+      <Form ref="authForm" :model="authForm" :label-width="60">
+        <Form-item label="部门名称" prop="name">
           <Input v-model="authForm.name"></Input>
         </Form-item>
-        <Form-item label="机构层级">
-          <Input v-model="authForm.type" ></Input>
+        <Form-item label="机构层级" prop="type">
+          <Input v-model="authForm.type" disabled ></Input>
         </Form-item>
       </Form>
       <div slot="footer">
-        <Button @click="saveEdit">确定</Button>
+        <Button @click="saveEdit" type="primary">确定</Button>
         <Button>取消</Button>
       </div>
     </Modal>
@@ -132,7 +132,9 @@ export default {
       showEdit: false,
       authForm: {
         name: '',
-        type: ''
+        type: 2,
+        parentIds: '',
+        parent: ''
       }
     }
   },
@@ -164,10 +166,14 @@ export default {
     },
     // 获取权限详情
     getAuthDetail (id) {
-      this.$axios.post('office/detail', { id: id } ).then(response => {
+      this.$axios.post('office/detail', { id: id }).then(response => {
         if (response.data) {
           console.log(response)
-          this.authForm = response.data
+          // this.authForm = response.data
+          this.authForm.name = response.data.name
+          this.authForm.parentIds = response.data.parentIds
+          this.authForm.parent = response.data.parent
+          this.authForm.type = response.data.type
         }
       })
     },
@@ -176,9 +182,9 @@ export default {
       let data = {
         id: this.saveId,
         name: this.authForm.name,
-        parentIds: '1,0',
-        parent: 1,
-        type: this.authForm.type
+        parentIds: this.authForm.parentIds || '0,1',
+        parent: this.authForm.parent || 1,
+        type: this.authForm.type || 2
       }
       this.$axios.post('office/save', data).then(response => {
         if (response.status.code === '200') {
@@ -193,7 +199,7 @@ export default {
       })
     },
     deleteTeam () {
-      this.$axios.post('office/del', { id: this.delId }).then(response => {
+      this.$axios.post('office/delete', { id: this.delId }).then(response => {
         console.log(response)
         if (response.data === null) {
           this.$Message.success('删除成功！')
@@ -216,10 +222,18 @@ export default {
     pageChange (pageNo) {
       this.pageNo = pageNo
       this.getAuthList()
+    },
+    resetFields (name) {
+      this.$refs[name].resetFields()
     }
   },
   mounted () {
     this.getAuthList()
+  },
+  watch: {
+    'showEdit' () {
+      this.resetFields('authForm')
+    }
   },
   components: { SearchHeader }
 }
