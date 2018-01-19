@@ -185,7 +185,7 @@ export default {
       authForm: {
         name: '',
         enName: '',
-        dataScope: '',
+        dataScope: ''
       }
     }
   },

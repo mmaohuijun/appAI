@@ -17,28 +17,29 @@ export default {
   name: 'TreeNode',
   data () {
     return {
+      waitList: []
     }
   },
   props: {
-    deptList: Object,
-    waitList: Object
+    deptList: Object
   },
   methods: {
     selectDept () {
       this.$emit('selectDept', this.deptList.name)
     },
     selectChild (dept) {
-      // console.log('select', ele)
       let data = {
         dept: dept,
         name: '',
         date: '',
-        pageSize: 0,
-        pageNo: 0
+        pageSize: 2000,
+        pageNo: 1
       }
       this.$axios.post('user/list', data).then(response => {
-        console.log(response)
-        this.waitList = response.data.userList
+        if (response.data) {
+          this.waitList = response.data.userList
+          this.$store.commit('SET_WAITLIST', this.waitList)
+        }
       })
     }
   },

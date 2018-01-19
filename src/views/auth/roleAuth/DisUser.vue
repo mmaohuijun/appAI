@@ -21,7 +21,7 @@
     </div>
     <Table :columns="disColumn" :data="disUserList">
     </Table>
-    <Modal v-model="showDis">
+    <Modal v-model="showDis" @on-ok="saveDis">
       <Card>
         <p slot="title">所在部门</p>
         <div>
@@ -41,10 +41,9 @@
         <p slot="title">待选人员</p>
         <ul>
             <li 
-            v-for="(item, index) in waitList" 
-            :key="index"
-            :wait-list="waitList">
-              <a href="">{{ item.username }}</a>
+            v-for="(item, index) in this.getWaitList" 
+            :key="index">
+              <a @click="chooseUser(index)">{{ item.username }}</a>
             </li>
           </a>  
         </ul>
@@ -52,7 +51,7 @@
       <Card>
         <p slot="title">已选人员</p>
         <ul>
-          <a href="" v-for="item in disUserList" :key="item.id">
+          <a @click="cancleUser(index)" v-for="(item, index) in disUserList" :key="item.id">
             <li>{{ item.name }}</li>
           </a>  
         </ul>
@@ -112,7 +111,8 @@ export default {
           }
         }
       ],
-      showDis: false // 显示分配 模态框
+      showDis: false, // 显示分配 模态框
+      userIds: '' // 被选中的用户id
     }
   },
   computed: {
@@ -123,6 +123,10 @@ export default {
         this.roleAuthId = this.$store.getters.getRoleAuthId
       }
       return this.roleAuthId
+    },
+    getWaitList () {
+      this.waitList = this.$store.state.waitList
+      return this.waitList
     }
   },
   methods: {
@@ -141,7 +145,6 @@ export default {
       this.$axios.post('user/to_save').then(response => {
         if (response.data) {
           this.deptList = response.data.officeAllList
-          console.log('deptList', this.deptList)
         }
       })
     },
@@ -149,7 +152,8 @@ export default {
     disUser () {
       this.showDis = true
     },
-    selectDept(dept) {
+    // 点击父级菜单
+    selectDept (dept) {
       let data = {
         dept: '',
         name: '',
@@ -159,9 +163,38 @@ export default {
       }
       this.$axios.post('user/list', data).then(response => {
         this.waitList = response.data.userList
-        console.log('waitList', this.waitList)
+        this.$store.commit('SET_WAITLIST', this.waitList)
       })
     },
+    // 选择用户
+    chooseUser (index) {
+      console.log(this.waitList[index])
+      this.disUserList.push({ id: this.waitList[index].id, name: this.waitList[index].username })
+      this.waitList.splice(index, 1)
+      console.log('disUserList', this.disUserList)
+    },
+    // 取消选择用户
+    cancleUser (index) {
+      this.waitList.push({ username: this.disUserList[index].name })
+      this.disUserList.splice(index, 1)
+    },
+    // 确定分配用户
+    saveDis () {
+      let arr = []
+      for (let i = 0; i < this.disUserList.length; i++) {
+        arr.push(this.disUserList[i].id)
+        this.userIds = arr.toString()
+      }
+      let data = {
+        id: this.getRoleAuthId,
+        userIds: this.userIds
+      }
+      this.$axios.post('role/role_add_user', data).then(response => {
+        if (response.data === null) {
+          this.getUserList()
+        }
+      })
+    }
   },
   mounted () {
     this.getDeptList()

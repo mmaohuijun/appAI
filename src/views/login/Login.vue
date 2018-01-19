@@ -37,7 +37,7 @@ export default {
     },
     // 登录
     toLogin () {
-      this.$axios.post('login', { username: this.username, password: this.password }).then(response => {
+      this.$axios.post('user/login', { username: this.username, password: this.password }).then(response => {
         console.log(response)
         if (response.status.code === '200') {
           // 登录成功时 将用户名保存下用作标识用户身份的id

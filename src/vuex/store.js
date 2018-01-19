@@ -15,7 +15,8 @@ const store = new Vuex.Store({
     entityId: '', // 选中的词库 id
     userAuthId: '', // 选中用户权限id
     teamAuthId: '', // 组权限  id
-    roleAuthId: '' // 角色权限id
+    roleAuthId: '', // 角色权限id
+    waitList: [] // 角色权限 待选用户列表
   },
   getters: {
     getAppId: () => {
@@ -66,6 +67,9 @@ const store = new Vuex.Store({
     SET_ROLEAUTHID (state, id) {
       state.roleAuthId = id
       $Storage.sessionStorage.setItem('roleAuthId', id)
+    },
+    SET_WAITLIST (state, arr) {
+      state.waitList = arr
     }
   },
   actions: {
