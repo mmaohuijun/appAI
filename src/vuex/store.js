@@ -14,7 +14,8 @@ const store = new Vuex.Store({
     intentId: '', // 选中的场景 id
     entityId: '', // 选中的词库 id
     userAuthId: '', // 选中用户权限id
-    teamAuthId: '' // 组权限  id
+    teamAuthId: '', // 组权限  id
+    roleAuthId: '' // 角色权限id
   },
   getters: {
     getAppId: () => {
@@ -34,6 +35,9 @@ const store = new Vuex.Store({
     },
     getUserAuthId: () => {
       return $Storage.sessionStorage.getItem('userAuthId')
+    },
+    getRoleAuthId: () => {
+      return $Storage.sessionStorage.getItem('roleAuthId')
     }
   },
   mutations: {
@@ -58,6 +62,10 @@ const store = new Vuex.Store({
     SET_TEAMAUTHID (state, id) {
       state.teamAuthId = id
       $Storage.sessionStorage.setItem('teamAuthId', id)
+    },
+    SET_ROLEAUTHID (state, id) {
+      state.roleAuthId = id
+      $Storage.sessionStorage.setItem('roleAuthId', id)
     }
   },
   actions: {

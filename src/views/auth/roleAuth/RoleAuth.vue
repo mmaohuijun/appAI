@@ -131,7 +131,25 @@ export default {
                     that.delId = params.row.id
                   }
                 }
-              })
+              }),
+              h('a', {
+                props: {
+                  type: 'primary',
+                  size: 'small'
+                },
+                style: {
+                  float: 'right',
+                  // color: '#fff',
+                  fontSize: '14px'
+                },
+                on: {
+                  click () {
+                    that.showDis = true
+                    that.$store.commit('SET_ROLEAUTHID', params.row.id)
+                    that.$router.push({ name: 'DisUser' })
+                  }
+                }
+              }, '分配用户')
             ])
           }
         }
@@ -188,15 +206,15 @@ export default {
           this.roleList = response.data.roleList
           this.total = response.data.total
           for (let i = 0; i < this.roleList.length; i++) {
-            switch(this.roleList[i].dataScope) {
+            switch (this.roleList[i].dataScope) {
               case '1': this.roleList[i].dataScope = '所有数据'
-                break;
+                break
               case '2': this.roleList[i].dataScope = '所在公司数据'
-                break;
+                break
               case '3': this.roleList[i].dataScope = '所在部门数据'
-                break;
+                break
               case '5': this.roleList[i].dataScope = '仅本人数据'
-                break;
+                break
               case '9': this.roleList[i].dataScope = '按明细设置'
             }
           }

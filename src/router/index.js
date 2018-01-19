@@ -26,6 +26,7 @@ const UserAuth = () => import('../views/auth/userAuth/UserAuth')
 
 const RoleAuth = () => import('../views/auth/roleAuth/RoleAuth')
 const EditRoleAuth = () => import('../views/auth/roleAuth/EditRoleAuth')
+const DisUser = () => import('../views/auth/roleAuth/DisUser')
 
 const SecurityAuth = () => import('../views/auth/securityAuth/SecurityAuth')
 const EditSecurityAuth = () => import('../views/auth/securityAuth/EditSecurityAuth')
@@ -115,6 +116,7 @@ const normalRouter = [
     name: '角色权限',
     children: [
       { path: 'index', name: 'RoleAuth', component: RoleAuth },
+      { path: 'disUser', name: 'DisUser', component: DisUser },
       { path: 'edit', name: 'EditRoleAuth', component: EditRoleAuth }
     ],
     meta: { requiresLogin: true }

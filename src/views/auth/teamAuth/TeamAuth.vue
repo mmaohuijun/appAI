@@ -34,7 +34,7 @@
       </Form>
       <div slot="footer">
         <Button @click="saveEdit" type="primary">确定</Button>
-        <Button>取消</Button>
+        <Button @click="showEdit=false">取消</Button>
       </div>
     </Modal>
     <Page 
@@ -130,6 +130,7 @@ export default {
       delId: '', // 删除 id
       saveId: '',
       showEdit: false,
+      showDis: false,
       authForm: {
         name: '',
         type: 2,
