@@ -8,7 +8,7 @@
       @onDateChange="dateChange"
       @onSearchCompany="searchCompany"
       @onSearchName="searchName"
-      @onAdd="addTeam">
+      @onAdd="addTheme">
     </search-header>
     <Table 
       :columns="columnAuth" 
@@ -141,8 +141,9 @@ export default {
   },
   methods: {
     // 添加组权限
-    addTeam () {
-      this.authForm.name = ''
+    addTheme () {
+      // this.authForm.name = ''
+      this.saveId = ''
       this.showEdit = true
     },
     // 获取权限列表

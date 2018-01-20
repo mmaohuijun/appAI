@@ -183,7 +183,7 @@ export default {
       })
     },
     deleteUser () {
-      this.$axios.post('role/delete', { id: this.delId }).then(response => {
+      this.$axios.post('theme/delete', { id: this.delId }).then(response => {
         if (response.data === null) {
           this.$Message.success('删除成功！')
           this.getAuthList()
