@@ -92,6 +92,7 @@ export default {
           title: '操作',
           align: 'center',
           render: (h, params) => {
+            let that = this
             return h('div', [
               h('Button', {
                 props: {
@@ -103,7 +104,7 @@ export default {
                 },
                 on: {
                   click () {
-                    console.log(params)
+                    that.removeDis(params.row.id)
                   }
                 }
               }, '移除')
@@ -191,6 +192,18 @@ export default {
       }
       this.$axios.post('role/role_add_user', data).then(response => {
         if (response.data === null) {
+          this.getUserList()
+        }
+      })
+    },
+    removeDis (userId) {
+      let data = {
+        id: this.getRoleAuthId,
+        userId: userId
+      }
+      this.$axios.post('role/role_remove_user', data).then(response => {
+        if (response.data === null) {
+          this.$Message.success('删除成功！')
           this.getUserList()
         }
       })

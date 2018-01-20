@@ -149,7 +149,25 @@ export default {
                     that.$router.push({ name: 'DisUser' })
                   }
                 }
-              }, '分配用户')
+              }, '分配用户'),
+              h('a', {
+                props: {
+                  type: 'primary',
+                  size: 'small'
+                },
+                style: {
+                  float: 'right',
+                  // color: '#fff',
+                  fontSize: '14px'
+                },
+                on: {
+                  click () {
+                    that.showDis = true
+                    that.$store.commit('SET_ROLEAUTHID', params.row.id)
+                    that.$router.push({ name: 'DisThemeUser' })
+                  }
+                }
+              }, '分配主题和密级')
             ])
           }
         }
