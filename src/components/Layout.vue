@@ -23,7 +23,7 @@
       </Menu>
     </div>
         <div class="sider">
-            <Menu active-name="1-1"  @on-select="chooseMenu">
+            <Menu active-name="name"  @on-select="chooseMenu" :accordion="true" >
                 <Submenu name="1">
                     <template slot="title">
                         <Icon type="ios-navigate"></Icon>
@@ -185,7 +185,7 @@ export default {
     },
     // 查看所有应用
     gotoApp () {
-      this.$router.push('/apps/index')
+      this.$router.push({ name: 'Application' })
     },
     // 创建应用
     gotoCreateApp () {

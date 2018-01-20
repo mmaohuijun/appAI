@@ -53,7 +53,6 @@
 </template>
 
 <script>
-// import $Storage from '../../api/storage.js'
 export default {
   name: 'Intents',
   data () {

@@ -2,16 +2,17 @@
   <div class="content-body">
     <search-header 
       placeholder="姓名"
-      :ifSearchCompany="false"
+      :ifSearchCompany="true"
       :ifDatePicker="true"
       :ifAddBtn="true"
       @onDateChange="dateChange"
+      @onSearchCompany="searchCompany"
       @onSearchName="searchName"
       @onAdd="addUser">
     </search-header>
     <Table 
       :columns="columnAuth" 
-      :data="themeList">
+      :data="userList">
     </Table>
     <Modal
       v-model="showModal"
@@ -21,17 +22,36 @@
       <p>删除后无法恢复</p>
     </Modal>
     <Modal 
-      @on-ok="saveRoleAuth"
       v-model="showEdit" 
       title="编辑用户权限">
       <Form :model="authForm" ref="authForm" :rule="authForm">
-        <Form-item label="主题名称" prop="name">
-          <Input v-model="authForm.name"></Input>
+        <Form-item label="姓名" prop="username">
+          <Input v-model="authForm.username"></Input>
         </Form-item>
-        <Form-item label="描述" prop="describe">
-          <Input v-model="authForm.describe"></Input>
+        <Form-item label="email" prop="email">
+          <Input v-model="authForm.email"></Input>
+        </Form-item>
+        <Form-item label="联系电话" prop="phone">
+          <Input v-model="authForm.phone"></Input>
+        </Form-item>
+        <Form-item label="归属公司" prop="company">
+          <Input v-model="authForm.company"></Input>
+        </Form-item>
+        <Form-item label="归属部门" prop="officeid">
+          <Select v-model="authForm.officeid">
+            <Option 
+              v-for="item in deptList" 
+              :value="item.id" 
+              :key="item.id">
+              {{ item.name }}
+            </Option>
+          </Select>
         </Form-item>
       </Form>
+      <div slot="footer">
+        <Button type="primary" @click="saveUserAuth">提交</Button>
+        <Button>取消</Button>
+      </div>
     </Modal>
     <Page 
       :total="total" 
@@ -44,24 +64,25 @@
   </div>
 </template>
 <script>
-import SearchHeader from '../../../components/SearchHeader'
+import SearchHeader from '../../components/SearchHeader'
 export default {
-  name: 'ThemeAuth',
+  name: 'UserAuth',
   data () {
     return {
-      name: '', // 角色名称 搜索
+      name: '', // 姓名 搜索
+      dept: '', // 公司名称 搜索
       date: '', // 日期 搜索
       pageSize: 10,
       pageNo: 1,
       total: 0,
       columnAuth: [
         {
-          title: '主题名称',
-          key: 'name'
+          title: '用户名',
+          key: 'username'
         },
         {
-          title: '描述',
-          key: 'describe'
+          title: '部门',
+          key: 'dept'
         },
         {
           title: '创建日期',
@@ -121,38 +142,18 @@ export default {
           }
         }
       ],
-      themeList: [], // 主题权限列表
+      userList: [], // 用户权限列表
       deptList: [], // 公司机构列表
-      scopeList: [
-        {
-          value: '1',
-          label: '所有数据'
-        },
-        {
-          value: '2',
-          label: '所在公司数据'
-        },
-        {
-          value: '3',
-          label: '所在部门数据'
-        },
-        {
-          value: '5',
-          label: '仅本人数据'
-        },
-        {
-          value: '9',
-          label: '按明细设置'
-        }
-      ], // 数据范围列表
       showModal: false, // 显示模态框
       showEdit: false, // 编辑模态框
       delId: '', // 删除 id
       saveId: '', // 编辑 id
       authForm: {
-        name: '',
-        enName: '',
-        dataScope: ''
+        username: '',
+        email: '',
+        phone: '',
+        company: '微构科技',
+        officeid: ''
       }
     }
   },
@@ -163,14 +164,16 @@ export default {
     },
     getAuthList () {
       let data = {
+        dept: this.dept,
         name: this.name,
         date: this.date,
         pageSize: this.pageSize,
         pageNo: this.pageNo
       }
-      this.$axios.post('theme/list', data).then(response => {
+      this.$axios.post('user/list', data).then(response => {
         if (response.data) {
-          this.themeList = response.data.themeList
+          this.userList = response.data.userList
+          this.total = response.data.total
         }
       })
     },
@@ -183,30 +186,37 @@ export default {
       })
     },
     deleteUser () {
-      this.$axios.post('theme/delete', { id: this.delId }).then(response => {
+      this.$axios.post('user/del', { id: this.delId }).then(response => {
+        console.log(response)
         if (response.data === null) {
           this.$Message.success('删除成功！')
           this.getAuthList()
         }
       })
     },
-    // 获取某主题权限详情
+    // 获取某用户权限详情
     getAuthDetail () {
-      this.$axios.post('theme/detail', { id: this.saveId }).then(response => {
+      this.$axios.post('user/detail', { id: this.saveId }).then(response => {
         let data = response.data
-        this.authForm.name = data.name || ''
-        this.authForm.describe = data.describe || ''
+        console.log(data)
+        this.authForm.username = data.username || ''
+        this.authForm.email = data.email || ''
+        this.authForm.phone = data.phone || ''
+        this.authForm.officeid = data.officeid || ''
       })
     },
     // 保存修改
-    saveRoleAuth () {
+    saveUserAuth () {
       let data = {
         id: this.saveId,
-        name: this.authForm.name,
-        describe: this.authForm.describe
+        username: this.authForm.username,
+        email: this.authForm.email,
+        phone: this.authForm.phone,
+        officeid: this.authForm.officeid
       }
-      this.$axios.post('theme/save', data).then(response => {
+      this.$axios.post('user/regist', data).then(response => {
         if (response.data === null) {
+          this.showEdit = false
           this.$Message.success('提交成功！')
           this.getAuthList()
         }
@@ -214,10 +224,15 @@ export default {
     },
     // 重置表单
     handleReset (name) {
+      console.log('resetFields')
       this.$refs[name].resetFields()
     },
     searchName (name) {
       this.name = name
+      this.getAuthList()
+    },
+    searchCompany (dept) {
+      this.dept = dept
       this.getAuthList()
     },
     dateChange (date) {

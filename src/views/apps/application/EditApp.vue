@@ -64,7 +64,7 @@
 </template>
 
 <script>
-import $Storage from '../../api/storage.js'
+import $Storage from '../../../api/storage.js'
 export default {
   name: 'EditApp',
   data () {

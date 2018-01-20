@@ -2,36 +2,40 @@
   <div class="content-body">
     <search-header 
       placeholder="姓名"
-      :ifSearchCompany="false"
+      :ifSearchCompany="true"
       :ifDatePicker="true"
       :ifAddBtn="true"
       @onDateChange="dateChange"
+      @onSearchCompany="searchCompany"
       @onSearchName="searchName"
-      @onAdd="addUser">
+      @onAdd="addTheme">
     </search-header>
     <Table 
       :columns="columnAuth" 
-      :data="secretList">
+      :data="officeList">
     </Table>
     <Modal
       v-model="showModal"
       title="删除应用"
-      @on-ok="deleteUser">
-      <p>确定删除该用户权限吗？</p>
+      @on-ok="deleteTeam">
+      <p>确定删除该组权限吗？</p>
       <p>删除后无法恢复</p>
     </Modal>
-    <Modal 
-      @on-ok="saveRoleAuth"
-      v-model="showEdit" 
-      title="编辑用户权限">
-      <Form :model="authForm" ref="authForm" :rule="authForm">
-        <Form-item label="主题名称" prop="name">
+    <Modal
+      v-model="showEdit"
+      title="编辑组权限">
+      <Form ref="authForm" :model="authForm" :label-width="60">
+        <Form-item label="部门名称" prop="name">
           <Input v-model="authForm.name"></Input>
         </Form-item>
-        <Form-item label="描述" prop="describe">
-          <Input v-model="authForm.describe"></Input>
+        <Form-item label="机构层级" prop="type">
+          <Input v-model="authForm.type" disabled ></Input>
         </Form-item>
       </Form>
+      <div slot="footer">
+        <Button @click="saveEdit" type="primary">确定</Button>
+        <Button @click="showEdit=false">取消</Button>
+      </div>
     </Modal>
     <Page 
       :total="total" 
@@ -44,24 +48,25 @@
   </div>
 </template>
 <script>
-import SearchHeader from '../../../components/SearchHeader'
+import SearchHeader from '../../components/SearchHeader'
 export default {
-  name: 'SecurityAuth',
+  name: 'TeamAuth',
   data () {
     return {
-      name: '', // 角色名称 搜索
+      name: '', // 姓名 搜索
+      dept: '', // 公司名称 搜索
       date: '', // 日期 搜索
       pageSize: 10,
       pageNo: 1,
       total: 0,
       columnAuth: [
         {
-          title: '密级名称',
+          title: '机构名称',
           key: 'name'
         },
         {
-          title: '描述',
-          key: 'describe'
+          title: '机构类型',
+          key: 'type'
         },
         {
           title: '创建日期',
@@ -92,11 +97,10 @@ export default {
                 },
                 on: {
                   click () {
-                    that.saveId = params.row.id
-                    that.getAuthDetail()
                     that.showEdit = true
-                    // that.$store.dispatch('setUserAuthId', params.row.id)
-                    // that.$router.push({ name: 'EditUserAuth' })
+                    that.saveId = params.row.id
+                    that.getAuthDetail(params.row.id)
+                    // that.$store.commit('SET_TEAMAUTHID', params.row.id)
                   }
                 }
               }),
@@ -121,103 +125,96 @@ export default {
           }
         }
       ],
-      secretList: [], // 主题权限列表
-      deptList: [], // 公司机构列表
-      scopeList: [
-        {
-          value: '1',
-          label: '所有数据'
-        },
-        {
-          value: '2',
-          label: '所在公司数据'
-        },
-        {
-          value: '3',
-          label: '所在部门数据'
-        },
-        {
-          value: '5',
-          label: '仅本人数据'
-        },
-        {
-          value: '9',
-          label: '按明细设置'
-        }
-      ], // 数据范围列表
+      officeList: [], // 用户权限列表
       showModal: false, // 显示模态框
-      showEdit: false, // 编辑模态框
       delId: '', // 删除 id
-      saveId: '', // 编辑 id
+      saveId: '',
+      showEdit: false,
+      showDis: false,
       authForm: {
         name: '',
-        enName: '',
-        dataScope: ''
+        type: 2,
+        parentIds: '',
+        parent: ''
       }
     }
   },
   methods: {
-    addUser () {
-      this.showEdit = true
+    // 添加组权限
+    addTheme () {
+      // this.authForm.name = ''
       this.saveId = ''
+      this.showEdit = true
     },
+    // 获取权限列表
     getAuthList () {
       let data = {
+        dept: this.dept,
         name: this.name,
         date: this.date,
         pageSize: this.pageSize,
         pageNo: this.pageNo
       }
-      this.$axios.post('secret/list', data).then(response => {
+      this.$axios.post('office/list', data).then(response => {
         if (response.data) {
-          this.secretList = response.data.secretList
+          console.log(response.data)
+          this.officeList = response.data.officeList
+          for (let i = 0; i < this.officeList.length; i++) {
+            this.officeList[i].type === '1' ? this.officeList[i].type = '公司' : this.officeList[i].type = '部门'
+          }
+          this.total = response.data.total
         }
       })
     },
-    // 获取部门列表
-    getDeptList () {
-      this.$axios.post('user/to_save').then(response => {
+    // 获取权限详情
+    getAuthDetail (id) {
+      this.$axios.post('office/detail', { id: id }).then(response => {
         if (response.data) {
-          this.deptList = response.data.officeAllList
+          console.log(response)
+          // this.authForm = response.data
+          this.authForm.name = response.data.name
+          this.authForm.parentIds = response.data.parentIds
+          this.authForm.parent = response.data.parent
+          this.authForm.type = response.data.type
         }
       })
     },
-    deleteUser () {
-      this.$axios.post('secret/delete', { id: this.delId }).then(response => {
+    // 保存 组权限
+    saveEdit () {
+      let data = {
+        id: this.saveId,
+        name: this.authForm.name,
+        parentIds: this.authForm.parentIds || '0,1',
+        parent: this.authForm.parent || 1,
+        type: this.authForm.type || 2
+      }
+      this.$axios.post('office/save', data).then(response => {
+        if (response.status.code === '200') {
+          this.showEdit = false
+          this.$Message.success('提交成功！')
+          this.saveId = ''
+          this.getAuthList()
+        } else {
+          this.$Message.error('提交失败！')
+          this.showEdit = false
+        }
+      })
+    },
+    deleteTeam () {
+      this.$axios.post('office/delete', { id: this.delId }).then(response => {
+        console.log(response)
         if (response.data === null) {
           this.$Message.success('删除成功！')
           this.getAuthList()
         }
       })
     },
-    // 获取某主题权限详情
-    getAuthDetail () {
-      this.$axios.post('secret/detail', { id: this.saveId }).then(response => {
-        let data = response.data
-        this.authForm.name = data.name || ''
-        this.authForm.describe = data.describe || ''
-      })
-    },
-    // 保存修改
-    saveRoleAuth () {
-      let data = {
-        id: this.saveId,
-        name: this.authForm.name,
-        describe: this.authForm.describe
-      }
-      this.$axios.post('secret/save', data).then(response => {
-        if (response.data === null) {
-          this.$Message.success('提交成功！')
-          this.getAuthList()
-        }
-      })
-    },
-    // 重置表单
-    handleReset (name) {
-      this.$refs[name].resetFields()
-    },
     searchName (name) {
       this.name = name
+      this.getAuthList()
+    },
+    searchCompany (dept) {
+      this.dept = dept
       this.getAuthList()
     },
     dateChange (date) {
@@ -227,15 +224,17 @@ export default {
     pageChange (pageNo) {
       this.pageNo = pageNo
       this.getAuthList()
+    },
+    resetFields (name) {
+      this.$refs[name].resetFields()
     }
   },
   mounted () {
     this.getAuthList()
-    this.getDeptList()
   },
   watch: {
-    'showEdit' (newV, oldV) {
-      this.handleReset('authForm')
+    'showEdit' () {
+      this.resetFields('authForm')
     }
   },
   components: { SearchHeader }
