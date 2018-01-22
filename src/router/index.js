@@ -58,7 +58,7 @@ const normalRouter = [
       },
       {
         path: ':appId/entities',
-        name: 'Entities',
+        name: '词库',
         component: Layout,
         children: [
           { path: 'index', name: 'Entities', component: Entities },

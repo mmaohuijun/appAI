@@ -148,10 +148,10 @@ export default {
       if (this.getRoleAuthId) {
         this.$axios.post('role/role_ts_list', { id: this.getRoleAuthId }).then(response => {
           if (response.data) {
-            this.roleDetail = response.data.roleDetail,
-            this.themeList = response.data.themeList,
-            this.secretList = response.data.secretList,
-            this.themeAllList = response.data.themeAllList,
+            this.roleDetail = response.data.roleDetail
+            this.themeList = response.data.themeList
+            this.secretList = response.data.secretList
+            this.themeAllList = response.data.themeAllList
             this.secretAllList = response.data.secretAllList
           }
         })
@@ -163,7 +163,8 @@ export default {
     },
     // 保存分配
     saveDis () {
-      let arr1 = [], arr2 = []
+      let arr1 = []
+      let arr2 = []
       for (let i in this.themeList) {
         arr1.push(this.themeList[i].id)
         this.themeIds = arr1.toString()

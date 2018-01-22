@@ -24,6 +24,7 @@
     </div>
         <div class="sider">
             <Menu active-name="name"  @on-select="chooseMenu" :accordion="true" >
+              <!-- <Submenu :name="key" v-for="(item, index) in intentList" :key="index">{{ item.name }}</Submenu> -->
                 <Submenu name="1">
                     <template slot="title">
                         <Icon type="ios-navigate"></Icon>
