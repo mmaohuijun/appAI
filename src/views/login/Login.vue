@@ -44,6 +44,7 @@ export default {
           this.$store.dispatch('setUserName', this.username)
           this.$store.commit('SET_AUTH', response.data.menuList)
           this.$router.push({ name: 'Application' })
+          // this.$router.push({ name: this.$store.getters.getSideBarMenu[0].name })
         }
       })
     }

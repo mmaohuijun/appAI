@@ -83,11 +83,8 @@ const store = new Vuex.Store({
     getRoleAuthId: () => {
       return $Storage.sessionStorage.getItem('roleAuthId')
     },
-    getSideBarMenu: state => {
-      return state.sideBarMenu
-    },
-    getSideBar: () => {
-      return $Storage.localStorage.getItem('sideBar')
+    getSideBarMenu: () => {
+      return $Storage.localStorage.getItem('sideBarMenu')
     }
   },
   mutations: {
@@ -122,6 +119,7 @@ const store = new Vuex.Store({
     },
     SET_AUTH (state, auth) {
       state.sideBarMenu = auth
+      $Storage.localStorage.setItem('sideBarMenu', auth)
     },
     SET_SIDEBAR (state, menu) {
       state.keySideBarMenuMap = menu
@@ -169,11 +167,14 @@ const store = new Vuex.Store({
     },
     setSideBar ({ commit, getters, state }) {
       let menu = []
-      _.each(state.sideBarMenu, key => {
+      let sideBarMenu = state.sideBarMenu
+      _.each(sideBarMenu, key => {
         menu.push(sideBarMenuMap[key])
       })
       commit('SET_SIDEBAR', menu)
-      $Storage.localStorage.setItem('sideBar', menu)
+    },
+    clearSideBar () {
+      $Storage.localStorage.removeItem('sideBarMenu')
     }
   }
 })

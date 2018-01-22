@@ -92,19 +92,6 @@ export default {
     sideBarMenu () {
       return this.$store.state.keySideBarMenuMap
     },
-    getAppName () {
-      // return this.$store.getters.getAppName
-      let appName
-      appName = this.$store.state.appName
-      if (!appName) {
-        appName = this.$store.getters.getAppName
-      }
-    //   appName = this.$store.getters.getAppName
-    //   if (!appName) {
-    //     appName = '应用'
-    //   }
-      return appName
-    }
   },
   methods: {
     selectMenu (name) {
@@ -121,52 +108,6 @@ export default {
       this.showSubMenu = this.open
       this.selectIndex = index
     },
-    chooseMenu (name) {
-      // console.log(name)
-      // console.log('chooseMenu', this.getAppId)
-      // if (name === '1-1') {
-      //   this.gotoApp()
-      // } else if (name === '1-2') {
-      //   this.getAppId ? this.gotoIntents() : this.$Message.warning('请先选择一个应用')
-      // } else if (name === '1-3') {
-      //   this.getAppId ? this.gotoEntities() : this.$Message.warning('请先选择一个应用')
-      // } else if (name === '1-4') {
-      //   this.gotoModules()
-      // } else if (name === '5-1') {
-      //   this.gotoAuth()
-      // }
-      switch (name) {
-        case '1-1': this.gotoApp()
-          break
-        case '1-2': this.getAppId ? this.gotoIntents() : this.$Message.warning('请先选择一个应用')
-          break
-        case '1-3': this.getAppId ? this.gotoEntities() : this.$Message.warning('请先选择一个应用')
-          break
-        case '1-4': this.$router.push({ name: 'Module' })
-          break
-        case '5-6': this.$router.push({ name: 'Auth' })
-          break
-        case '5-1': this.$router.push({ name: 'UserAuth' })
-          break
-        case '5-2': this.$router.push({ name: 'RoleAuth' })
-          break
-        case '5-3': this.$router.push({ name: 'TeamAuth' })
-          break
-        case '5-4': this.$router.push({ name: 'ThemeAuth' })
-          break
-        case '5-5': this.$router.push({ name: 'SecurityAuth' })
-          break
-      }
-    },
-    // 场景 词库 菜单
-    // selectMenu (name) {
-    //   if (name === 2) {
-    //     this.$router.push({ name: 'Intents', params: { appId: this.getAppId } })
-    //   } else if (name === '3') {
-    //     this.$router.push({ name: 'Entities', params: { appId: this.getAppId } })
-    //   }
-    //   console.log('appId', this.getAppId)
-    // },
     getIntentsList (appId) {
       // this.appId = $Storage.sessionStorage.getItem('appId')
       console.log('getIntentsList', appId)
@@ -180,28 +121,13 @@ export default {
         }
       })
     },
-    // 查看所有应用
-    gotoApp () {
-      this.$router.push({ name: 'Application' })
-    },
-    // 创建应用
-    gotoCreateApp () {
-      this.$router.push({ name: 'CreateApp' })
-    },
-    // 查看某应用下 所有场景
-    gotoIntents () {
-      this.$router.push({ name: 'Intents', params: { appId: this.getAppId } })
-    },
-    // 查看某应用下 所有词库
-    gotoEntities () {
-      this.$router.push({ name: 'Entities', params: { appId: this.getAppId } })
-    },
     // 退出
     logout () {
       this.$axios.post('user/logout').then(response => {
         if (response.status.code === '200') {
           this.$router.push({ name: 'Login' })
           this.$store.dispatch('clearUserName')
+          this.$store.dispatch('clearSideBar')
         }
       })
     }
@@ -211,8 +137,10 @@ export default {
       // console.log(to, from)
     }
   },
-  created () {
+  mounted () {
+    this.$store.commit('SET_AUTH', this.$store.state.sideBarMenu)
     this.$store.dispatch('setSideBar')
+    console.log(this.$store.getters.getSideBarMenu)
   }
 }
 </script>
