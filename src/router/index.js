@@ -29,6 +29,76 @@ const DisThemeUser = () => import('../views/auth/roleAuth/DisThemeUser')
 
 Vue.use(Router)
 
+export const keyRouter = {
+  Apps: {
+    path: '/app',
+    component: Layout,
+    name: '模型管理',
+    children: [
+      {
+        path: 'application',
+        name: '应用',
+        component: Layout,
+        children: [
+          { path: 'index', name: 'Application', component: Application },
+          { path: 'create', name: 'CreateApp', component: CreateApp },
+          { path: 'edit', name: 'EditApp', component: EditApp }
+        ]
+      },
+      {
+        path: ':appId/intents',
+        name: '场景',
+        component: Layout,
+        children: [
+          { path: 'index', name: 'Intents', component: Intents },
+          { path: 'create', name: 'CreateIntents', component: CreateIntents },
+          { path: 'edit', name: 'EditIntents', component: EditIntents }
+        ]
+      },
+      {
+        path: ':appId/entities',
+        name: '词库',
+        component: Layout,
+        children: [
+          { path: 'index', name: 'Entities', component: Entities },
+          { path: 'create', name: 'CreateEntities', component: CreateEntities },
+          { path: 'edit', name: 'EditEntities', component: EditEntities }
+        ]
+      },
+      {
+        path: 'modules',
+        name: '模型',
+        component: Layout,
+        redirect: '/modules/index',
+        children: [
+          { path: 'index', name: 'Module', component: Module }
+        ]
+      }
+    ]
+  },
+  Auth: {
+    path: '/auth',
+    name: '权限管理',
+    children: [
+      { path: 'userAuth', name: 'UserAuth', component: UserAuth },
+      { path: 'teamAuth', name: 'TeamAuth', component: TeamAuth },
+      { path: 'themeAuth', name: 'ThemeAuth', component: ThemeAuth },
+      { path: 'securityAuth', name: 'SecurityAuth', component: SecurityAuth },
+      {
+        path: 'roleAuth',
+        name: '角色权限',
+        component: Layout,
+        children: [
+          { path: 'index', name: 'RoleAuth', component: RoleAuth },
+          { path: 'disUser', name: 'DisUser', component: DisUser },
+          { path: 'disThemeUser', name: 'DisThemeUser', component: DisThemeUser }
+        ],
+        meta: { requiresLogin: true }
+      }
+    ]
+  }
+}
+
 const normalRouter = [
   { path: '/', name: 'Login', component: Login },
   {

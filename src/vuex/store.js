@@ -1,10 +1,50 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import _ from 'lodash'
 
 import $Storage from '../api/storage'
 
 Vue.use(Vuex)
 
+const sideBarMenuMap = {
+  Apps: {
+    title: '模型管理',
+    name: 'Apps',
+    children: [
+      { title: '应用', name: 'Application' },
+      { title: '场景', name: 'Intents' },
+      { title: '词库', name: 'Entities' },
+      { title: '模型', name: 'Module' }
+    ]
+  },
+  Auth: {
+    title: '权限管理',
+    name: 'Auth',
+    children: [
+      { title: '用户权限', name: 'UserAuth' },
+      { title: '主题权限', name: 'ThemeAuth' },
+      { title: '密级权限', name: 'SecurityAuth' },
+      { title: '角色权限', name: 'RoleAuth' },
+      { title: '组权限', name: 'TeamAuth' }
+    ]
+  },
+  fragmentation: {
+    title: '碎片化平台',
+    name: 'Fragment'
+  },
+  micro_services: {
+    title: '微服务管理',
+    name: 'micro'
+  },
+  flow: {
+    title: '流程管理',
+    name: 'flow'
+  },
+  information: {
+    title: '数据安全管理',
+    name: 'information'
+  }
+}
 const store = new Vuex.Store({
   // 定义状态
   state: {
@@ -16,7 +56,10 @@ const store = new Vuex.Store({
     userAuthId: '', // 选中用户权限id
     teamAuthId: '', // 组权限  id
     roleAuthId: '', // 角色权限id
-    waitList: [] // 角色权限 待选用户列表
+    waitList: [], // 角色权限 待选用户列表
+    sideBarMenu: [],
+    sideBarMenuMap,
+    keySideBarMenuMap: {}
   },
   getters: {
     getAppId: () => {
@@ -39,6 +82,12 @@ const store = new Vuex.Store({
     },
     getRoleAuthId: () => {
       return $Storage.sessionStorage.getItem('roleAuthId')
+    },
+    getSideBarMenu: state => {
+      return state.sideBarMenu
+    },
+    getSideBar: () => {
+      return $Storage.localStorage.getItem('sideBar')
     }
   },
   mutations: {
@@ -70,6 +119,12 @@ const store = new Vuex.Store({
     },
     SET_WAITLIST (state, arr) {
       state.waitList = arr
+    },
+    SET_AUTH (state, auth) {
+      state.sideBarMenu = auth
+    },
+    SET_SIDEBAR (state, menu) {
+      state.keySideBarMenuMap = menu
     }
   },
   actions: {
@@ -111,6 +166,14 @@ const store = new Vuex.Store({
     },
     clearUserAuthId () {
       $Storage.sessionStorage.removeItem('userAuthId')
+    },
+    setSideBar ({ commit, getters, state }) {
+      let menu = []
+      _.each(state.sideBarMenu, key => {
+        menu.push(sideBarMenuMap[key])
+      })
+      commit('SET_SIDEBAR', menu)
+      $Storage.localStorage.setItem('sideBar', menu)
     }
   }
 })

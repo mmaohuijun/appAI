@@ -22,65 +22,39 @@
         </div>
       </Menu>
     </div>
-        <div class="sider">
-            <Menu active-name="name"  @on-select="chooseMenu" :accordion="true" >
-              <!-- <Submenu :name="key" v-for="(item, index) in intentList" :key="index">{{ item.name }}</Submenu> -->
-                <Submenu name="1">
-                    <template slot="title">
-                        <Icon type="ios-navigate"></Icon>
-                        模型管理
-                    </template>
-                    <MenuItem name="1-1">应用</MenuItem>
-                    <MenuItem name="1-2">场景</MenuItem>
-                    <MenuItem name="1-3">词库</MenuItem>
-                    <MenuItem name="1-4">模型</MenuItem>
-                </Submenu>
-                <Submenu name="2">
-                    <template slot="title">
-                        <Icon type="ios-keypad"></Icon>
-                        碎片化平台
-                    </template>
-                    <MenuItem name="2-1">Option 1</MenuItem>
-                    <MenuItem name="2-2">Option 2</MenuItem>
-                </Submenu>
-                <Submenu name="3">
-                    <template slot="title">
-                        <Icon type="ios-analytics"></Icon>
-                        微服务管理
-                    </template>
-                    <MenuItem name="3-1">Option 1</MenuItem>
-                    <MenuItem name="3-2">Option 2</MenuItem>
-                </Submenu>
-                <Submenu name="4">
-                  <template slot="title">
-                    <Icon type="ios-analytics"></Icon>
-                    流程管理
-                  </template>
-                </Submenu>
-                <Submenu name="5">
-                  <template slot="title">
-                    <Icon type="ios-analytics"></Icon>
-                    权限管理
-                  </template>
-                  <MenuItem name="5-1">用户权限</MenuItem>
-                  <MenuItem name="5-2">角色权限</MenuItem>
-                  <MenuItem name="5-3">组权限</MenuItem>
-                  <MenuItem name="5-4">主题权限</MenuItem>
-                  <MenuItem name="5-5">密集权限</MenuItem>
-                  <MenuItem name="5-6">权限测试</MenuItem>                  
-                </Submenu>
-                <Submenu name="6">
-                  <template slot="title">
-                    <Icon type="ios-analytics"></Icon>
-                    数据安全管理
-                  </template>
-                </Submenu>
-            </Menu>
-          </div>
-          <div class="content">
-            <router-view></router-view>
-            <div class="footer">微构科技，版权所有 &copy;2017-2027</div>    
-          </div>
+    
+  <div class="sider">
+     <ul class="ivu-menu ivu-menu-light ivu-menu-vertical" style="width: 240px;">
+      <li 
+        class="ivu-menu-submenu" 
+        v-for="(item, index) in sideBarMenu" 
+        :key="index" 
+        :class="showSubMenu&&selectIndex===index? 'ivu-menu-opened' : ''"
+        @click="showSub(index)">
+        <div class="ivu-menu-submenu-title" >
+          {{ item.title }}
+          <Icon type="arrow-up-b" style="float: right" v-if="showSubMenu&&index===selectIndex" :key="index"></Icon>
+          <Icon type="arrow-down-b" style="float: right;" v-else></Icon>
+        </div>
+        <transition name="slide-up">
+          <ul class="ivu-menu" v-if="item.children" v-show="showSubMenu&&index===selectIndex">
+            <li 
+              class="ivu-menu-item" 
+              :class="selectItem&&item.name===selectName?'ivu-menu-item-selected':''"
+              @click.stop="selectMenu(item.name)"
+              v-for="(item, index) in item.children" 
+              :key="index" :item="item.children">
+              {{ item.title }}
+            </li>
+          </ul>
+        </transition>
+      </li>
+    </ul>
+    </div>
+        <div class="content">
+          <router-view></router-view>
+          <div class="footer">微构科技，版权所有 &copy;2017-2027</div>    
+        </div>
   </div>
 </template>
 
@@ -98,7 +72,12 @@ export default {
       ], // 应用列表
       ifIntents: true, // 是否存在场景
       intentList: [],
-      appId: '' // 被选中的应用
+      appId: '', // 被选中的应用
+      showSubMenu: false,
+      selectIndex: '',
+      open: false,
+      selectItem: false,
+      selectName: ''
     }
   },
   computed: {
@@ -109,6 +88,9 @@ export default {
         appId = this.$store.getters.getAppId
       }
       return appId
+    },
+    sideBarMenu () {
+      return this.$store.state.keySideBarMenuMap
     },
     getAppName () {
       // return this.$store.getters.getAppName
@@ -125,6 +107,20 @@ export default {
     }
   },
   methods: {
+    selectMenu (name) {
+      this.$router.push({ name: name })
+      this.selectItem = true
+      this.selectName = name
+    },
+    showSub (index) {
+      if (this.open) {
+        this.open = false
+      } else {
+        this.open = true
+      }
+      this.showSubMenu = this.open
+      this.selectIndex = index
+    },
     chooseMenu (name) {
       // console.log(name)
       // console.log('chooseMenu', this.getAppId)
@@ -163,14 +159,14 @@ export default {
       }
     },
     // 场景 词库 菜单
-    selectMenu (name) {
-      if (name === 2) {
-        this.$router.push({ name: 'Intents', params: { appId: this.getAppId } })
-      } else if (name === '3') {
-        this.$router.push({ name: 'Entities', params: { appId: this.getAppId } })
-      }
-      console.log('appId', this.getAppId)
-    },
+    // selectMenu (name) {
+    //   if (name === 2) {
+    //     this.$router.push({ name: 'Intents', params: { appId: this.getAppId } })
+    //   } else if (name === '3') {
+    //     this.$router.push({ name: 'Entities', params: { appId: this.getAppId } })
+    //   }
+    //   console.log('appId', this.getAppId)
+    // },
     getIntentsList (appId) {
       // this.appId = $Storage.sessionStorage.getItem('appId')
       console.log('getIntentsList', appId)
@@ -214,6 +210,9 @@ export default {
     '$route' (to, from) {
       // console.log(to, from)
     }
+  },
+  created () {
+    this.$store.dispatch('setSideBar')
   }
 }
 </script>
@@ -286,6 +285,7 @@ export default {
             }
             &>li.ivu-menu-opened {
               background: #03376A;
+            }
               li.ivu-menu-item {
                 height: 35px;
                 box-sizing: border-box;
@@ -311,7 +311,7 @@ export default {
                 background: #0396FF;
                 color: #fff;
               }
-            }  
+              
           }
 
           & ul.ivu-menu {

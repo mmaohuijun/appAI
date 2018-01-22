@@ -42,6 +42,7 @@ export default {
         if (response.status.code === '200') {
           // 登录成功时 将用户名保存下用作标识用户身份的id
           this.$store.dispatch('setUserName', this.username)
+          this.$store.commit('SET_AUTH', response.data.menuList)
           this.$router.push({ name: 'Application' })
         }
       })
