@@ -40,10 +40,13 @@ export default {
       this.$axios.post('user/login', { username: this.username, password: this.password }).then(response => {
         console.log(response)
         if (response.status.code === '200') {
-          // 登录成功时 将用户名保存下用作标识用户身份的id
+          
+          this.$store.commit('TOGGLE_LOGIN')
+          // 保存用户信息 权限信息
           this.$store.dispatch('setUserName', this.username)
           this.$store.commit('SET_AUTH', response.data.menuList)
-          this.$router.push({ name: 'Application' })
+          // this.$store.commit('SET_FIRSTROUTE', response.data.menuList[0])
+          this.$router.push({ name: 'Application'})
           // this.$router.push({ name: this.$store.getters.getSideBarMenu[0].name })
         }
       })

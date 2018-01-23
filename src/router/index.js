@@ -178,16 +178,20 @@ export const router = new Router({
 
 router.beforeEach((to, from, next) => {
   if (to.matched.some(record => record.meta.requiresLogin)) {
-    let userName = store.state.userName
-    if (!userName) {
-      userName = store.getters.getUserName
-    }
-    if (!userName) {
-      next({
-        path: '/'
-      })
+    if (store.getters.getUserName) {
+      let userName = store.state.userName
+      if (!userName) {
+        userName = store.getters.getUserName
+      }
+      if (!userName) {
+        next({
+          path: '/'
+        })
+      } else {
+        next()
+      }
     } else {
-      next()
+      next({ name: 'Login' })
     }
   } else {
     next()

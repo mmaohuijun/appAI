@@ -59,7 +59,9 @@ const store = new Vuex.Store({
     waitList: [], // 角色权限 待选用户列表
     sideBarMenu: [],
     sideBarMenuMap,
-    keySideBarMenuMap: {}
+    keySideBarMenuMap: {},
+    firstRoute: '',
+    toggleLogin: false // 是否已登录
   },
   getters: {
     getAppId: () => {
@@ -123,6 +125,12 @@ const store = new Vuex.Store({
     },
     SET_SIDEBAR (state, menu) {
       state.keySideBarMenuMap = menu
+    },
+    SET_FIRSTROUTE (state, router) {
+      state.firstRoute = router
+    },
+    TOGGLE_LOGIN (state) {
+      state.toggleLogin = !state.toggleLogin
     }
   },
   actions: {
