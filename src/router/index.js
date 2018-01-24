@@ -106,45 +106,16 @@ const normalRouter = [
     component: Layout,
     name: '模型管理',
     children: [
-      {
-        path: 'application',
-        name: '应用',
-        component: Layout,
-        children: [
-          { path: 'index', name: 'Application', component: Application },
-          { path: 'create', name: 'CreateApp', component: CreateApp },
-          { path: 'edit', name: 'EditApp', component: EditApp }
-        ]
-      },
-      {
-        path: ':appId/intents',
-        name: '场景',
-        component: Layout,
-        children: [
-          { path: 'index', name: 'Intents', component: Intents },
-          { path: 'create', name: 'CreateIntents', component: CreateIntents },
-          { path: 'edit', name: 'EditIntents', component: EditIntents }
-        ]
-      },
-      {
-        path: ':appId/entities',
-        name: '词库',
-        component: Layout,
-        children: [
-          { path: 'index', name: 'Entities', component: Entities },
-          { path: 'create', name: 'CreateEntities', component: CreateEntities },
-          { path: 'edit', name: 'EditEntities', component: EditEntities }
-        ]
-      },
-      {
-        path: 'modules',
-        name: '模型',
-        component: Layout,
-        redirect: '/modules/index',
-        children: [
-          { path: 'index', name: 'Module', component: Module }
-        ]
-      }
+      { path: 'application/index', name: 'Application', component: Application },
+      { path: 'application/create', name: 'CreateApp', component: CreateApp },
+      { path: 'application/edit', name: 'EditApp', component: EditApp },
+      { path: ':appId/intents/index', name: 'Intents', component: Intents },
+      { path: ':appId/intents/create', name: 'CreateIntents', component: CreateIntents },
+      { path: ':appId/intents/edit', name: 'EditIntents', component: EditIntents },
+      { path: ':appId/entities/index', name: 'Entities', component: Entities },
+      { path: ':appId/entities/create', name: 'CreateEntities', component: CreateEntities },
+      { path: ':appId/entities/edit', name: 'EditEntities', component: EditEntities },
+      { path: 'modules/indexindex', name: 'Module', component: Module }
     ],
     meta: { requiresLogin: true, requiresAuth: true }
   },
@@ -157,16 +128,9 @@ const normalRouter = [
       { path: 'teamAuth', name: 'TeamAuth', component: TeamAuth },
       { path: 'themeAuth', name: 'ThemeAuth', component: ThemeAuth },
       { path: 'securityAuth', name: 'SecurityAuth', component: SecurityAuth },
-      {
-        path: 'roleAuth',
-        name: '角色权限',
-        component: Layout,
-        children: [
-          { path: 'index', name: 'RoleAuth', component: RoleAuth },
-          { path: 'disUser', name: 'DisUser', component: DisUser },
-          { path: 'disThemeUser', name: 'DisThemeUser', component: DisThemeUser }
-        ]
-      }
+      { path: 'roleAuth/index', name: 'RoleAuth', component: RoleAuth },
+      { path: 'roleAuth/disUser', name: 'DisUser', component: DisUser },
+      { path: 'roleAuth/disThemeUser', name: 'DisThemeUser', component: DisThemeUser }
     ],
     meta: { requiresLogin: true, requiresAuth: true }
   }
