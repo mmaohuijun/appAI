@@ -1,14 +1,12 @@
 import $Storage from '../api/storage.js'
 const getters = {
-  getAppId: () => {
-    return $Storage.sessionStorage.getItem('appId')
-  },
   getIntentId: () => {
     return $Storage.sessionStorage.getItem('intentId')
   },
   getEntityId: () => {
     return $Storage.sessionStorage.getItem('entityId')
   },
+  getAppId: () => $Storage.sessionStorage.getItem('appId'),
   getAppName: () => {
     return $Storage.sessionStorage.getItem('appName')
   },
@@ -23,12 +21,6 @@ const getters = {
   },
   getSideBarMenu: () => {
     return $Storage.localStorage.getItem('sideBarMenu')
-  },
-  menuList: () => {
-    return $Storage.sessionStorage.getItem('menuList')
-  },
-  keySideBarMap: () => {
-    return $Storage.sessionStorage.getItem('keySideBarMap')
   },
   firstRoute: state => state.settings.firstRoute,
   loginStatus: state => state.settings.hasLogin,

@@ -174,7 +174,8 @@ const normalRouter = [
 
 export const router = new Router({
   mode: 'history',
-  routes: normalRouter
+  routes: normalRouter,
+  scrollBehavior: () => ({ y: 0 })
 })
 
 router.beforeEach((to, from, next) => {

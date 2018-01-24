@@ -53,6 +53,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
   name: 'Intents',
   data () {
@@ -132,21 +133,12 @@ export default {
   },
   computed: {
     getAppId () {
-      this.appId = this.$store.state.appId
-      if (!this.appId) {
-        this.appId = this.$store.getters.getAppId
-      }
+      this.appId = this.$store.state.apps.appId
       return this.appId
     },
     getAppName () {
-      this.appName = this.$store.state.appName
-      if (!this.appName) {
-        this.appName = this.$store.getters.getAppName
-      }
+      this.appName = this.$store.state.apps.appName
       return this.appName
-    },
-    ifHasIntents () {
-      return this.$store.state.hasIntents || false
     }
   },
   methods: {
@@ -158,7 +150,7 @@ export default {
       let intentId = params.id
       // console.log(this.intentList[index].id)
       this.$store.dispatch('setIntentId', intentId)
-      console.log('appId', this.getAppId)
+      console.log('appId', this.appId)
       this.$router.push({ name: 'EditIntents', params: { appId: this.getAppId } })
     },
     // 获取场景列表
@@ -209,6 +201,7 @@ export default {
   },
   mounted () {
     this.getIntentsList()
+    console.log('appId', this.getAppId)
   },
   // 两个路由渲染同个组件 实例会被复用
   // 组件的生命周期钩子不会再被调用

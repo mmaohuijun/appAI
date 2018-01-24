@@ -146,12 +146,12 @@ export default {
       } else {
         this.$store.dispatch('setAppId', params.id)
         this.$store.dispatch('setAppName', params.name)
+        console.log('application appId', params.id)
         this.$router.push({ name: 'Intents', params: { appId: params.id } })
       }
     },
     // 跳转到 编辑页面
     gotoEditApp (appId) {
-      console.log('appId', appId)
       this.$store.dispatch('setAppId', appId)
       this.$router.push({ name: 'EditApp', params: { appId: appId } })
     },
