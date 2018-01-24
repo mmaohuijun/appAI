@@ -24,68 +24,91 @@ const sideBarMenuMap = {
   },
   fragmentation: {
     title: '碎片化平台',
-    name: 'Fragment'
+    name: 'Fragment',
+    chldren: [
+      { title: '碎片化', name: 'Application' }
+    ]
   },
   micro_services: {
     title: '微服务管理',
-    name: 'micro'
+    name: 'micro',
+    chldren: [
+      { title: '微服务', name: 'Application' }
+    ]
   },
   flow: {
     title: '流程管理',
-    name: 'flow'
+    name: 'flow',
+    chldren: [
+      { title: '流程', name: 'Application' }
+    ]
   },
   information: {
     title: '数据安全管理',
-    name: 'information'
+    name: 'information',
+    chldren: [
+      { title: '数据安全', name: 'Application' }
+    ]
   }
 }
 
 const settings = {
   state: {
-    userName: '', // 用户id
-    sideBarMenu: [],
-    sideBarMenuMap,
-    keySideBarMenuMap: {},
+    hasLogin: false,
+    username: '', // 用户id
     firstRoute: '',
-    toggleLogin: false // 是否已登录
+    auth: [],
+    token: '',
+    sideBarMenu: [],
+    sideBarMenuMap
   },
   mutations: {
-    SET_USERNAME (state, name) {
-      state.userName = name
+    SET_USER_INFO (state, json) {
+      state.auth = json.auth
+      state.token = json.token
+      state.username = json.username
+      console.log('json', json)
     },
-    SET_AUTH (state, auth) {
-      state.sideBarMenu = auth
-      $Storage.localStorage.setItem('sideBarMenu', auth)
+    TOGGLE_LOGIN_STATUS (state, flag) {
+      state.hasLogin = flag
     },
-    SET_SIDEBAR (state, menu) {
-      state.keySideBarMenuMap = menu
+    SET_FIRST_ROUTE (state, route) {
+      state.firstRoute = sideBarMenuMap[route].children[0].name
+      console.log(state.firstRoute)
     },
-    SET_FIRSTROUTE (state, router) {
-      state.firstRoute = router
-    },
-    TOGGLE_LOGIN (state) {
-      state.toggleLogin = !state.toggleLogin
+    SET_SIDEBAR_MENU (state, menu) {
+      state.sideBarMenu = menu
     }
   },
   actions: {
-    setUserName ({ dispatch, commit }, name) {
-      dispatch('clearUserName')
-      commit('SET_USERNAME', name)
-      $Storage.localStorage.setItem('userName', name)
+    setUserInfo ({ commit, dispatch }, json) {
+      dispatch('clearUserInfo')
+      commit('SET_USER_INFO', json)
+      $Storage.sessionStorage.setItem('userInfo', json)
     },
-    clearUserName () {
-      $Storage.localStorage.removeItem('userName')
+    getUserInfoFromStorage ({ commit }) {
+      return new Promise(resolve => {
+        const info = $Storage.sessionStorage.getItem('userInfo')
+        if (!info) return
+        commit('SET_USER_INFO', info)
+        resolve()
+      })
     },
-    setSideBar ({ commit, getters, state }) {
-      let menu = []
-      let sideBarMenu = state.sideBarMenu
-      _.each(sideBarMenu, key => {
+    clearUserInfo () {
+      $Storage.sessionStorage.removeItem('userInfo')
+    },
+    toggleLoginStatus ({ commit }, flag) {
+      commit('TOGGLE_LOGIN_STATUS', flag)
+    },
+    setFirstRoute ({ commit }, route) {
+      commit('SET_FIRST_ROUTE', route)
+    },
+    setSideBarMenu ({ commit, getters, state }) {
+      const menu = []
+      _.each(getters.auth, key => {
         menu.push(sideBarMenuMap[key])
       })
-      commit('SET_SIDEBAR', menu)
-    },
-    clearSideBar () {
-      $Storage.localStorage.removeItem('sideBarMenu')
+      commit('SET_SIDEBAR_MENU', menu)
     }
   }
 }

@@ -145,7 +145,8 @@ const normalRouter = [
           { path: 'index', name: 'Module', component: Module }
         ]
       }
-    ]
+    ],
+    meta: { requiresLogin: true, requiresAuth: true }
   },
   {
     path: '/auth',
@@ -164,10 +165,10 @@ const normalRouter = [
           { path: 'index', name: 'RoleAuth', component: RoleAuth },
           { path: 'disUser', name: 'DisUser', component: DisUser },
           { path: 'disThemeUser', name: 'DisThemeUser', component: DisThemeUser }
-        ],
-        meta: { requiresLogin: true }
+        ]
       }
-    ]
+    ],
+    meta: { requiresLogin: true, requiresAuth: true }
   }
 ]
 
@@ -178,17 +179,14 @@ export const router = new Router({
 
 router.beforeEach((to, from, next) => {
   if (to.matched.some(record => record.meta.requiresLogin)) {
-    if (store.getters.getUserName) {
-      let userName = store.state.userName
-      if (!userName) {
-        userName = store.getters.getUserName
+    if (store.getters.loginStatus || store.getters.hasUserInfo) {
+      if (store.getters.auth.length === 0) {
+        store.dispatch('getUserInfoFromStorage')
       }
-      if (!userName) {
-        next({
-          path: '/'
-        })
-      } else {
+      if (to.matched.some(record => record.meta.requiresAuth)) {
         next()
+      } else {
+        console.log('您没有权限')
       }
     } else {
       next({ name: 'Login' })

@@ -7,7 +7,7 @@
         </div>
         <div class="layout-logout">
           <p>
-            Hi,{{this.$store.state.userName || this.$store.getters.getUserName}}
+            Hi,{{this.username}}
             <Dropdown>
                 <a href="javascript:void(0)">
                     设置
@@ -59,6 +59,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
   name: 'layout',
   data () {
@@ -81,6 +82,10 @@ export default {
     }
   },
   computed: {
+    ...mapGetters([
+      'sideBarMenu',
+      'username'
+    ]),
     getAppId () {
       let appId
       appId = this.$store.state.appId
@@ -88,10 +93,7 @@ export default {
         appId = this.$store.getters.getAppId
       }
       return appId
-    },
-    sideBarMenu () {
-      return this.$store.state.keySideBarMenuMap
-    },
+    }
   },
   methods: {
     selectMenu (name) {
@@ -126,21 +128,12 @@ export default {
       this.$axios.post('user/logout').then(response => {
         if (response.status.code === '200') {
           this.$router.push({ name: 'Login' })
-          this.$store.dispatch('clearUserName')
-          this.$store.dispatch('clearSideBar')
         }
       })
     }
   },
-  watch: {
-    '$route' (to, from) {
-      // console.log(to, from)
-    }
-  },
   mounted () {
-    this.$store.commit('SET_AUTH', this.$store.state.sideBarMenu)
-    this.$store.dispatch('setSideBar')
-    console.log(this.$store.getters.getSideBarMenu)
+    this.$store.dispatch('setSideBarMenu')
   }
 }
 </script>

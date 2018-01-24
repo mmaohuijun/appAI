@@ -20,6 +20,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
   name: 'Login',
   data () {
@@ -27,6 +28,11 @@ export default {
       username: 'admin',
       password: '123456'
     }
+  },
+  computed: {
+    ...mapGetters([
+      'firstRoute'
+    ])
   },
   methods: {
     // 注册
@@ -40,14 +46,17 @@ export default {
       this.$axios.post('user/login', { username: this.username, password: this.password }).then(response => {
         console.log(response)
         if (response.status.code === '200') {
-          
-          this.$store.commit('TOGGLE_LOGIN')
-          // 保存用户信息 权限信息
-          this.$store.dispatch('setUserName', this.username)
-          this.$store.commit('SET_AUTH', response.data.menuList)
-          // this.$store.commit('SET_FIRSTROUTE', response.data.menuList[0])
-          this.$router.push({ name: 'Application'})
-          // this.$router.push({ name: this.$store.getters.getSideBarMenu[0].name })
+          this.$store.dispatch('toggleLoginStatus', true)
+          const resData = response.data
+          const loginInfo = {
+            auth: resData.menuList,
+            token: resData.token.token,
+            username: resData.username
+          }
+          console.log('loginInfo', loginInfo)
+          this.$store.dispatch('setUserInfo', loginInfo)
+          this.$store.commit('SET_FIRST_ROUTE', resData.menuList[0])
+          this.$router.push({ name: this.firstRoute })
         }
       })
     }

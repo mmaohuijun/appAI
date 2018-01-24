@@ -23,7 +23,22 @@ const getters = {
   },
   getSideBarMenu: () => {
     return $Storage.localStorage.getItem('sideBarMenu')
-  }
+  },
+  menuList: () => {
+    return $Storage.sessionStorage.getItem('menuList')
+  },
+  keySideBarMap: () => {
+    return $Storage.sessionStorage.getItem('keySideBarMap')
+  },
+  firstRoute: state => state.settings.firstRoute,
+  loginStatus: state => state.settings.hasLogin,
+  hasUserInfo: () => {
+    const userInfo = $Storage.sessionStorage.getItem('userInfo')
+    return userInfo !== undefined
+  },
+  auth: state => state.settings.auth,
+  username: state => state.settings.username,
+  sideBarMenu: state => state.settings.sideBarMenu
 }
 
 export default getters
