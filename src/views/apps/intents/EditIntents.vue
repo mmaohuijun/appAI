@@ -1,7 +1,7 @@
 <template>
   <div class="content-body">
     <div class="content-body-header">
-      <div class="">
+      <div>
         <span style="padding-right: 15px;">关键词</span>
         <Input 
           @on-click="getEntitiesList"
@@ -29,6 +29,8 @@
         <Form-item label="场景名称" prop="name">
           <Input v-model="createIntentsForm.name"></Input>
         </Form-item>
+        <span>输入</span><input type="text" class="my-input">
+        <span>输出</span><input type="text" class="my-input">
         <Form-item label="用户提问"><br>
         <div v-for="(item, index) in askList" :key="index" style="margin-bottom: 10px;" class="ask-box">
           <div>
@@ -45,7 +47,7 @@
                 <Icon v-show="index!==0" type="trash-a" class="trash-icon"></Icon>
               </div>          
             </div>    
-          </div>        
+          </div>         
             <Select v-if="hasEntities&&index === textIndex" @on-change="changeSelect">
               <Option v-for="item in entitiesList" :value="item.id" :key="item.id">{{item.name}}</Option>
             </Select>
@@ -162,7 +164,7 @@ export default {
   computed: {
     getAppId () {
       // return this.$store.getters.getAppId
-      this.appId = this.$store.state.appId
+      this.appId = this.$store.state.apps.appId
       if (!this.appId) {
         this.appId = this.$store.getters.getAppId
       }
@@ -170,7 +172,7 @@ export default {
     },
     getIntentId () {
       // return this.$store.getters.getIntentId
-      this.intentId = this.$store.state.intentId
+      this.intentId = this.$store.state.apps.intentId
       if (!this.intentId) {
         this.intentId = this.$store.getters.getIntentId
       }
