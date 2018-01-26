@@ -132,10 +132,13 @@ export default {
     }
   },
   computed: {
-    getAppId () {
-      this.appId = this.$store.state.apps.appId
-      return this.appId
-    },
+    ...mapGetters([
+      'getAppId'
+    ]),
+    // getAppId () {
+    //   this.appId = this.$store.state.apps.appId
+    //   return this.appId
+    // },
     getAppName () {
       this.appName = this.$store.state.apps.appName
       return this.appName
@@ -200,8 +203,9 @@ export default {
     }
   },
   mounted () {
-    this.getIntentsList()
     console.log('appId', this.getAppId)
+    this.getIntentsList()
+    // console.log('appId', this.getAppId)
   },
   // 两个路由渲染同个组件 实例会被复用
   // 组件的生命周期钩子不会再被调用

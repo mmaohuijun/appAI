@@ -29,8 +29,8 @@
         <Form-item label="场景名称" prop="name">
           <Input v-model="createIntentsForm.name"></Input>
         </Form-item>
-        <span>输入</span><input type="text" class="my-input">
-        <span>输出</span><input type="text" class="my-input">
+        <span>输入</span><input type="text" class="my-input" v-model="input">
+        <span>输出</span><input type="text" class="my-input" v-model="output">
         <Form-item label="用户提问"><br>
         <div v-for="(item, index) in askList" :key="index" style="margin-bottom: 10px;" class="ask-box">
           <div>
@@ -158,7 +158,9 @@ export default {
       actionName: '', // 动作名称
       selector: '', // 鼠标划取的词
       editActionIndex: '', // 正在编辑第几行 动作列表
-      index: ''
+      index: '',
+      input: '',
+      output: ''
     }
   },
   computed: {
@@ -208,7 +210,9 @@ export default {
         actionName: this.actionName,
         name: this.createIntentsForm.name,
         rank: '',
-        id: this.getIntentId
+        id: this.getIntentId,
+        input: this.input,
+        output: this.output
       }
       this._.each(this.slotList, (ele, index) => {
         data[`slotList[${index}].id`] = this.slotList[index].id
@@ -216,7 +220,7 @@ export default {
         data[`slotList[${index}].dictName`] = ele.dictName
         data[`slotList[${index}].flag`] = ele.flag
         data[`slotList[${index}].message`] = ele.message
-        data[`slotList[${index}].typeName`] = ele.typeName
+        data[`slotList[${index}].typeName`] = ele.typeName    
       })
       // // asklist
       this._.each(this.askList, (ele, index) => {
@@ -263,6 +267,8 @@ export default {
         if (response.data) {
           var data = response.data.intent
           this.createIntentsForm.name = data.name
+          this.input = data.input
+          this.output = data.output
           this.askList = data.askList
           // 由于后台没有返回这个值 三层嵌套啊 坑死 T T
           for (let index = 0; index < this.entitiesList.length; index++) {
