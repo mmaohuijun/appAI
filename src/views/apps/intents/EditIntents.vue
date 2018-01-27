@@ -38,14 +38,14 @@
                 <ul class="list-card">
                   <li v-for="(item, index) in selectInputList" :key="index">
                     {{ item }}
-                    <span @click="delInput">x</span>
+                    <span @click="delInput(index)">x</span>
                     </li>
                 </ul>
                 <Select @on-change="changeInput" style="width: 300px;">
                   <Option
                   v-for="item in inputList" 
                   :value="item.name" 
-                  :label="item.name" :key="item.id">{{ item.name }}</Option>
+                  :label="item.name" :key="item.id"></Option>
                 </Select>
               </div>
             </div>
@@ -53,21 +53,24 @@
               <span>输出</span>
               <div>
                 <ul class="list-card">
-                  <li v-for="(item, index) in output" :key="index" @click="getOutput">{{ item.name }}</li>
+                  <li v-for="(item, index) in output" :key="index" @click="getOutput(index)">
+                    {{ item.name }}    
+                    <span @click.stop="delOutput(index)">x</span>          
+                  </li>
                 </ul>
-                <input type="text" placeholder="添加输出状态...">
-                <Modal v-model="showOutput">
-                  <Form-item label="名称">
-                    <Input v-model="output[0].name"></Input>
-                  </Form-item>
-                  <Form-item label="问题">
-                    <Input v-model="output[0].ask"></Input>
-                  </Form-item>
-                  <Form-item label="生命周期">
-                    <Input v-model="output[0].lifecycle"></Input>
-                  </Form-item>
-                </Modal>
+                <input type="text" placeholder="添加输出状态..." @focus="showOutput=true">
               </div>
+              <Modal v-model="showOutput" @on-ok="addOutput">
+                <Form-item label="名称">
+                  <Input v-model="output.name"></Input>
+                </Form-item>
+                <Form-item label="问题">
+                  <Input v-model="output.ask"></Input>
+                </Form-item>
+                <Form-item label="生命周期">
+                  <Input v-model="output.lifecycle"></Input>
+                </Form-item>
+              </Modal>  
             </div>
           </div>
         </div>
@@ -201,9 +204,16 @@ export default {
       index: '',
       input: '',
       inputList: [],
-      output: [],
+      output: [
+        {
+          name: '',
+          ask: '',
+          lifecycle: ''
+        }
+      ],
       showOutput: false,
-      selectInputList: []
+      selectInputList: [],
+      outIndex: '' // 选择输出项
     }
   },
   computed: {
@@ -254,7 +264,7 @@ export default {
         name: this.createIntentsForm.name,
         rank: '',
         id: this.getIntentId,
-        input: this.input,
+        input: this.selectInputList.toString(),
         output: this.output
       }
       this._.each(this.slotList, (ele, index) => {
@@ -314,6 +324,18 @@ export default {
           this.input = data.input
           this.output = data.output
           this.askList = data.askList
+          this.selectInputList = data.input
+          
+          if (data.input) {
+            console.log(data.input.indexOf(','))
+            if (data.input.indexOf(',') > 0) {
+              this.selectInputList = data.input.split(',')
+            } else {
+              this.selectInputList = [data.input]
+            }
+          } else {
+            this.selectInputList = []
+          }
           // 由于后台没有返回这个值 三层嵌套啊 坑死 T T
           for (let index = 0; index < this.entitiesList.length; index++) {
             for (let i = 0; i < this.askList.length; i++) {
@@ -332,10 +354,6 @@ export default {
             this.slotList.push({ defValue: this.slotList.defValue, typeName: this.slotList.typeName, dictName: this.slotList.dictName })
           }
           this.actionName = data.actionName
-          if (response.data.input) {
-            this.selectInputList = response.data.input.slice(',')
-            console.log(this.selectInputList)
-          }
         }
       })
     },
@@ -464,8 +482,15 @@ export default {
       }
     },
     // 获取输出详情
-    getOutput () {
+    getOutput (index) {
       this.showOutput = true
+      this.output.ask = this.output[index].ask
+      this.output.name = this.output[index].name
+      this.output.lifecycle = this.output[index].lifecycle
+    },
+    // 添加输出状态
+    addOutput () {
+      this.output.push({ name: this.output.name, ask: this.output.ask, lifecycle: this.output.lifecycle })
     },
     // 选择某项 输入
     changeInput (input) {
@@ -474,7 +499,10 @@ export default {
       console.log('this.selectInputList', this.selectInputList)
     },
     delInput (i) {
-
+      this.selectInputList.splice(i, 1)
+    },
+    delOutput (i) {
+      this.output.splice(i, 1)
     }
   },
   created () {
@@ -491,9 +519,7 @@ export default {
         this.hasEntities = false
       }
     },
-    'askList' (newV, oldV) {
-      console.log(this.askList)
-    }
+
   }
 }
 </script>
