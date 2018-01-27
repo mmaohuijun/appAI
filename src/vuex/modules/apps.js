@@ -26,6 +26,11 @@ const apps = {
       commit('SET_APPID', id)
       $Storage.sessionStorage.setItem('appId', id)
     },
+    // getAppIdFromStorage () {
+    //   return new Promise (  => {
+    //     return $Storage.sessionStorage.getItem('appId')
+    //   })
+    // },
     setAppName ({ commit, dispatch }, name) {
       dispatch('clearAppName')
       commit('SET_APPNAME', name)

@@ -29,8 +29,48 @@
         <Form-item label="场景名称" prop="name">
           <Input v-model="createIntentsForm.name"></Input>
         </Form-item>
-        <span>输入</span><input type="text" class="my-input" v-model="input">
-        <span>输出</span><input type="text" class="my-input" v-model="output">
+        <div class="state-box">
+          <div>状态</div>
+          <div class="state-type">
+            <div class="input-type">
+              <span>输入</span>
+              <div>
+                <ul class="list-card">
+                  <li v-for="(item, index) in selectInputList" :key="index">
+                    {{ item }}
+                    <span @click="delInput">x</span>
+                    </li>
+                </ul>
+                <Select @on-change="changeInput" style="width: 300px;">
+                  <Option
+                  v-for="item in inputList" 
+                  :value="item.name" 
+                  :label="item.name" :key="item.id">{{ item.name }}</Option>
+                </Select>
+              </div>
+            </div>
+            <div class="output-type">
+              <span>输出</span>
+              <div>
+                <ul class="list-card">
+                  <li v-for="(item, index) in output" :key="index" @click="getOutput">{{ item.name }}</li>
+                </ul>
+                <input type="text" placeholder="添加输出状态...">
+                <Modal v-model="showOutput">
+                  <Form-item label="名称">
+                    <Input v-model="output[0].name"></Input>
+                  </Form-item>
+                  <Form-item label="问题">
+                    <Input v-model="output[0].ask"></Input>
+                  </Form-item>
+                  <Form-item label="生命周期">
+                    <Input v-model="output[0].lifecycle"></Input>
+                  </Form-item>
+                </Modal>
+              </div>
+            </div>
+          </div>
+        </div>
         <Form-item label="用户提问"><br>
         <div v-for="(item, index) in askList" :key="index" style="margin-bottom: 10px;" class="ask-box">
           <div>
@@ -160,7 +200,10 @@ export default {
       editActionIndex: '', // 正在编辑第几行 动作列表
       index: '',
       input: '',
-      output: ''
+      inputList: [],
+      output: [],
+      showOutput: false,
+      selectInputList: []
     }
   },
   computed: {
@@ -244,6 +287,7 @@ export default {
         if (response.data.list.length > 0) {
           this.hasIntents = true
           this.intentList = response.data.list
+          this.inputList = response.data.outputList
         } else {
           this.hasIntents = false
         }
@@ -288,6 +332,10 @@ export default {
             this.slotList.push({ defValue: this.slotList.defValue, typeName: this.slotList.typeName, dictName: this.slotList.dictName })
           }
           this.actionName = data.actionName
+          if (response.data.input) {
+            this.selectInputList = response.data.input.slice(',')
+            console.log(this.selectInputList)
+          }
         }
       })
     },
@@ -414,6 +462,19 @@ export default {
       if (this.slotList.length < 1) {
         this.slotList[0] = { typeName: this.slotList.typeName, dictName: this.slotList.dictName }
       }
+    },
+    // 获取输出详情
+    getOutput () {
+      this.showOutput = true
+    },
+    // 选择某项 输入
+    changeInput (input) {
+      console.log(input)
+      this.selectInputList.push(input)
+      console.log('this.selectInputList', this.selectInputList)
+    },
+    delInput (i) {
+
     }
   },
   created () {
@@ -491,5 +552,37 @@ export default {
   width: 100%;
   padding: 5px;
   margin-bottom: 1px;
+}
+// 状态
+.state-box {
+  .state-type {
+    .input-type, .output-type {
+      display: flex;
+      & > div {
+        margin-left: 5px;
+      }
+      ul.list-card {
+        float: left;
+        li {
+          float: left;
+          border: 1px solid red;
+          padding: 5px 10px;
+          cursor: pointer;
+          margin: 0px 5px 5px 5px;
+
+          &:hover {
+            background: #eee;
+          }
+        }
+      }
+      input {
+        border: none;
+        outline: none;
+        margin-top: 5px;
+        padding-bottom: 8px;       
+      }
+    }
+    .output-type ul li { border: 1px solid green; }
+  }
 }
 </style>
