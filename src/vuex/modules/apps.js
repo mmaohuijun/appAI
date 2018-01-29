@@ -25,16 +25,29 @@ const apps = {
       dispatch('clearAppId')
       commit('SET_APPID', id)
       $Storage.sessionStorage.setItem('appId', id)
+      console.log('setAppId', $Storage.sessionStorage.getItem('appId'))
     },
-    // getAppIdFromStorage () {
-    //   return new Promise (  => {
-    //     return $Storage.sessionStorage.getItem('appId')
-    //   })
-    // },
+    getAppIdFromStorage ({ commit }) {
+      return new Promise((resolve, reject) => {
+        const appId = $Storage.sessionStorage.getItem('appId')
+        if (appId) {
+          commit('SET_APPID', appId)
+        }
+        resolve()
+      })
+    },
     setAppName ({ commit, dispatch }, name) {
       dispatch('clearAppName')
       commit('SET_APPNAME', name)
       $Storage.sessionStorage.setItem('appName', name)
+    },
+    getAppName () {
+      return new Promise((resolve, reject) => {
+        const appName = $Storage.sessionStorage.appName
+        if (appName) {
+          resolve(appName)
+        }
+      })
     },
     setIntentId ({ commit, dispatch }, id) {
       commit('SET_INTENTID', id)

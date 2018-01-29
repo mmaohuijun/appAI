@@ -37,14 +37,14 @@
               <div>
                 <ul class="list-card">
                   <li v-for="(item, index) in selectInputList" :key="index">
-                    {{ item }}
+                    {{ item.name }}
                     <span @click="delInput(index)">x</span>
                     </li>
                 </ul>
                 <Select @on-change="changeInput" style="width: 300px;">
                   <Option
-                  v-for="item in inputList" 
-                  :value="item.name" 
+                  v-for="item in inputList"
+                  :value="item.id" 
                   :label="item.name" :key="item.id"></Option>
                 </Select>
               </div>
@@ -58,9 +58,9 @@
                     <span @click.stop="delOutput(index)">x</span>          
                   </li>
                 </ul>
-                <input type="text" placeholder="添加输出状态..." @focus="showOutput=true">
+                <input type="text" placeholder="添加输出状态..." @focus="addOutput">
               </div>
-              <Modal v-model="showOutput" @on-ok="addOutput">
+              <Modal v-model="showOutput" @on-ok="saveOutput">
                 <Form-item label="名称">
                   <Input v-model="output.name"></Input>
                 </Form-item>
@@ -73,6 +73,23 @@
               </Modal>  
             </div>
           </div>
+        </div>
+        <div class="validate">
+          <div>验证</div>
+            <div>
+              <ul class="list-card">
+                  <li v-for="(item, index) in checkList" :key="index">
+                    {{ item.name }}    
+                    <span @click.stop="delOutput(index)">x</span>          
+                  </li>
+                </ul>
+              <Select @on-change="changeCheck" style="width: 300px;">
+                <Option
+                v-for="item in inputList" 
+                :value="item.id" 
+                :label="item.name" :key="item.id"></Option>
+              </Select>
+            </div>
         </div>
         <Form-item label="用户提问"><br>
         <div v-for="(item, index) in askList" :key="index" style="margin-bottom: 10px;" class="ask-box">
@@ -203,7 +220,9 @@ export default {
       editActionIndex: '', // 正在编辑第几行 动作列表
       index: '',
       input: '',
+      check: '',
       inputList: [],
+      checkList: [],
       output: [
         {
           name: '',
@@ -212,8 +231,14 @@ export default {
         }
       ],
       showOutput: false,
-      selectInputList: [],
-      outIndex: '' // 选择输出项
+      selectInputList: [
+        {
+          id: '',
+          name: ''
+        }
+      ],
+      outIndex: '', // 选择输出项
+      ifOutputDetail: false
     }
   },
   computed: {
@@ -243,6 +268,15 @@ export default {
       this.getIntentsDetail(selectIntent)
     },
     saveCreate (name) {
+      for (let i = 0, arr = []; i < this.selectInputList.length; i++) {
+        arr.push(this.selectInputList[i].id)
+        this.input = arr.toString()
+      }
+      for (let i = 0, arr = []; i < this.checkList.length; i++) {
+        arr.push(this.checkList[i].id)
+        this.check = arr.toString()
+      }
+      console.log(this.getSaveData())
       this.$refs[name].validate((valid) => {
         if (!valid) {
           this.$Message.error('提交失败')
@@ -264,8 +298,8 @@ export default {
         name: this.createIntentsForm.name,
         rank: '',
         id: this.getIntentId,
-        input: this.selectInputList.toString(),
-        output: this.output
+        input: this.input,
+        check: this.check
       }
       this._.each(this.slotList, (ele, index) => {
         data[`slotList[${index}].id`] = this.slotList[index].id
@@ -284,6 +318,12 @@ export default {
           data[`askList[${index}].entitys[${index2}].value`] = ele.entitys[index2].value
           data[`askList[${index}].entitys[${index2}].entity`] = ele.entitys[index2].entity
         })
+      })
+      this._.each(this.output, (ele, index) => {
+        data[`output[${index}].id`] = this.output[index].id || ''
+        data[`output[${index}].name`] = this.output[index].name
+        data[`output[${index}].ask`] = this.output[index].ask
+        data[`output[${index}].lifecycle`] = this.output[index].lifecycle
       })
       return data
     },
@@ -321,22 +361,12 @@ export default {
         if (response.data) {
           var data = response.data.intent
           this.createIntentsForm.name = data.name
-          this.input = data.input
+          this.checkList = data.checkIdObj
           this.output = data.output
           this.askList = data.askList
-          this.selectInputList = data.input
-          
-          if (data.input) {
-            console.log(data.input.indexOf(','))
-            if (data.input.indexOf(',') > 0) {
-              this.selectInputList = data.input.split(',')
-            } else {
-              this.selectInputList = [data.input]
-            }
-          } else {
-            this.selectInputList = []
-          }
-          // 由于后台没有返回这个值 三层嵌套啊 坑死 T T
+          this.selectInputList = data.inputObj
+          console.log('selectInputList', this.selectInputList)
+          // 后台没有返回这个值 三层嵌套啊 坑死 T T
           for (let index = 0; index < this.entitiesList.length; index++) {
             for (let i = 0; i < this.askList.length; i++) {
               for (let j = 0; j < this.askList[i].entitys.length; j++) {
@@ -483,20 +513,39 @@ export default {
     },
     // 获取输出详情
     getOutput (index) {
+      this.ifOutputDetail = true
       this.showOutput = true
       this.output.ask = this.output[index].ask
       this.output.name = this.output[index].name
       this.output.lifecycle = this.output[index].lifecycle
     },
     // 添加输出状态
+    saveOutput () {
+      console.log(this.ifOutputDetail)
+      if (!this.ifOutputDetail) {
+        this.output.push({ name: this.output.name, ask: this.output.ask, lifecycle: this.output.lifecycle })   
+      }  
+    },
     addOutput () {
-      this.output.push({ name: this.output.name, ask: this.output.ask, lifecycle: this.output.lifecycle })
+      this.showOutput = true
+      this.output.name = ''
+      this.output.ask = ''
+      this.output.lifecycle = ''
     },
     // 选择某项 输入
-    changeInput (input) {
-      console.log(input)
-      this.selectInputList.push(input)
-      console.log('this.selectInputList', this.selectInputList)
+    changeInput (id) {
+      for (let input of this.inputList) {
+        if (input.id === id) {
+          this.selectInputList.push({ id: id, name: input.name })
+        }
+      }
+    },
+    changeCheck (id) {
+      for (let input of this.inputList) {
+        if (input.id === id) {
+          this.checkList.push({ id: id, name: input.name })
+        }
+      }
     },
     delInput (i) {
       this.selectInputList.splice(i, 1)
@@ -506,6 +555,7 @@ export default {
     }
   },
   created () {
+    this.$store.dispatch('getAppIdFromStorage')
     this.getIntentsList()
     this.getIntentsDetail()
     this.getEntitiesList()
@@ -519,7 +569,11 @@ export default {
         this.hasEntities = false
       }
     },
-
+    'showOutput' (newV, oldV) {
+      if (!newV) {
+        this.ifOutputDetail = false
+      }
+    }
   }
 }
 </script>
@@ -582,7 +636,7 @@ export default {
 // 状态
 .state-box {
   .state-type {
-    .input-type, .output-type {
+    .input-type, .output-type, .validate {
       display: flex;
       & > div {
         margin-left: 5px;

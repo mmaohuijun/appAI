@@ -133,16 +133,17 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'getAppId'
-    ]),
+      'getAppId',
+      'getAppName'
+    ])
     // getAppId () {
     //   this.appId = this.$store.state.apps.appId
     //   return this.appId
     // },
-    getAppName () {
-      this.appName = this.$store.state.apps.appName
-      return this.appName
-    }
+    // getAppName () {
+    //   this.appName = this.$store.state.apps.appName
+    //   return this.appName
+    // }
   },
   methods: {
     gotoCreateIntents () {
@@ -202,7 +203,9 @@ export default {
       this.getIntentsList()
     }
   },
-  mounted () {
+  mounted () {  
+    this.$store.dispatch('getAppIdFromStorage')
+    console.log(this.$store.dispatch('getAppName'))
     console.log('appId', this.getAppId)
     this.getIntentsList()
     // console.log('appId', this.getAppId)
