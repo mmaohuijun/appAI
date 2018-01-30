@@ -29,6 +29,52 @@
         <Form-item label="场景名称" prop="name">
           <Input v-model="createIntentsForm.name"></Input>
         </Form-item>
+        <div class="state-box">
+          <div>状态</div>
+          <div class="state-type">
+            <div class="input-type">
+              <span>输入</span>
+              <div>
+                <ul class="list-card">
+                  <li v-for="(item, index) in selectInputList" :key="index">
+                    {{ item.name }}
+                    <span @click="delInput(index)">x</span>
+                    </li>
+                </ul>
+                <Select @on-change="changeInput" style="width: 300px;">
+                  <Option
+                  v-for="item in inputList"
+                  :value="item.id" 
+                  :label="item.name" :key="item.id"></Option>
+                </Select>
+              </div>
+            </div>
+            <div class="output-type">
+              <span>输出</span>
+              <div>
+                <ul class="list-card">
+                  <li v-for="(item, index) in output" :key="index" @click="getOutput(index)">
+                    {{ item.name }}    
+                    <span @click.stop="delOutput(index)">x</span>          
+                  </li>
+                </ul>
+                <input type="text" placeholder="添加输出状态..." @focus="addOutput">
+              </div>
+              <Modal v-model="showOutput" @on-ok="saveOutput">
+                <Form-item label="名称">
+                  <Input v-model="out.name"></Input>
+                </Form-item>
+                <Form-item label="问题">
+                  <Input v-model="out.ask"></Input>
+                </Form-item>
+                <Form-item label="生命周期">
+                  <Input v-model="out.lifecycle"></Input>
+                </Form-item>
+              </Modal>  
+            </div>
+          </div>
+        </div>
+
         <Form-item label="用户提问"><br>
         <div v-for="(item, index) in askList" :key="index" style="margin-bottom: 10px;" class="ask-box">
           <div>
@@ -156,7 +202,29 @@ export default {
       actionName: '', // 动作名称
       selector: '', // 鼠标划取的词
       editActionIndex: '', // 正在编辑第几行 动作列表
-      index: ''
+      index: '',
+      input: '',
+      check: '',
+      inputList: [],
+      checkList: [],
+      out: {}, // 某一项输出对象
+      output: [
+        {
+          name: '',
+          ask: '',
+          lifecycle: ''
+        }
+      ],
+      showOutput: false,
+      selectInputList: [
+        {
+          id: '',
+          name: ''
+        }
+      ],
+      outIndex: '', // 选择输出项
+      ifOutputDetail: false,
+      editI: '' // 正在编辑第几项 输出
     }
   },
   computed: {

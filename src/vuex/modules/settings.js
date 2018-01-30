@@ -25,28 +25,28 @@ const sideBarMenuMap = {
   fragmentation: {
     title: '碎片化平台',
     name: 'Fragment',
-    chldren: [
+    children: [
       { title: '碎片化', name: 'Application' }
     ]
   },
   micro_services: {
     title: '微服务管理',
     name: 'micro',
-    chldren: [
-      { title: '微服务', name: 'Application' }
+    children: [
+      { title: '微服务管理', name: 'MiService' }
     ]
   },
   flow: {
     title: '流程管理',
     name: 'flow',
-    chldren: [
+    children: [
       { title: '流程', name: 'Application' }
     ]
   },
   information: {
     title: '数据安全管理',
     name: 'information',
-    chldren: [
+    children: [
       { title: '数据安全', name: 'Application' }
     ]
   }

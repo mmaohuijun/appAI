@@ -163,7 +163,7 @@
         </Form-item>
 
         <div class="validate">
-          <div>验证</div>
+          <div>后置检查</div>
             <div>
               <ul class="list-card">
                   <li v-for="(item, index) in checkList" :key="index">

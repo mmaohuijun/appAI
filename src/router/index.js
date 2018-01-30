@@ -27,6 +27,9 @@ const RoleAuth = () => import('../views/auth/roleAuth/RoleAuth')
 const DisUser = () => import('../views/auth/roleAuth/DisUser')
 const DisThemeUser = () => import('../views/auth/roleAuth/DisThemeUser')
 
+// 微服务管理
+const MiService = () => import('../views/miService/MiService')
+const EditMicro = () => import('../views/miService/EditMicro')
 Vue.use(Router)
 
 export const keyRouter = {
@@ -131,6 +134,16 @@ const normalRouter = [
       { path: 'roleAuth/index', name: 'RoleAuth', component: RoleAuth },
       { path: 'roleAuth/disUser', name: 'DisUser', component: DisUser },
       { path: 'roleAuth/disThemeUser', name: 'DisThemeUser', component: DisThemeUser }
+    ],
+    meta: { requiresLogin: true, requiresAuth: true }
+  },
+  {
+    path: '/micro',
+    component: Layout,
+    name: '微服务管理',
+    children: [
+      { path: 'miService', name: 'MiService', component: MiService },
+      { path: 'editMicro', name: 'EditMicro', component: EditMicro }
     ],
     meta: { requiresLogin: true, requiresAuth: true }
   }
