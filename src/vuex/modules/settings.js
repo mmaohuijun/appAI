@@ -67,14 +67,12 @@ const settings = {
       state.auth = json.auth
       state.token = json.token
       state.username = json.username
-      console.log('json', json)
     },
     TOGGLE_LOGIN_STATUS (state, flag) {
       state.hasLogin = flag
     },
     SET_FIRST_ROUTE (state, route) {
       state.firstRoute = sideBarMenuMap[route].children[0].name
-      console.log(state.firstRoute)
     },
     SET_SIDEBAR_MENU (state, menu) {
       state.sideBarMenu = menu

@@ -203,7 +203,7 @@ export default {
       this.getIntentsList()
     }
   },
-  mounted () {  
+  mounted () {
     this.$store.dispatch('getAppIdFromStorage')
     console.log(this.$store.dispatch('getAppName'))
     console.log('appId', this.getAppId)

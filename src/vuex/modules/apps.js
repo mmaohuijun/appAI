@@ -25,7 +25,6 @@ const apps = {
       dispatch('clearAppId')
       commit('SET_APPID', id)
       $Storage.sessionStorage.setItem('appId', id)
-      console.log('setAppId', $Storage.sessionStorage.getItem('appId'))
     },
     getAppIdFromStorage ({ commit }) {
       return new Promise((resolve, reject) => {

@@ -307,7 +307,7 @@ export default {
         data[`slotList[${index}].dictName`] = ele.dictName
         data[`slotList[${index}].flag`] = ele.flag
         data[`slotList[${index}].message`] = ele.message
-        data[`slotList[${index}].typeName`] = ele.typeName    
+        data[`slotList[${index}].typeName`] = ele.typeName
       })
       // // asklist
       this._.each(this.askList, (ele, index) => {
@@ -365,7 +365,6 @@ export default {
           this.output = data.output
           this.askList = data.askList
           this.selectInputList = data.inputObj
-          console.log('selectInputList', this.selectInputList)
           // 后台没有返回这个值 三层嵌套啊 坑死 T T
           for (let index = 0; index < this.entitiesList.length; index++) {
             for (let i = 0; i < this.askList.length; i++) {
@@ -523,8 +522,8 @@ export default {
     saveOutput () {
       console.log(this.ifOutputDetail)
       if (!this.ifOutputDetail) {
-        this.output.push({ name: this.output.name, ask: this.output.ask, lifecycle: this.output.lifecycle })   
-      }  
+        this.output.push({ name: this.output.name, ask: this.output.ask, lifecycle: this.output.lifecycle })
+      }
     },
     addOutput () {
       this.showOutput = true
