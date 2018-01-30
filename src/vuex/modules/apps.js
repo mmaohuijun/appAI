@@ -40,10 +40,11 @@ const apps = {
       commit('SET_APPNAME', name)
       $Storage.sessionStorage.setItem('appName', name)
     },
-    getAppName () {
+    getAppName ({ commit }) {
       return new Promise((resolve, reject) => {
-        const appName = $Storage.sessionStorage.appName
+        const appName = $Storage.sessionStorage.getItem('appName')
         if (appName) {
+          commit('SET_APPNAME', appName)
           resolve(appName)
         }
       })

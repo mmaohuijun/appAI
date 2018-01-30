@@ -7,9 +7,7 @@ const getters = {
     return $Storage.sessionStorage.getItem('entityId')
   },
   getAppId: state => state.apps.appId,
-  getAppName: () => {
-    return $Storage.sessionStorage.getItem('appName')
-  },
+  getAppName: state => state.apps.appName,
   getUserName: () => {
     return $Storage.localStorage.getItem('userName')
   },

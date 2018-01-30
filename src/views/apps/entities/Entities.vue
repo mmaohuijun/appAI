@@ -52,6 +52,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
   name: 'Entities',
   data () {
@@ -130,24 +131,10 @@ export default {
     }
   },
   computed: {
-    getAppId () {
-      // return this.$store.getters.appId
-      this.appId = this.$store.state.apps.appId
-      if (!this.appId) {
-        this.appId = this.$store.getters.getAppId
-      }
-      return this.appId
-    },
-    getAppName () {
-      this.appName = this.$store.state.apps.appName
-      if (!this.appName) {
-        this.appName = this.$store.getters.getAppName
-      }
-      return this.appName
-    },
-    ifHasEntities () {
-      return this.entitiesList.length > 0
-    }
+    ...mapGetters([
+      'getAppId',
+      'getAppName'
+    ])
   },
   methods: {
     gotoCreateEntities () {
@@ -163,7 +150,7 @@ export default {
       //   this.appId = this.$store.getters.getAppId
       // }
       let data = {
-        appId: this.appId,
+        appId: this.getAppId,
         name: this.name,
         date: this.date,
         pageSize: this.pageSize,
@@ -209,6 +196,8 @@ export default {
     }
   },
   created () {
+    this.$store.dispatch('getAppIdFromStorage')
+    this.$store.dispatch('getAppName')
     this.getEntitiesList()
   }
 }

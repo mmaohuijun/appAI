@@ -62,34 +62,17 @@
               </div>
               <Modal v-model="showOutput" @on-ok="saveOutput">
                 <Form-item label="名称">
-                  <Input v-model="output.name"></Input>
+                  <Input v-model="out.name"></Input>
                 </Form-item>
                 <Form-item label="问题">
-                  <Input v-model="output.ask"></Input>
+                  <Input v-model="out.ask"></Input>
                 </Form-item>
                 <Form-item label="生命周期">
-                  <Input v-model="output.lifecycle"></Input>
+                  <Input v-model="out.lifecycle"></Input>
                 </Form-item>
               </Modal>  
             </div>
           </div>
-        </div>
-        <div class="validate">
-          <div>验证</div>
-            <div>
-              <ul class="list-card">
-                  <li v-for="(item, index) in checkList" :key="index">
-                    {{ item.name }}    
-                    <span @click.stop="delOutput(index)">x</span>          
-                  </li>
-                </ul>
-              <Select @on-change="changeCheck" style="width: 300px;">
-                <Option
-                v-for="item in inputList" 
-                :value="item.id" 
-                :label="item.name" :key="item.id"></Option>
-              </Select>
-            </div>
         </div>
         <Form-item label="用户提问"><br>
         <div v-for="(item, index) in askList" :key="index" style="margin-bottom: 10px;" class="ask-box">
@@ -178,6 +161,25 @@
           </Select>
           <a href="" @click.prevent="addActionList">添加一行</a>
         </Form-item>
+
+        <div class="validate">
+          <div>验证</div>
+            <div>
+              <ul class="list-card">
+                  <li v-for="(item, index) in checkList" :key="index">
+                    {{ item.name }}    
+                    <span @click.stop="delVali(index)">x</span>          
+                  </li>
+                </ul>
+              <Select @on-change="changeCheck" style="width: 300px;">
+                <Option
+                v-for="item in inputList" 
+                :value="item.id" 
+                :label="item.name" :key="item.id"></Option>
+              </Select>
+            </div>
+        </div>
+
         <Form-item>
           <Button type="primary" size="large" @click="saveCreate('createIntentsForm')">保存</Button>
         </Form-item>
@@ -223,6 +225,7 @@ export default {
       check: '',
       inputList: [],
       checkList: [],
+      out: {}, // 某一项输出对象
       output: [
         {
           name: '',
@@ -238,7 +241,8 @@ export default {
         }
       ],
       outIndex: '', // 选择输出项
-      ifOutputDetail: false
+      ifOutputDetail: false,
+      editI: '' // 正在编辑第几项 输出
     }
   },
   computed: {
@@ -361,10 +365,10 @@ export default {
         if (response.data) {
           var data = response.data.intent
           this.createIntentsForm.name = data.name
-          this.checkList = data.checkIdObj
+          this.checkList = data.checkIdObj || []
           this.output = data.output
           this.askList = data.askList
-          this.selectInputList = data.inputObj
+          this.selectInputList = data.inputObj || []
           // 后台没有返回这个值 三层嵌套啊 坑死 T T
           for (let index = 0; index < this.entitiesList.length; index++) {
             for (let i = 0; i < this.askList.length; i++) {
@@ -512,24 +516,28 @@ export default {
     },
     // 获取输出详情
     getOutput (index) {
+      this.editI = index
       this.ifOutputDetail = true
       this.showOutput = true
-      this.output.ask = this.output[index].ask
-      this.output.name = this.output[index].name
-      this.output.lifecycle = this.output[index].lifecycle
+      this.out.ask = this.output[index].ask
+      this.out.name = this.output[index].name
+      this.out.lifecycle = this.output[index].lifecycle
     },
     // 添加输出状态
     saveOutput () {
-      console.log(this.ifOutputDetail)
       if (!this.ifOutputDetail) {
-        this.output.push({ name: this.output.name, ask: this.output.ask, lifecycle: this.output.lifecycle })
+        this.output.push({ name: this.out.name, ask: this.out.ask, lifecycle: this.out.lifecycle })
+      } else {
+        this.output[this.editI].name = this.out.name
+        this.output[this.editI].ask = this.out.ask
+        this.output[this.editI].lifecycle = this.out.lifecycle
       }
     },
     addOutput () {
       this.showOutput = true
-      this.output.name = ''
-      this.output.ask = ''
-      this.output.lifecycle = ''
+      this.out.name = ''
+      this.out.ask = ''
+      this.out.lifecycle = ''
     },
     // 选择某项 输入
     changeInput (id) {
@@ -551,6 +559,9 @@ export default {
     },
     delOutput (i) {
       this.output.splice(i, 1)
+    },
+    delVali (i) {
+      this.checkList.splice(i, 1)
     }
   },
   created () {
@@ -635,7 +646,7 @@ export default {
 // 状态
 .state-box {
   .state-type {
-    .input-type, .output-type, .validate {
+    .input-type, .output-type{
       display: flex;
       & > div {
         margin-left: 5px;
@@ -663,5 +674,21 @@ export default {
     }
     .output-type ul li { border: 1px solid green; }
   }
+}
+.validate {
+  ul.list-card {
+    float: left;
+    li {
+      float: left;
+      border: 1px solid red;
+      padding: 5px 10px;
+      cursor: pointer;
+      margin: 0px 5px 5px 5px;
+
+      &:hover {
+        background: #eee;
+      }
+    }
+  }  
 }
 </style>
