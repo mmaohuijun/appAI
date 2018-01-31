@@ -162,6 +162,25 @@
           </Select>
           <a href="" @click.prevent="addActionList">添加一行</a>
         </Form-item>
+
+        <div class="validate">
+          <div>后置检查</div>
+            <div>
+              <ul class="list-card">
+                  <li v-for="(item, index) in checkList" :key="index">
+                    {{ item.name }}    
+                    <span @click.stop="delVali(index)">x</span>          
+                  </li>
+                </ul>
+              <Select @on-change="changeCheck" style="width: 300px;">
+                <Option
+                v-for="item in inputList" 
+                :value="item.id" 
+                :label="item.name" :key="item.id"></Option>
+              </Select>
+            </div>
+        </div>
+
         <Form-item>
           <Button type="primary" size="large" @click="saveCreate('createIntentsForm')">保存</Button>
         </Form-item>
@@ -209,19 +228,14 @@ export default {
       checkList: [],
       out: {}, // 某一项输出对象
       output: [
-        {
-          name: '',
-          ask: '',
-          lifecycle: ''
-        }
+        // {
+        //   name: '',
+        //   ask: '',
+        //   lifecycle: ''
+        // }
       ],
       showOutput: false,
-      selectInputList: [
-        {
-          id: '',
-          name: ''
-        }
-      ],
+      selectInputList: [],
       outIndex: '', // 选择输出项
       ifOutputDetail: false,
       editI: '' // 正在编辑第几项 输出
@@ -306,6 +320,7 @@ export default {
         if (response.data.list.length > 0) {
           this.hasIntents = true
           this.intentList = response.data.list
+          this.inputList = response.data.outputList
         } else {
           this.hasIntents = false
         }
@@ -445,9 +460,59 @@ export default {
       if (this.slotList.length < 1) {
         this.slotList[0] = { typeName: this.slotList.typeName, dictName: this.slotList.dictName }
       }
+    },
+    // 获取输出详情
+    getOutput (index) {
+      this.editI = index
+      this.ifOutputDetail = true
+      this.showOutput = true
+      this.out.ask = this.output[index].ask
+      this.out.name = this.output[index].name
+      this.out.lifecycle = this.output[index].lifecycle
+    },
+    // 添加输出状态
+    saveOutput () {
+      if (!this.ifOutputDetail) {
+        this.output.push({ name: this.out.name, ask: this.out.ask, lifecycle: this.out.lifecycle })
+      } else {
+        this.output[this.editI].name = this.out.name
+        this.output[this.editI].ask = this.out.ask
+        this.output[this.editI].lifecycle = this.out.lifecycle
+      }
+    },
+    addOutput () {
+      this.showOutput = true
+      this.out.name = ''
+      this.out.ask = ''
+      this.out.lifecycle = ''
+    },
+    // 选择某项 输入
+    changeInput (id) {
+      for (let input of this.inputList) {
+        if (input.id === id) {
+          this.selectInputList.push({ id: id, name: input.name })
+        }
+      }
+    },
+    changeCheck (id) {
+      for (let input of this.inputList) {
+        if (input.id === id) {
+          this.checkList.push({ id: id, name: input.name })
+        }
+      }
+    },
+    delInput (i) {
+      this.selectInputList.splice(i, 1)
+    },
+    delOutput (i) {
+      this.output.splice(i, 1)
+    },
+    delVali (i) {
+      this.checkList.splice(i, 1)
     }
   },
   created () {
+    this.$store.dispatch('getAppIdFromStorage')
     this.getIntentsList()
     this.getEntitiesList()
   },
@@ -524,5 +589,54 @@ export default {
   width: 100%;
   padding: 5px;
   margin-bottom: 1px;
+}
+
+// 状态
+.state-box {
+  .state-type {
+    .input-type, .output-type{
+      display: flex;
+      & > div {
+        margin-left: 5px;
+      }
+      ul.list-card {
+        float: left;
+        li {
+          float: left;
+          border: 1px solid red;
+          padding: 5px 10px;
+          cursor: pointer;
+          margin: 0px 5px 5px 5px;
+
+          &:hover {
+            background: #eee;
+          }
+        }
+      }
+      input {
+        border: none;
+        outline: none;
+        margin-top: 5px;
+        padding-bottom: 8px;       
+      }
+    }
+    .output-type ul li { border: 1px solid green; }
+  }
+}
+.validate {
+  ul.list-card {
+    float: left;
+    li {
+      float: left;
+      border: 1px solid red;
+      padding: 5px 10px;
+      cursor: pointer;
+      margin: 0px 5px 5px 5px;
+
+      &:hover {
+        background: #eee;
+      }
+    }
+  }  
 }
 </style>

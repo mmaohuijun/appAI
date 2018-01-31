@@ -147,7 +147,7 @@ export default {
       // console.log(this.intentList[index].id)
       this.$store.dispatch('setIntentId', intentId)
       console.log('appId', this.appId)
-      this.$router.push({ name: 'EditIntents', params: { appId: this.getAppId } })
+      this.$router.push({ name: 'EditIntents' })
     },
     // 获取场景列表
     getIntentsList () {

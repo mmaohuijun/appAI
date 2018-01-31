@@ -227,18 +227,18 @@ export default {
       checkList: [],
       out: {}, // 某一项输出对象
       output: [
-        {
-          name: '',
-          ask: '',
-          lifecycle: ''
-        }
+        // {
+        //   name: '',
+        //   ask: '',
+        //   lifecycle: ''
+        // }
       ],
       showOutput: false,
       selectInputList: [
-        {
-          id: '',
-          name: ''
-        }
+        // {
+        //   id: '',
+        //   name: ''
+        // }
       ],
       outIndex: '', // 选择输出项
       ifOutputDetail: false,
