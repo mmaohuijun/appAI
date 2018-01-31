@@ -107,6 +107,16 @@ const settings = {
         menu.push(sideBarMenuMap[key])
       })
       commit('SET_SIDEBAR_MENU', menu)
+    },
+    // 真.简单粗暴
+    logoutClear () {
+      $Storage.sessionStorage.removeItem('userInfo')
+      $Storage.sessionStorage.removeItem('appId')
+      $Storage.sessionStorage.removeItem('appName')
+      $Storage.sessionStorage.removeItem('intentId')
+      $Storage.sessionStorage.removeItem('entityId')
+      $Storage.sessionStorage.removeItem('roleAuthId')
+      $Storage.sessionStorage.removeItem('microId')
     }
   }
 }

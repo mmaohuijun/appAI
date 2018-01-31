@@ -136,14 +136,6 @@ export default {
       'getAppId',
       'getAppName'
     ])
-    // getAppId () {
-    //   this.appId = this.$store.state.apps.appId
-    //   return this.appId
-    // },
-    // getAppName () {
-    //   this.appName = this.$store.state.apps.appName
-    //   return this.appName
-    // }
   },
   methods: {
     gotoCreateIntents () {
@@ -166,18 +158,21 @@ export default {
         pageNo: this.pageNo,
         date: this.date
       }
-      this.$axios.post('intent/list', data).then(response => {
-        // // console.log(response.data.list.length
-
-        if (response.data.list.length > 0) {
-          this.intentList = response.data.list
-          // this.ifIntents = 0
-        } else {
-          // this.ifIntents = 1
-          this.intentList = []
-          // this.$router.push({ name: 'NoIntents', params: { appId: this.appId } })
-        }
-      })
+      if (!this.getAppId) {
+        this.$Message.warning('请先选择一个应用')
+        this.$router.push({ name: 'Application' })
+      } else {
+        this.$axios.post('intent/list', data).then(response => {
+          if (response.data.list.length > 0) {
+            this.intentList = response.data.list
+            // this.ifIntents = 0
+          } else {
+            // this.ifIntents = 1
+            this.intentList = []
+            // this.$router.push({ name: 'NoIntents', params: { appId: this.appId } })
+          }
+        })
+      }
     },
     // 编辑某个场景
     // 删除某个场景

@@ -156,15 +156,20 @@ export default {
         pageSize: this.pageSize,
         pageNo: this.pageNo
       }
-      this.$axios.post('dict/list', data).then(response => {
-        if (response.data.dictList.length > 0) {
-          this.entitiesList = response.data.dictList
-          // this.ifEntities = 0
-        } else {
-          this.entitiesList = []
-          // this.ifEntities = 1
-        }
-      })
+      if (!this.getAppId) {
+        this.$Message.warning('请先选择一个应用')
+        this.$router.push({ name: 'Application' })
+      } else {
+        this.$axios.post('dict/list', data).then(response => {
+          if (response.data.dictList.length > 0) {
+            this.entitiesList = response.data.dictList
+            // this.ifEntities = 0
+          } else {
+            this.entitiesList = []
+            // this.ifEntities = 1
+          }
+        })
+      }
     },
     showM (params) {
       this.showModal = true

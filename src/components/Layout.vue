@@ -127,6 +127,7 @@ export default {
     logout () {
       this.$axios.post('user/logout').then(response => {
         if (response.status.code === '200') {
+          this.$store.dispatch('logoutClear')
           this.$router.push({ name: 'Login' })
         }
       })
