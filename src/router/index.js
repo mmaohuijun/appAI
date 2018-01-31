@@ -3,7 +3,8 @@ import Router from 'vue-router'
 import Layout from '../components/Layout'
 import store from '../vuex/store.js'
 // 登录
-const Login = () => import('../views/login/Login')
+const Login = () => import('../views/setting/Login')
+const ModifyPwd = () => import('../views/setting/ModifyPwd')
 
 // 模型管理
 const Application = () => import('../views/apps/application/Application') // 应用
@@ -104,6 +105,7 @@ export const keyRouter = {
 
 const normalRouter = [
   { path: '/', name: 'Login', component: Login },
+  { path: '/modify', name: 'ModifyPwd', component: ModifyPwd },
   {
     path: '/app',
     component: Layout,
@@ -115,9 +117,9 @@ const normalRouter = [
       { path: 'intents/index', name: 'Intents', component: Intents },
       { path: 'intents/create', name: 'CreateIntents', component: CreateIntents },
       { path: 'intents/edit', name: 'EditIntents', component: EditIntents },
-      { path: ':appId/entities/index', name: 'Entities', component: Entities },
-      { path: ':appId/entities/create', name: 'CreateEntities', component: CreateEntities },
-      { path: ':appId/entities/edit', name: 'EditEntities', component: EditEntities },
+      { path: 'entities/index', name: 'Entities', component: Entities },
+      { path: 'entities/create', name: 'CreateEntities', component: CreateEntities },
+      { path: 'entities/edit', name: 'EditEntities', component: EditEntities },
       { path: 'modules/indexindex', name: 'Module', component: Module }
     ],
     meta: { requiresLogin: true, requiresAuth: true }

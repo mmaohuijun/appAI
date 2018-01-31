@@ -14,7 +14,7 @@
                     <Icon type="arrow-down-b" style="margin-left: 5px;"></Icon>
                 </a>
                 <DropdownMenu slot="list">
-                    <DropdownItem>修改密码</DropdownItem>
+                    <DropdownItem @click.native="gotoMod">修改密码</DropdownItem>
                     <DropdownItem @click.native="logout">安全退出</DropdownItem>
                 </DropdownMenu>
             </Dropdown>  
@@ -61,7 +61,7 @@
 <script>
 import { mapGetters } from 'vuex'
 export default {
-  name: 'layout',
+  name: 'Layout',
   data () {
     return {
       index: 0, // 选中应用列表项的index
@@ -122,6 +122,10 @@ export default {
           this.ifIntents = false
         }
       })
+    },
+    // 修改密码
+    gotoMod () {
+      this.$router.push({ name: 'ModifyPwd' })
     },
     // 退出
     logout () {

@@ -57,6 +57,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
   name: 'CreateEntities',
   data () {
@@ -85,9 +86,9 @@ export default {
     }
   },
   computed: {
-    getAppId () {
-      return this.$store.getters.getAppId
-    }
+    ...mapGetters([
+      'getAppId'
+    ])
   },
   directives: {
     focus: {
@@ -103,7 +104,7 @@ export default {
     gotoEdit (index) {
       // console.log(this.entitiesList[index].id)
       this.$store.dispatch('setEntityId', this.entitiesList[index].id)
-      this.$router.push({ name: 'EditEntities', params: { appId: this.appId } })
+      this.$router.push({ name: 'EditEntities' })
     },
     saveCreate (name) {
       this.$refs[name].validate((valid) => {
@@ -161,6 +162,7 @@ export default {
     }
   },
   created () {
+    this.$store.dispatch('getAppIdFromStorage')
     this.getEntitiesList()
     this.initEntitiesDetail()
     document.addEventListener('keyup', this.enterAddLine)

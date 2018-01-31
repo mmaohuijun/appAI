@@ -56,6 +56,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
   name: 'CreateEntities',
   data () {
@@ -88,9 +89,9 @@ export default {
     }
   },
   computed: {
-    getAppId () {
-      return this.$store.getters.getAppId
-    },
+    ...mapGetters([
+      'getAppId'
+    ]),
     getEntityId () {
       this.entityId = this.$store.state.entityId
       if (!this.entityId) {
@@ -128,7 +129,7 @@ export default {
       if (!selectEntity) {
         this.entityId = this.getEntityId
       }
-      this.$axios.post('dict/detail', { id: this.getEntityId }).then(response => {
+      this.$axios.post('dict/detail', { id: this.entityId }).then(response => {
         if (response.data) {
           let data = response.data.detail
           this.createEntitiesForm.name = data.name
@@ -144,7 +145,7 @@ export default {
     gotoEdit (index) {
       this.hasChoosed = true
       let selectEntity = this.entitiesList[index].id
-      this.$store.dispatch('setEntityId', this.entitiesList[index].id)
+      this.$store.dispatch('setEntityId', selectEntity)
       this.getEntitiesDetail(selectEntity)
     },
     // 保存修改
@@ -196,6 +197,7 @@ export default {
     }
   },
   created () {
+    this.$store.dispatch('getAppIdFromStorage')
     this.getEntitiesList()
     this.getEntitiesDetail()
     document.addEventListener('keyup', this.enterAddLine)
