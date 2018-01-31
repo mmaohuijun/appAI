@@ -7,7 +7,7 @@
       :ifAddBtn="true"
       @onDateChange="dateChange"
       @onSearchName="searchName"
-      @onAdd="addUser">
+      @onAdd="addMicro">
     </search-header>
     <Table 
       :columns="columnAuth" 
@@ -16,22 +16,9 @@
     <Modal
       v-model="showModal"
       title="删除应用"
-      @on-ok="deleteUser">
-      <p>确定删除该用户权限吗？</p>
+      @on-ok="deleteMicro">
+      <p>确定删除该微服务吗？</p>
       <p>删除后无法恢复</p>
-    </Modal>
-    <Modal 
-      @on-ok="saveRoleAuth"
-      v-model="showEdit" 
-      title="编辑用户权限">
-      <Form :model="authForm" ref="authForm" :rule="authForm">
-        <Form-item label="主题名称" prop="name">
-          <Input v-model="authForm.name"></Input>
-        </Form-item>
-        <Form-item label="描述" prop="describe">
-          <Input v-model="authForm.describe"></Input>
-        </Form-item>
-      </Form>
     </Modal>
     <Page 
       :total="total" 
@@ -148,9 +135,8 @@ export default {
         }
       ], // 数据范围列表
       showModal: false, // 显示模态框
-      showEdit: false, // 编辑模态框
+      // showEdit: false, // 编辑模态框
       delId: '', // 删除 id
-      saveId: '', // 编辑 id
       authForm: {
         name: '',
         enName: '',
@@ -159,9 +145,10 @@ export default {
     }
   },
   methods: {
-    addUser () {
-      this.showEdit = true
-      this.saveId = ''
+    addMicro () {
+      // this.showEdit = true
+      this.$store.commit('SET_MICRO_ID', '')
+      this.$router.push({ name: 'EditMicro' })
     },
     getMicroList () {
       let data = {
@@ -184,11 +171,11 @@ export default {
         }
       })
     },
-    deleteUser () {
-      this.$axios.post('secret/delete', { id: this.delId }).then(response => {
+    deleteMicro () {
+      this.$axios.post('mic_service/delete', { id: this.delId }).then(response => {
         if (response.data === null) {
           this.$Message.success('删除成功！')
-          this.getAuthList()
+          this.getMicroList()
         }
       })
     },
@@ -212,25 +199,20 @@ export default {
     },
     searchName (name) {
       this.name = name
-      this.getAuthList()
+      this.getMicroList()
     },
     dateChange (date) {
       this.date = date
-      this.getAuthList()
+      this.getMicroList()
     },
     pageChange (pageNo) {
       this.pageNo = pageNo
-      this.getAuthList()
+      this.getMicroList()
     }
   },
   mounted () {
     this.getMicroList()
     this.getDeptList()
-  },
-  watch: {
-    'showEdit' (newV, oldV) {
-      this.handleReset('authForm')
-    }
   },
   components: { SearchHeader }
 }
