@@ -70,6 +70,16 @@
                 <Form-item label="生命周期">
                   <Input v-model="out.lifecycle"></Input>
                 </Form-item>
+                <Form-item label="肯定回答" class="sure-reply">
+                  <Input placeholder="提示语"></Input>
+                  <Select @on-change="chooseSure">
+                    <Option v-for="item in intentList" :value="item.name" :key="item.id"></Option>
+                  </Select>
+                </Form-item>
+                <Form-item label="否定回答" class="refuse-reply">
+                  <Input placeholder="提示语"></Input>
+                  <Input placeholder="动作"></Input>
+                </Form-item>
               </Modal>  
             </div>
           </div>
@@ -328,6 +338,7 @@ export default {
         data[`output[${index}].name`] = this.output[index].name
         data[`output[${index}].ask`] = this.output[index].ask
         data[`output[${index}].lifecycle`] = this.output[index].lifecycle
+        // data[`out`]
       })
       return data
     },
@@ -562,6 +573,10 @@ export default {
     },
     delVali (i) {
       this.checkList.splice(i, 1)
+    },
+    // 输出模态框 肯定回答的下拉框选择
+    chooseSure (value) {
+      console.log(value)
     }
   },
   created () {
@@ -690,5 +705,14 @@ export default {
       }
     }
   }  
+}
+// 肯定回答
+.sure-reply, .refuse-reply {
+  .ivu-form-item-content {
+    display: flex;
+    .ivu-input-wrapper {
+      margin-left: 10px;
+    }
+  }
 }
 </style>
