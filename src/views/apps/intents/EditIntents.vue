@@ -71,14 +71,20 @@
                   <Input v-model="out.lifecycle"></Input>
                 </Form-item>
                 <Form-item label="肯定回答" class="sure-reply">
-                  <Input placeholder="提示语"></Input>
-                  <Select @on-change="chooseSure">
+                  <Input placeholder="提示语" v-model="out.yHint"></Input>
+                  <Select @on-change="chooseSure" v-model="out.yAction">
                     <Option v-for="item in intentList" :value="item.name" :key="item.id"></Option>
                   </Select>
                 </Form-item>
                 <Form-item label="否定回答" class="refuse-reply">
-                  <Input placeholder="提示语"></Input>
-                  <Input placeholder="动作"></Input>
+                  <Input placeholder="输出提示语" v-model="out.onHint"></Input>
+                  <Select @on-change="chooseNo" v-model="out.onAction">
+                    <Option v-for="item in intentList" :value="item.name" :key="item.id"></Option>
+                  </Select>
+                  <Input placeholder="输入提示语" v-model="out.inHint"></Input>
+                  <Select @on-change="chooseNo2" v-model="out.inAction">
+                    <Option v-for="item in intentList" :value="item.name" :key="item.id"></Option>
+                  </Select>
                 </Form-item>
               </Modal>  
             </div>
@@ -253,6 +259,12 @@ export default {
       outIndex: '', // 选择输出项
       ifOutputDetail: false,
       editI: '' // 正在编辑第几项 输出
+      // yHint: '',
+      // yAction: '',
+      // onHint: '',
+      // onAction: '',
+      // inHint: '',
+      // inAction: ''
     }
   },
   computed: {
@@ -314,6 +326,12 @@ export default {
         id: this.getIntentId,
         input: this.input,
         check: this.check
+        // yHint: this.yHint,
+        // yAction: this.yAction,
+        // onHint: this.onHint,
+        // onAction: this.onAction,
+        // inHint: this.inHint,
+        // inAction: this.inAction
       }
       this._.each(this.slotList, (ele, index) => {
         data[`slotList[${index}].id`] = this.slotList[index].id
@@ -338,7 +356,13 @@ export default {
         data[`output[${index}].name`] = this.output[index].name
         data[`output[${index}].ask`] = this.output[index].ask
         data[`output[${index}].lifecycle`] = this.output[index].lifecycle
-        // data[`out`]
+        data[`output[${index}].yHint`] = this.output[index].yHint
+        data[`output[${index}].yAction`] = this.output[index].yAction
+        data[`output[${index}].onHint`] = this.output[index].onHint
+        data[`output[${index}].onAction`] = this.output[index].onAction
+        data[`output[${index}].inHint`] = this.output[index].inHint
+        data[`output[${index}].inAction`] = this.output[index].inAction
+        
       })
       return data
     },
@@ -533,15 +557,37 @@ export default {
       this.out.ask = this.output[index].ask
       this.out.name = this.output[index].name
       this.out.lifecycle = this.output[index].lifecycle
+      this.out.yHint = this.output[index].yHint,
+      this.out.yAction = this.output[index].yAction,
+      this.out.onHint = this.output[index].onHint,
+      this.out.onAction = this.output[index].onAction,
+      this.out.inHint = this.output[index].inHint,
+      this.out.inAction = this.output[index].inAction
     },
     // 添加输出状态
     saveOutput () {
       if (!this.ifOutputDetail) {
-        this.output.push({ name: this.out.name, ask: this.out.ask, lifecycle: this.out.lifecycle })
+        this.output.push({
+          name: this.out.name,
+          ask: this.out.ask,
+          lifecycle: this.out.lifecycle,
+          yHint: this.out.yHint,
+          yAction: this.out.yAction,
+          onHint: this.out.onHint,
+          onAction: this.out.onAction,
+          inHint: this.out.inHint,
+          inAction: this.out.inAction
+        })
       } else {
         this.output[this.editI].name = this.out.name
         this.output[this.editI].ask = this.out.ask
         this.output[this.editI].lifecycle = this.out.lifecycle
+        this.output[this.editI].yHint = this.out.yHint
+        this.output[this.editI].yAction = this.out.yAction
+        this.output[this.editI].onHint = this.out.onHint
+        this.output[this.editI].onAction = this.out.onAction
+        this.output[this.editI].inHint = this.out.inHint
+        this.output[this.editI].inAction = this.out.inAction
       }
     },
     addOutput () {
@@ -549,6 +595,12 @@ export default {
       this.out.name = ''
       this.out.ask = ''
       this.out.lifecycle = ''
+      this.out.yHint = ''
+      this.out.yAction = ''
+      this.out.onHint = ''
+      this.out.onAction = ''
+      this.out.inHint = ''
+      this.out.inAction = ''
     },
     // 选择某项 输入
     changeInput (id) {
@@ -576,7 +628,13 @@ export default {
     },
     // 输出模态框 肯定回答的下拉框选择
     chooseSure (value) {
-      console.log(value)
+      this.out.yAction = value
+    },
+    chooseNo (value) {
+      this.out.onAction = value
+    },
+    chooseNo2 (value) {
+      this.out.inAction = value
     }
   },
   created () {

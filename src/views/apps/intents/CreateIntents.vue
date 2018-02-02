@@ -70,7 +70,23 @@
                 <Form-item label="生命周期">
                   <Input v-model="out.lifecycle"></Input>
                 </Form-item>
-              </Modal>  
+                <Form-item label="肯定回答" class="sure-reply">
+                  <Input placeholder="提示语" v-model="out.y_hint"></Input>
+                  <Select @on-change="chooseSure" v-model="out.y_action">
+                    <Option v-for="item in intentList" :value="item.name" :key="item.id"></Option>
+                  </Select>
+                </Form-item>
+                <Form-item label="否定回答" class="refuse-reply">
+                  <Input placeholder="输出提示语" v-model="out.on_hint"></Input>
+                  <Select @on-change="chooseNo" v-model="out.on_action">
+                    <Option v-for="item in intentList" :value="item.name" :key="item.id"></Option>
+                  </Select>
+                  <Input placeholder="输入提示语" v-model="out.in_hint"></Input>
+                  <Select @on-change="chooseNo2" v-model="out.in_action">
+                    <Option v-for="item in intentList" :value="item.name" :key="item.id"></Option>
+                  </Select>
+                </Form-item>
+              </Modal> 
             </div>
           </div>
         </div>
@@ -308,6 +324,19 @@ export default {
           data[`askList[${index}].entitys[${index2}].entity`] = ele.entitys[index2].entity
         })
       })
+      this._.each(this.output, (ele, index) => {
+        data[`output[${index}].id`] = this.output[index].id || ''
+        data[`output[${index}].name`] = this.output[index].name
+        data[`output[${index}].ask`] = this.output[index].ask
+        data[`output[${index}].lifecycle`] = this.output[index].lifecycle
+        data[`output[${index}].y_hint`] = this.output[index].y_hint
+        data[`output[${index}].y_action`] = this.output[index].y_action
+        data[`output[${index}].on_hint`] = this.output[index].on_hint
+        data[`output[${index}].on_action`] = this.output[index].on_action
+        data[`output[${index}].in_hint`] = this.output[index].in_hint
+        data[`output[${index}].in_action`] = this.output[index].in_action
+        
+      })      
       return data
     },
     // 左侧场景列表
