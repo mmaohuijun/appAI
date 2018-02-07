@@ -174,7 +174,6 @@ export default {
 </script>
 
 <style lang="less">
-  // 左侧侧边栏
   .content-body {
     position: relative;
   }
