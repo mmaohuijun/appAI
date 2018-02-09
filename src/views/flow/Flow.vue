@@ -164,6 +164,7 @@ export default {
         }
       })
     },
+    // 添加流程
     gotoAdd () {
       this.$store.commit('SET_FLOW_ID', '')
       this.$router.push('EditFlow')
