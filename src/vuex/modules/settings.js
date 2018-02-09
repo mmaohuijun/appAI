@@ -40,7 +40,7 @@ const sideBarMenuMap = {
     title: '流程管理',
     name: 'flow',
     children: [
-      { title: '流程', name: 'Application' }
+      { title: '流程管理', name: 'Flow' }
     ]
   },
   information: {

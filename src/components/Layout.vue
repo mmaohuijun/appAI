@@ -139,7 +139,7 @@ export default {
   },
   mounted () {
     this.$store.dispatch('setSideBarMenu')
-    console.log('sideBarMenu', this.sideBarMenu)
+    // console.log('sideBarMenu', this.sideBarMenu)
   }
 }
 </script>

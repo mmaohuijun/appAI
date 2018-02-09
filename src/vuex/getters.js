@@ -18,6 +18,7 @@ const getters = {
     return $Storage.sessionStorage.getItem('roleAuthId')
   },
   microId: state => state.micro.microId,
+  flowId: state => state.flow.flowId,
   getSideBarMenu: () => {
     return $Storage.localStorage.getItem('sideBarMenu')
   },

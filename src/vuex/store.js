@@ -4,6 +4,7 @@ import Vuex from 'vuex'
 import apps from './modules/apps'
 import auth from './modules/auth'
 import micro from './modules/micro'
+import flow from './modules/flow'
 import settings from './modules/settings'
 import getters from './getters'
 
@@ -14,6 +15,7 @@ const store = new Vuex.Store({
     apps,
     auth,
     micro,
+    flow,
     settings
   },
   getters
