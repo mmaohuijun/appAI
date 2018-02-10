@@ -16,7 +16,6 @@
       </Form>
     </div>
   </div>
-
 </template>
 
 <script>
@@ -43,7 +42,7 @@ export default {
     },
     // 登录
     toLogin () {
-      this.$axios.post('user/login', { username: this.username, password: this.password }).then(response => {
+      this.$axios.post('login', { username: this.username, password: this.password }).then(response => {
         console.log(response)
         if (response.status.code === '200') {
           this.$store.dispatch('toggleLoginStatus', true)

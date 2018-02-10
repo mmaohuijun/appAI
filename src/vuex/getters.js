@@ -30,7 +30,8 @@ const getters = {
   },
   auth: state => state.settings.auth,
   username: state => state.settings.username,
-  sideBarMenu: state => state.settings.sideBarMenu
+  sideBarMenu: state => state.settings.sideBarMenu,
+  BASE_PATH: state => state.settings.BASE_PATH
 }
 
 export default getters

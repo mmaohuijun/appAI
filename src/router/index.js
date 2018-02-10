@@ -37,6 +37,8 @@ const Flow = () => import('../views/flow/Flow')
 const EditFlow = () => import('../views/flow/EditFlow')
 Vue.use(Router)
 
+// const path = store.getters.BASE_PATH
+
 // export const keyRouter = {
 //   Apps: {
 //     path: '/app',

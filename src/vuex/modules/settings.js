@@ -60,7 +60,8 @@ const settings = {
     auth: [],
     token: '',
     sideBarMenu: [],
-    sideBarMenuMap
+    sideBarMenuMap,
+    BASE_PATH: ''
   },
   mutations: {
     SET_USER_INFO (state, json) {
