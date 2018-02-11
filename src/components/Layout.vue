@@ -1,7 +1,7 @@
 <template>
   <div class="layout">
     <div class="header">
-      <Menu mode="horizontal" active-name="1" @on-select="selectMenu">
+      <Menu class="header-ul" mode="horizontal" active-name="1" @on-select="selectMenu">
         <div class="layout-logo">
           <img src="../assets/logo.png" alt="">
         </div>
@@ -157,7 +157,7 @@ export default {
 
         .header {
           height: 75px;
-          .ivu-menu {
+          & >ul.header-ul {
             position: fixed;
             z-index: 900;
             top: 0;
@@ -188,6 +188,9 @@ export default {
               text-decoration: none;
               margin-left: 5px;
             }
+          }
+          .ivu-menu-horizontal.ivu-menu-light:after {
+            background: #0396FF;
           }
         }
 
@@ -278,9 +281,7 @@ export default {
             }
         }
     }
-    .ivu-menu-horizontal.ivu-menu-light:after {
-        background: #0396FF;
-      }
+
     .layout-logout {
       float: right;
       margin-right: 15px;
@@ -296,7 +297,7 @@ export default {
       color: #4EB1FB;
     }
     .ivu-table-wrapper {
-      border: none;
+      border: none !important;
       
       .ivu-table th {
         background: #fff;
@@ -308,7 +309,7 @@ export default {
         background-color: #F0F3F7;
       }
       .ivu-table th, .ivu-table td {
-        border-bottom: 1px solid #F0F3F7
+        border-bottom: 1px solid #F0F3F7;
       }
     }
 

@@ -1,6 +1,6 @@
 <template>
   <div class="layout">
-      <Menu mode="horizontal" active-name="1" >
+      <Menu class="modify-ul" mode="horizontal" active-name="1" >
         <div class="layout-logo">
           <img src="../../assets/logo.png" alt="">
         </div>
@@ -69,7 +69,7 @@ export default {
   height: 100%;
 
     height: 75px;
-    .ivu-menu {
+    .modify-ul.ivu-menu {
       position: fixed;
       z-index: 900;
       top: 0;
