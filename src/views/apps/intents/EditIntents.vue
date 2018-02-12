@@ -92,6 +92,12 @@
             </div>
           </div>
         </div>
+        <Form-item label="动作">
+          <Radio-group v-model="createIntentsForm.flag">
+            <Radio label="0">前置</Radio>
+            <Radio label="1">后置</Radio>
+          </Radio-group>
+        </Form-item>
         <Form-item label="用户提问"><br>
         <div v-for="(item, index) in askList" :key="index" style="margin-bottom: 10px;" class="ask-box">
           <div>
@@ -216,6 +222,7 @@ export default {
       selectIntent: '',
       name: '', // 搜素场景关键词
       createIntentsForm: { // 创建场景 表单
+        flag: '',
         name: '', // 场景名称
         text: '' // 提问语料
       },
@@ -327,7 +334,8 @@ export default {
         rank: '',
         id: this.getIntentId,
         input: this.input,
-        check: this.check
+        check: this.check,
+        flag: this.createIntentsForm.flag
         // yHint: this.yHint,
         // yAction: this.yAction,
         // onHint: this.onHint,
@@ -364,7 +372,6 @@ export default {
         data[`output[${index}].onAction`] = this.output[index].onAction
         data[`output[${index}].inHint`] = this.output[index].inHint
         data[`output[${index}].inAction`] = this.output[index].inAction
-        
       })
       return data
     },
@@ -402,6 +409,7 @@ export default {
         if (response.data) {
           var data = response.data.intent
           this.createIntentsForm.name = data.name
+          this.createIntentsForm.flag = data.flag
           this.checkList = data.checkIdObj || []
           this.output = data.output
           this.askList = data.askList
@@ -559,11 +567,11 @@ export default {
       this.out.ask = this.output[index].ask
       this.out.name = this.output[index].name
       this.out.lifecycle = this.output[index].lifecycle
-      this.out.yHint = this.output[index].yHint,
-      this.out.yAction = this.output[index].yAction,
-      this.out.onHint = this.output[index].onHint,
-      this.out.onAction = this.output[index].onAction,
-      this.out.inHint = this.output[index].inHint,
+      this.out.yHint = this.output[index].yHint
+      this.out.yAction = this.output[index].yAction
+      this.out.onHint = this.output[index].onHint
+      this.out.onAction = this.output[index].onAction
+      this.out.inHint = this.output[index].inHint
       this.out.inAction = this.output[index].inAction
     },
     // 添加输出状态

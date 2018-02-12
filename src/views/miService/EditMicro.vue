@@ -113,7 +113,7 @@ export default {
               })
             ])
           }
-        }        
+        }
       ]
     }
   },
@@ -129,7 +129,7 @@ export default {
             console.log('attrList', this.attrList)
           }
         })
-      } else return
+      }
     },
     addParams () {
       this.attr = {}
@@ -141,7 +141,7 @@ export default {
       if (this.ifEdit) {
         this.attr = { describe: this.attr.describe, name: this.attr.name, value: this.attr.value }
       } else {
-        this.attrList.push({ describe: this.attr.describe, name: this.attr.name, value: this.attr.value })        
+        this.attrList.push({ describe: this.attr.describe, name: this.attr.name, value: this.attr.value })
       }
       this.showModal = false
     },

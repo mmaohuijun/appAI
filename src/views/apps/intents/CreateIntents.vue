@@ -335,8 +335,7 @@ export default {
         data[`output[${index}].on_action`] = this.output[index].on_action
         data[`output[${index}].in_hint`] = this.output[index].in_hint
         data[`output[${index}].in_action`] = this.output[index].in_action
-        
-      })      
+      })
       return data
     },
     // 左侧场景列表

@@ -103,7 +103,7 @@ export default {
       // 对象 浅拷贝
       let obj = Object.assign({}, this.intentList[index])
       console.log(JSON.stringify(this.processBlockList).indexOf(JSON.stringify(obj)))
-      if (JSON.stringify(this.processBlockList).indexOf(JSON.stringify(obj) != -1)) {
+      if (JSON.stringify(this.processBlockList).indexOf(JSON.stringify(obj) !== -1)) {
         this.processBlockList.push(obj)
       }
     },
@@ -141,7 +141,7 @@ export default {
     'processBlockList' (newV, oldV) {
       console.log(this.processBlockList)
       for (let i = 0; i < this.processBlockList.length; i++) {
-        this.processBlockList[i].sort = i+1
+        this.processBlockList[i].sort = i + 1
       }
     }
   },

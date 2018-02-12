@@ -203,8 +203,7 @@ export default {
   },
   mounted () {
     this.getAppList()
-    const path = this.$store.getters.BASE_PATH
-console.log('path', path)
+    // const path = this.$store.getters.BASE_PATH
   }
 }
 </script>

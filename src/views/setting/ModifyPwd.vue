@@ -41,10 +41,10 @@ import { mapGetters } from 'vuex'
 export default {
   name: 'ModifyPwd',
   data () {
-   return {
-     password: '',
-     newPassword: ''
-   } 
+    return {
+      password: '',
+      newPassword: ''
+    }
   },
   computed: {
     ...mapGetters([
