@@ -16,9 +16,15 @@
       <Form-item label="否定动作">
         <Input v-model="flowForm.nAction"></Input>
       </Form-item>
-      <Form-item>
-        <Button @click="saveFlow" type="primary">确定</Button>
+      <Form-item label="动作">
+        <Radio-group v-model="flowForm.flag">
+          <Radio label="0">前置</Radio>
+          <Radio label="1">后置</Radio>
+        </Radio-group>
       </Form-item>
+      <!-- <Form-item>
+        <Button @click="saveFlow" type="primary">确定</Button>
+      </Form-item> -->
     </Form>
     <div class="intent-wrapper">
       <div>
@@ -45,6 +51,7 @@
         </ul>
       </div>
     </div>
+    <Button @click="saveFlow" type="primary" style="margin-top:20px;">确定</Button>
   </div>
 </template>
 <script>
@@ -58,7 +65,8 @@ export default {
         describe: '',
         ask: '',
         yAction: '',
-        nAction: ''
+        nAction: '',
+        flag: ''
       },
       intentList: [],
       processBlockList: [] // 选中场景
@@ -111,7 +119,8 @@ export default {
         describe: this.flowForm.describe,
         ask: this.flowForm.ask,
         yAction: this.flowForm.yAction,
-        nAction: this.flowForm.nAction
+        nAction: this.flowForm.nAction,
+        flag: this.flowForm.flag
       }
       this.processBlockList.forEach((val, index) => {
         data[`processBlockList[${index}].aid`] = this.processBlockList[index].aid

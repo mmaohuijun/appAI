@@ -61,31 +61,33 @@
                 <input type="text" placeholder="添加输出状态..." @focus="addOutput">
               </div>
               <Modal v-model="showOutput" @on-ok="saveOutput">
-                <Form-item label="名称">
-                  <Input v-model="out.name"></Input>
-                </Form-item>
-                <Form-item label="问题">
-                  <Input v-model="out.ask"></Input>
-                </Form-item>
-                <Form-item label="生命周期">
-                  <Input v-model="out.lifecycle"></Input>
-                </Form-item>
-                <Form-item label="肯定回答" class="sure-reply">
-                  <Input placeholder="提示语" v-model="out.yHint"></Input>
-                  <Select @on-change="chooseSure" v-model="out.yAction">
-                    <Option v-for="item in intentList" :value="item.name" :key="item.id"></Option>
-                  </Select>
-                </Form-item>
-                <Form-item label="否定回答" class="refuse-reply">
-                  <Input placeholder="输出提示语" v-model="out.onHint"></Input>
-                  <Select @on-change="chooseNo" v-model="out.onAction">
-                    <Option v-for="item in intentList" :value="item.name" :key="item.id"></Option>
-                  </Select>
-                  <Input placeholder="输入提示语" v-model="out.inHint"></Input>
-                  <Select @on-change="chooseNo2" v-model="out.inAction">
-                    <Option v-for="item in intentList" :value="item.name" :key="item.id"></Option>
-                  </Select>
-                </Form-item>
+                <Form style="width: 100%">
+                  <Form-item label="名称">
+                    <Input v-model="out.name"></Input>
+                  </Form-item>
+                  <Form-item label="问题">
+                    <Input v-model="out.ask"></Input>
+                  </Form-item>
+                  <Form-item label="生命周期">
+                    <Input v-model="out.lifecycle"></Input>
+                  </Form-item>
+                  <Form-item label="肯定回答" class="sure-reply">
+                    <Input placeholder="提示语" v-model="out.yHint"></Input>
+                    <Select @on-change="chooseSure" v-model="out.yAction">
+                      <Option v-for="item in intentList" :value="item.name" :key="item.id"></Option>
+                    </Select>
+                  </Form-item>
+                  <Form-item label="否定回答" class="refuse-reply">
+                    <Input placeholder="输出提示语" v-model="out.onHint"></Input>
+                    <Select @on-change="chooseNo" v-model="out.onAction">
+                      <Option v-for="item in intentList" :value="item.name" :key="item.id"></Option>
+                    </Select>
+                    <Input placeholder="输入提示语" v-model="out.inHint"></Input>
+                    <Select @on-change="chooseNo2" v-model="out.inAction">
+                      <Option v-for="item in intentList" :value="item.name" :key="item.id"></Option>
+                    </Select>
+                  </Form-item>
+                </Form>
               </Modal>  
             </div>
           </div>
