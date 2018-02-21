@@ -173,7 +173,6 @@ export default {
             // this.ifApps = 0
           } else {
             this.appList = []
-            // this.ifApps = 1
           }
         }
       })
