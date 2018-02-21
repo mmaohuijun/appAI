@@ -170,7 +170,6 @@ export default {
           if (response.data.list.length > 0) {
             this.appList = response.data.list
             this.total = response.data.total
-            // this.ifApps = 0
           } else {
             this.appList = []
           }
