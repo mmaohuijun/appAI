@@ -183,7 +183,6 @@ export default {
           if (response.data === null) {
             this.$Message.success('删除成功！')
             this.getAppList()
-            // this.$router.push({ name: 'Application' })
           }
         })
       }
