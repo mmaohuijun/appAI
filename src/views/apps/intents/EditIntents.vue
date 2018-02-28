@@ -149,18 +149,22 @@
         </Form-item>
         <Form-item>
           <table class="action-tbl" v-if="showActionList">
-            <tbody>
+            <thead>
               <tr>
                 <td>是否必须</td>
                 <td>参数名称</td>
                 <td>类型</td>
                 <td>取值</td>
-                <td v-show="showMsg">提示语</td>
+                <td>提示语</td>
                 <td>操作</td>
-              </tr>      
+              </tr>
+            </thead>
+            <tbody>
               <tr v-for="(item, index) in slotList" :key="index">
                 <td>
-                  <Checkbox v-model="item.flag"></Checkbox>
+                  <div class="chkbox" @click="selectChk(index)" :class="{ checked:item.flag }">{{ item.flag }}</div>
+                  <!-- <input type="checkbox" v-model="item.flag">{{ item.flag }} -->
+                  <!-- <Checkbox v-model="item.flag">{{ item.flag }}</Checkbox> -->
                 </td>
                 <td>
                   <input type="text" placeholder="添加参数名称..." v-model="item.typeName">
@@ -169,7 +173,9 @@
                   <span>{{item.dictName || '请选择类型...'}}</span>
                 </td>
                 <td>{{'${ ' + item.typeName + '}'}}</td>
-                <td v-show="showMsg">
+                  <!-- <input type="text" disabled v-model=" '${ ' + item.typeName + '}'"> -->
+                <!-- </td> -->
+                <td>
                   <input type="text" placeholder="编辑提示语" v-model="item.message">
                 </td>
                 <td>
@@ -215,6 +221,7 @@ export default {
   name: 'EditIntents',
   data () {
     return {
+      test: false,
       appId: '', // 应用id
       intentId: '',
       selectIntent: '',
@@ -265,8 +272,13 @@ export default {
       ],
       outIndex: '', // 选择输出项
       ifOutputDetail: false,
-      editI: '', // 正在编辑第几项 输出
-      showMsg: false // 显示slotList message
+      editI: '' // 正在编辑第几项 输出
+      // yHint: '',
+      // yAction: '',
+      // onHint: '',
+      // onAction: '',
+      // inHint: '',
+      // inAction: ''
     }
   },
   computed: {
@@ -329,6 +341,12 @@ export default {
         input: this.input,
         check: this.check,
         flag: this.createIntentsForm.flag
+        // yHint: this.yHint,
+        // yAction: this.yAction,
+        // onHint: this.onHint,
+        // onAction: this.onAction,
+        // inHint: this.inHint,
+        // inAction: this.inAction
       }
       this._.each(this.slotList, (ele, index) => {
         data[`slotList[${index}].id`] = this.slotList[index].id
@@ -416,18 +434,12 @@ export default {
           }
           this.slotList = data.slotList
           if (this.slotList.length < 1) {
-            this.slotList.push({
-              defValue: this.slotList.defValue,
-              typeName: this.slotList.typeName,
-              dictName: this.slotList.dictName,
-              flag: this.slotList.flag || false,
-              message: this.slotList.message
-            })
+            this.slotList.push({ defValue: this.slotList.defValue, typeName: this.slotList.typeName, dictName: this.slotList.dictName })
           } else {
             for (let item of this.slotList) {
-              if (item.flag === "false") {
+              if (item.flag === 'false') {
                 item.flag = false
-              } else if (item.flag === "true") {
+              } else if (item.flag === 'true') {
                 item.flag = true
               }
             }
@@ -466,7 +478,7 @@ export default {
       console.log('hasSelected', this.hasSelected)
       // console.log(this.askList[this.textIndex])
       if (this.ifAddActionList(entity)) {
-        this.slotList.push({ typeName: entity, dictName: type, flag: false })
+        this.slotList.push({ typeName: entity, dictName: type })
       }
     },
     // 判断用户提问中添加的slot 在动作列表中是否已经存在
@@ -526,33 +538,29 @@ export default {
     },
     // 选中某一项
     onSelectAction (id) {
-      let typeName, dictName
+      let typeName, dictName, flag, message
       console.log('onSelectAction', id)
       for (let i = 0; i < this.entitiesList.length; i++) {
         if (id === this.entitiesList[i].id) {
           dictName = this.entitiesList[i].name
           typeName = this.entitiesList[i].pinyin
+          flag = false
+          message = '-'
         }
       }
       if (this.editActionIndex === '') {
         console.log('自定义参数')
-        this.slotList.push({ typeName: typeName, dictName: dictName })
+        this.slotList.push({ typeName: typeName, dictName: dictName, flag: flag, message: message })
       } else {
         console.log('正在编辑')
-        this.slotList[this.editActionIndex] = { typeName: typeName, dictName: dictName }
+        this.slotList[this.editActionIndex] = { typeName: typeName, dictName: dictName, flag: flag, message: message }
         this.editActionIndex = ''
       }
       this.hasEntities = false
     },
     // 添加动作列表
     addActionList () {
-      this.slotList.push({
-        typeName: this.slotList.typeName,
-        dictName: this.slotList.dictName,
-        flag: false,
-        message: this.slotList.message
-        })
-        console.log('add', this.slotList)
+      this.slotList.push({ typeName: this.slotList.typeName, dictName: this.slotList.dictName, flag: false, message: '-' })
     },
     // 编辑动作列表
     editActionList (index) {
@@ -652,9 +660,16 @@ export default {
     },
     chooseNo2 (value) {
       this.out.inAction = value
+    },
+    selectChk (index) {
+      console.log('selectChk', index)
+      this.slotList[index].flag = !this.slotList[index].flag
+      if (!this.slotList[index].flag) {
+        this.slotList[index].message = '-'
+      }
     }
   },
-  created () {
+  mounted () {
     this.$store.dispatch('getAppIdFromStorage')
     this.getIntentsList()
     this.getIntentsDetail()
@@ -673,18 +688,6 @@ export default {
       if (!newV) {
         this.ifOutputDetail = false
       }
-    },
-    'slotList' (newV, oldV) {
-      for (let item of this.slotList) {
-        console.log(item.flag)
-        if (item.flag === true) {
-          this.showMsg = true
-        } else if (item.flag === false)  {
-          this.showMsg = false
-        }
-      }
-      console.log('slogList', this.slotList)
-      console.log('showMsg', this.showMsg)
     }
   }
 }
@@ -695,7 +698,6 @@ export default {
   // 删除按钮
   .input-box {
     position: relative;
-
     &:hover .trash-icon {
       display: block;
     }
@@ -721,6 +723,17 @@ export default {
     border-bottom: 1px solid #ccc;
     padding: 5px 0;
     text-align: center;
+    
+    div.chkbox {
+      display: inline-block;
+      width: 15px;
+      height: 15px;
+      // background: #ccc;
+      border: 1px solid #ccc;
+    }
+    div.checked {
+      background: #ccc;
+    }
   }
   input {
     outline: none;
@@ -761,7 +774,6 @@ export default {
           padding: 5px 10px;
           cursor: pointer;
           margin: 0px 5px 5px 5px;
-
           &:hover {
             background: #eee;
           }
@@ -786,7 +798,6 @@ export default {
       padding: 5px 10px;
       cursor: pointer;
       margin: 0px 5px 5px 5px;
-
       &:hover {
         background: #eee;
       }
