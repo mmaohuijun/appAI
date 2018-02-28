@@ -149,19 +149,19 @@
         </Form-item>
         <Form-item>
           <table class="action-tbl" v-if="showActionList">
-            <thead>
-              <!-- <td>是否必须</td> -->
-              <td>参数名称</td>
-              <td>类型</td>
-              <td>取值</td>
-              <!-- <td>提示语</td> -->
-              <td>操作</td>
-            </thead>
             <tbody>
-              <!-- <td>
-                <input type="checkbox">
-              </td> -->
+              <tr>
+                <td>是否必须</td>
+                <td>参数名称</td>
+                <td>类型</td>
+                <td>取值</td>
+                <td v-show="showMsg">提示语</td>
+                <td>操作</td>
+              </tr>      
               <tr v-for="(item, index) in slotList" :key="index">
+                <td>
+                  <Checkbox v-model="item.flag"></Checkbox>
+                </td>
                 <td>
                   <input type="text" placeholder="添加参数名称..." v-model="item.typeName">
                 </td>
@@ -169,14 +169,12 @@
                   <span>{{item.dictName || '请选择类型...'}}</span>
                 </td>
                 <td>{{'${ ' + item.typeName + '}'}}</td>
-                  <!-- <input type="text" disabled v-model=" '${ ' + item.typeName + '}'"> -->
-                <!-- </td> -->
+                <td v-show="showMsg">
+                  <input type="text" placeholder="编辑提示语" v-model="item.message">
+                </td>
                 <td>
                   <button @click.prevent="delSlotList(index)" class="del-btn">删除</button>
                 </td>
-                <!-- <td>
-                  <input type="text" placeholder="编辑提示语" v-model="item.message">
-                </td> -->
               </tr>         
             </tbody>
           </table>
@@ -267,13 +265,8 @@ export default {
       ],
       outIndex: '', // 选择输出项
       ifOutputDetail: false,
-      editI: '' // 正在编辑第几项 输出
-      // yHint: '',
-      // yAction: '',
-      // onHint: '',
-      // onAction: '',
-      // inHint: '',
-      // inAction: ''
+      editI: '', // 正在编辑第几项 输出
+      showMsg: false // 显示slotList message
     }
   },
   computed: {
@@ -336,12 +329,6 @@ export default {
         input: this.input,
         check: this.check,
         flag: this.createIntentsForm.flag
-        // yHint: this.yHint,
-        // yAction: this.yAction,
-        // onHint: this.onHint,
-        // onAction: this.onAction,
-        // inHint: this.inHint,
-        // inAction: this.inAction
       }
       this._.each(this.slotList, (ele, index) => {
         data[`slotList[${index}].id`] = this.slotList[index].id
@@ -429,7 +416,21 @@ export default {
           }
           this.slotList = data.slotList
           if (this.slotList.length < 1) {
-            this.slotList.push({ defValue: this.slotList.defValue, typeName: this.slotList.typeName, dictName: this.slotList.dictName })
+            this.slotList.push({
+              defValue: this.slotList.defValue,
+              typeName: this.slotList.typeName,
+              dictName: this.slotList.dictName,
+              flag: this.slotList.flag || false,
+              message: this.slotList.message
+            })
+          } else {
+            for (let item of this.slotList) {
+              if (item.flag === "false") {
+                item.flag = false
+              } else if (item.flag === "true") {
+                item.flag = true
+              }
+            }
           }
           this.actionName = data.actionName
         }
@@ -465,7 +466,7 @@ export default {
       console.log('hasSelected', this.hasSelected)
       // console.log(this.askList[this.textIndex])
       if (this.ifAddActionList(entity)) {
-        this.slotList.push({ typeName: entity, dictName: type })
+        this.slotList.push({ typeName: entity, dictName: type, flag: false })
       }
     },
     // 判断用户提问中添加的slot 在动作列表中是否已经存在
@@ -545,7 +546,13 @@ export default {
     },
     // 添加动作列表
     addActionList () {
-      this.slotList.push({ typeName: this.slotList.typeName, dictName: this.slotList.dictName })
+      this.slotList.push({
+        typeName: this.slotList.typeName,
+        dictName: this.slotList.dictName,
+        flag: false,
+        message: this.slotList.message
+        })
+        console.log('add', this.slotList)
     },
     // 编辑动作列表
     editActionList (index) {
@@ -666,6 +673,18 @@ export default {
       if (!newV) {
         this.ifOutputDetail = false
       }
+    },
+    'slotList' (newV, oldV) {
+      for (let item of this.slotList) {
+        console.log(item.flag)
+        if (item.flag === true) {
+          this.showMsg = true
+        } else if (item.flag === false)  {
+          this.showMsg = false
+        }
+      }
+      console.log('slogList', this.slotList)
+      console.log('showMsg', this.showMsg)
     }
   }
 }
@@ -698,7 +717,7 @@ export default {
     text-align: center;
   }
   td {
-    width: 25%;
+    width: 15%;
     border-bottom: 1px solid #ccc;
     padding: 5px 0;
     text-align: center;
