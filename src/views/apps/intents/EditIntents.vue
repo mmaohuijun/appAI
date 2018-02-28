@@ -1,7 +1,7 @@
 <template>
   <div class="content-body">
     <div class="content-body-header">
-      <div>
+      <div> 
         <span style="padding-right: 15px;">关键词</span>
         <Input 
           @on-click="getEntitiesList"

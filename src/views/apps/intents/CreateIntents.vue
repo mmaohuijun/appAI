@@ -178,7 +178,6 @@
           </Select>
           <a href="" @click.prevent="addActionList">添加一行</a>
         </Form-item>
-
         <div class="validate">
           <div>后置检查</div>
             <div>

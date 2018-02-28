@@ -151,8 +151,6 @@ export default {
   }
   // 导航条样式
   .layout {
-        // background: #f5f7f9;
-        // margin-bottom: 30px;
         height: 100%;
 
         .header {

@@ -170,10 +170,8 @@ export default {
           if (response.data.list.length > 0) {
             this.appList = response.data.list
             this.total = response.data.total
-            // this.ifApps = 0
           } else {
             this.appList = []
-            // this.ifApps = 1
           }
         }
       })
@@ -185,7 +183,6 @@ export default {
           if (response.data === null) {
             this.$Message.success('删除成功！')
             this.getAppList()
-            // this.$router.push({ name: 'Application' })
           }
         })
       }
@@ -203,7 +200,6 @@ export default {
   },
   mounted () {
     this.getAppList()
-    // const path = this.$store.getters.BASE_PATH
   }
 }
 </script>
