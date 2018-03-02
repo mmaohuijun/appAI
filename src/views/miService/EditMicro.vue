@@ -159,10 +159,10 @@ export default {
         // attrList: this.attrList
       }
       this._.each(this.attrList, (ele, index) => {
-        data[`attrList[${index}].id`] = this.attrList[index].id
+        // data[`attrList[${index}].id`] = this.attrList[index].id
         data[`attrList[${index}].describe`] = ele.describe
-        data[`attrList[${index}].name`] = ele.name
-        data[`attrList[${index}].value`] = ele.value
+        data[`attrList[${index}].arrtName`] = ele.name
+        // data[`attrList[${index}].value`] = ele.value
       })
       this.$axios.post('mic_service/save', data).then(response => {
         if (response.data === null) {

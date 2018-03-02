@@ -16,12 +16,12 @@
       <Form-item label="否定动作">
         <Input v-model="flowForm.nAction"></Input>
       </Form-item>
-      <Form-item label="动作">
+      <!-- <Form-item label="动作">
         <Radio-group v-model="flowForm.flag">
           <Radio label="0">前置</Radio>
           <Radio label="1">后置</Radio>
         </Radio-group>
-      </Form-item>
+      </Form-item> -->
       <!-- <Form-item>
         <Button @click="saveFlow" type="primary">确定</Button>
       </Form-item> -->
@@ -65,8 +65,8 @@ export default {
         describe: '',
         ask: '',
         yAction: '',
-        nAction: '',
-        flag: ''
+        nAction: ''
+        // flag: ''
       },
       intentList: [],
       processBlockList: [] // 选中场景
@@ -89,6 +89,7 @@ export default {
       } else {
         this.flowForm = {}
       }
+      console.log('process', this.processBlockList)
     },
     // 获取所有场景
     getIntentList () {
@@ -106,6 +107,7 @@ export default {
       if (JSON.stringify(this.processBlockList).indexOf(JSON.stringify(obj) !== -1)) {
         this.processBlockList.push(obj)
       }
+      // console.log('process', this.processBlockList)
     },
     // 取消场景
     cancleIntent (index) {
@@ -120,10 +122,10 @@ export default {
         ask: this.flowForm.ask,
         yAction: this.flowForm.yAction,
         nAction: this.flowForm.nAction,
-        flag: this.flowForm.flag
+        trigger: ''
       }
       this.processBlockList.forEach((val, index) => {
-        data[`processBlockList[${index}].aid`] = this.processBlockList[index].aid
+        data[`processBlockList[${index}].iid`] = this.processBlockList[index].id
         data[`processBlockList[${index}].itName`] = this.processBlockList[index].itName
         data[`processBlockList[${index}].sort`] = this.processBlockList[index].sort
       })
