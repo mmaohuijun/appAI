@@ -92,12 +92,12 @@
             </div>
           </div>
         </div>
-        <Form-item label="动作">
-          <Radio-group v-model="createIntentsForm.flag">
+        <!-- <Form-item label="动作">
+          <Radio-group v-model="placeFlag">
             <Radio label="0">前置</Radio>
             <Radio label="1">后置</Radio>
           </Radio-group>
-        </Form-item>
+        </Form-item> -->
         <Form-item label="用户提问"><br>
         <div v-for="(item, index) in askList" :key="index" style="margin-bottom: 10px;" class="ask-box">
           <div>
@@ -146,6 +146,12 @@
 
         <Form-item label="动作">
           <input type="text" class="my-input" placeholder="请输入动作名称" v-model="actionName">
+        </Form-item>
+        <Form-item label="检查">
+          <Radio-group v-model="placeFlag">
+            <Radio label="0">前置</Radio>
+            <Radio label="1">后置</Radio>
+          </Radio-group>
         </Form-item>
         <Form-item>
           <table class="action-tbl" v-if="showActionList">
@@ -228,10 +234,11 @@ export default {
       selectIntent: '',
       name: '', // 搜素场景关键词
       createIntentsForm: { // 创建场景 表单
-        flag: '',
+        // flag: '',
         name: '', // 场景名称
         text: '' // 提问语料
       },
+      placeFlag: '',
       ruleIntentsForm: { // 场景表单的验证规则
         name: [
           { required: true, message: '场景名称不能为空', trigger: 'blur' }
@@ -341,7 +348,7 @@ export default {
         id: this.getIntentId,
         input: this.input,
         check: this.check,
-        flag: this.createIntentsForm.flag
+        flag: this.placeFlag
         // yHint: this.yHint,
         // yAction: this.yAction,
         // onHint: this.onHint,
@@ -415,7 +422,7 @@ export default {
         if (response.data) {
           var data = response.data.intent
           this.createIntentsForm.name = data.name
-          this.createIntentsForm.flag = data.flag
+          this.placeFlag = data.flag
           this.checkList = data.checkIdObj || []
           this.output = data.output
           this.askList = data.askList
@@ -435,7 +442,7 @@ export default {
           }
           this.slotList = data.slotList
           if (this.slotList.length < 1) {
-            this.slotList.push({ defValue: this.slotList.defValue, typeName: this.slotList.typeName, dictName: this.slotList.dictName })
+            this.slotList.push({ defValue: this.slotList.defValue, typeName: this.slotList.typeName, dictName: this.slotList.dictName, flag: false, message: '' })
           } else {
             for (let item of this.slotList) {
               if (item.flag === 'false') {
@@ -539,14 +546,13 @@ export default {
     },
     // 选中某一项
     onSelectAction (id) {
-      let typeName, dictName, flag, message
+      console.log('onSelect')
+      let typeName, dictName
       console.log('onSelectAction', id)
       for (let i = 0; i < this.entitiesList.length; i++) {
         if (id === this.entitiesList[i].id) {
           dictName = this.entitiesList[i].name
           typeName = this.entitiesList[i].pinyin
-          flag = false
-          message = '-'
         }
       }
       if (this.editActionIndex === '') {
@@ -554,14 +560,15 @@ export default {
         this.slotList.push({ typeName: typeName, dictName: dictName, flag: flag, message: message })
       } else {
         console.log('正在编辑')
-        this.slotList[this.editActionIndex] = { typeName: typeName, dictName: dictName, flag: flag, message: message }
+        this.slotList[this.editActionIndex].typeName = typeName
+        this.slotList[this.editActionIndex].dictName = dictName
         this.editActionIndex = ''
       }
       this.hasEntities = false
     },
     // 添加动作列表
     addActionList () {
-      this.slotList.push({ typeName: this.slotList.typeName, dictName: this.slotList.dictName, flag: false, message: '-' })
+      this.slotList.push({ typeName: this.slotList.typeName, dictName: this.slotList.dictName, flag: false, message: '' })
     },
     // 编辑动作列表
     editActionList (index) {
@@ -662,11 +669,11 @@ export default {
     chooseNo2 (value) {
       this.out.inAction = value
     },
-    selectChk (index) {
-      console.log('selectChk', index)
+    selectChk (index) { 
       this.slotList[index].flag = !this.slotList[index].flag
+      console.log('selectChk', index, this.slotList[index].flag)
       if (!this.slotList[index].flag) {
-        this.slotList[index].message = '-'
+        this.slotList[index].message = ''
       }
     }
   },
@@ -689,6 +696,9 @@ export default {
       if (!newV) {
         this.ifOutputDetail = false
       }
+    },
+    'slotList' () {
+      console.log(this.slotList)
     }
   }
 }
