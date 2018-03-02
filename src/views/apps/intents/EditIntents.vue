@@ -60,7 +60,7 @@
                 </ul>
                 <input type="text" placeholder="添加输出状态..." @focus="addOutput">
               </div>
-              <Modal v-model="showOutput" @on-ok="saveOutput">
+              <Modal v-model="showOutput" @on-ok="saveOutput" :closable="false" >
                 <Form style="width: 100%">
                   <Form-item label="名称">
                     <Input v-model="out.name"></Input>
@@ -162,7 +162,7 @@
             <tbody>
               <tr v-for="(item, index) in slotList" :key="index">
                 <td>
-                  <div class="chkbox" @click="selectChk(index)" :class="{ checked:item.flag }">{{ item.flag }}</div>
+                  <div class="chkbox" @click="selectChk(index)" :class="{ checked:item.flag }"></div>
                   <!-- <input type="checkbox" v-model="item.flag">{{ item.flag }} -->
                   <!-- <Checkbox v-model="item.flag">{{ item.flag }}</Checkbox> -->
                 </td>
@@ -176,7 +176,8 @@
                   <!-- <input type="text" disabled v-model=" '${ ' + item.typeName + '}'"> -->
                 <!-- </td> -->
                 <td>
-                  <input type="text" placeholder="编辑提示语" v-model="item.message">
+                  <input type="text" placeholder="编辑提示语" v-model="item.message" v-if="item.flag">
+                  <span class="span-message" v-else>{{ item.message }}</span>
                 </td>
                 <td>
                   <button @click.prevent="delSlotList(index)" class="del-btn">删除</button>
@@ -735,7 +736,8 @@ export default {
       background: #ccc;
     }
   }
-  input {
+  input, .span-message {
+    width: 116px;
     outline: none;
     border: none;
     padding: 10px 15px;

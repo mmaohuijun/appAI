@@ -23,7 +23,8 @@
     </Modal>
     <Modal 
       v-model="showEdit" 
-      title="编辑用户权限">
+      title="编辑用户权限"
+      :closable="false">
       <Form :model="authForm" ref="authForm" :rule="authForm">
         <Form-item label="姓名" prop="username">
           <Input v-model="authForm.username"></Input>
@@ -50,7 +51,7 @@
       </Form>
       <div slot="footer">
         <Button type="primary" @click="saveUserAuth">提交</Button>
-        <Button>取消</Button>
+        <Button @click="showEdit=false">取消</Button>
       </div>
     </Modal>
     <Page 

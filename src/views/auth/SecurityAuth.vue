@@ -16,11 +16,13 @@
     <Modal
       v-model="showModal"
       title="删除应用"
+      :closable="false"
       @on-ok="deleteUser">
       <p>确定删除该用户权限吗？</p>
       <p>删除后无法恢复</p>
     </Modal>
     <Modal 
+      :closable="false"
       @on-ok="saveRoleAuth"
       v-model="showEdit" 
       title="编辑用户权限">
