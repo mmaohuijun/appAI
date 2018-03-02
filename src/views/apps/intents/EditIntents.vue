@@ -557,7 +557,7 @@ export default {
       }
       if (this.editActionIndex === '') {
         console.log('自定义参数')
-        this.slotList.push({ typeName: typeName, dictName: dictName, flag: flag, message: message })
+        this.slotList.push({ typeName: typeName, dictName: dictName })
       } else {
         console.log('正在编辑')
         this.slotList[this.editActionIndex].typeName = typeName
@@ -669,7 +669,7 @@ export default {
     chooseNo2 (value) {
       this.out.inAction = value
     },
-    selectChk (index) { 
+    selectChk (index) {
       this.slotList[index].flag = !this.slotList[index].flag
       console.log('selectChk', index, this.slotList[index].flag)
       if (!this.slotList[index].flag) {

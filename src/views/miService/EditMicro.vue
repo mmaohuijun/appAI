@@ -15,15 +15,12 @@
       <Table :columns="microCol" :data="attrList" style="clear:both;"> </Table>
     </Form>
     <Modal v-model="showModal">
-      <Form ref="attr" :model="attr" >
+      <Form ref="attr" :model="attr" :closable="false" >
         <Form-item label="描述" prop="describe">
           <Input v-model="attr.describe"></Input>
         </Form-item>
-        <Form-item label="属性名称" prop="name">
-          <Input v-model="attr.name"></Input>
-        </Form-item>
-        <Form-item label="属性值" prop="value">
-          <Input v-model="attr.value"></Input>
+        <Form-item label="属性名称" prop="attrName">
+          <Input v-model="attr.attrName"></Input>
         </Form-item>
       </Form>
       <div slot="footer">
@@ -51,8 +48,7 @@ export default {
       attrList: [],
       attr: {
         describe: '',
-        name: '',
-        value: ''
+        attrName: ''
       },
       microCol: [
         {
@@ -61,14 +57,10 @@ export default {
         },
         {
           title: '参数名',
-          key: 'name'
+          key: 'attrName'
         },
         {
-          title: '参数值',
-          key: 'value'
-        },
-        {
-          title: 'Action',
+          title: '操作',
           key: 'action',
           width: 150,
           align: 'center',
@@ -139,10 +131,13 @@ export default {
     saveParams () {
       console.log(this.ifEdit)
       if (this.ifEdit) {
-        this.attr = { describe: this.attr.describe, name: this.attr.name, value: this.attr.value }
+        console.log(this.attr.describe, this.attr.attrName)
+        this.attrList[this.attr._index].describe = this.attr.describe
+        this.attrList[this.attr._index].attrName = this.attr.attrName
       } else {
-        this.attrList.push({ describe: this.attr.describe, name: this.attr.name, value: this.attr.value })
+        this.attrList.push({ describe: this.attr.describe, attrName: this.attr.attrName })
       }
+      console.log(this.attrList)
       this.showModal = false
     },
     // 重置表单
@@ -161,9 +156,10 @@ export default {
       this._.each(this.attrList, (ele, index) => {
         // data[`attrList[${index}].id`] = this.attrList[index].id
         data[`attrList[${index}].describe`] = ele.describe
-        data[`attrList[${index}].arrtName`] = ele.name
+        data[`attrList[${index}].attrName`] = ele.attrName
         // data[`attrList[${index}].value`] = ele.value
       })
+      console.log(data)
       this.$axios.post('mic_service/save', data).then(response => {
         if (response.data === null) {
           this.$Message.success('保存成功！')
