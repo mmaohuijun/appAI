@@ -17,11 +17,13 @@
     <Modal
       v-model="showModal"
       title="删除应用"
+      :closable="false"
       @on-ok="deleteTeam">
       <p>确定删除该组权限吗？</p>
       <p>删除后无法恢复</p>
     </Modal>
     <Modal
+      :closable="false"
       v-model="showEdit"
       title="编辑组权限">
       <Form ref="authForm" :model="authForm" :label-width="60">

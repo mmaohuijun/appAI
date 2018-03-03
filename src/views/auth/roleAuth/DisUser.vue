@@ -216,7 +216,7 @@ export default {
   components: { TreeNode }
 }
 </script>
-<style lang="less">
+<style lang="less" scoped>
   .ivu-modal-body {
     display: flex;
     justify-content: space-between; 

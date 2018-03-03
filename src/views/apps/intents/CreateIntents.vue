@@ -589,7 +589,7 @@ export default {
     text-align: center;
   }
   td {
-    width: 25%;
+    width: 15%;
     border-bottom: 1px solid #ccc;
     padding: 5px 0;
     text-align: center

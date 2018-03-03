@@ -102,7 +102,7 @@ export default {
                     console.log(params)
                     that.$store.commit('SET_FLOW_ID', params.row.id)
                     that.$router.push({ name: 'EditFlow' })
-                    that.gotoEdit(params.row)
+                    // that.gotoEdit(params.row)
                   }
                 }
               }),

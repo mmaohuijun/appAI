@@ -16,13 +16,15 @@
     <Modal
       v-model="showModal"
       title="删除应用"
-      @on-ok="deleteUser">
+      @on-ok="deleteUser"
+      :closable="false">
       <p>确定删除该用户权限吗？</p>
       <p>删除后无法恢复</p>
     </Modal>
     <Modal 
       @on-ok="saveRoleAuth"
       v-model="showEdit" 
+      :closable="false"
       title="编辑用户权限">
       <Form :model="authForm" ref="authForm" :rule="authForm">
         <Form-item label="主题名称" prop="name">

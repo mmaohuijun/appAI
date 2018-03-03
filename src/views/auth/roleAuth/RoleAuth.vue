@@ -15,13 +15,15 @@
     </Table>
     <Modal
       v-model="showModal"
-      title="删除应用"
+      title="删除用户权限"
+      :closable="false"
       @on-ok="deleteUser">
       <p>确定删除该用户权限吗？</p>
       <p>删除后无法恢复</p>
     </Modal>
     <Modal 
       v-model="showEdit" 
+      :closable="false"
       title="编辑用户权限">
       <Form :model="authForm" ref="authForm" :rule="authForm">
         <Form-item label="角色名称" prop="name">
@@ -41,7 +43,7 @@
       </Form>
       <div slot="footer">
         <Button type="primary" @click="saveRoleAuth">提交</Button>
-        <Button>取消</Button>
+        <Button @click="showEdit=false">取消</Button>
       </div>
     </Modal>
     <Page 

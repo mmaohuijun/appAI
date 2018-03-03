@@ -60,7 +60,7 @@
                 </ul>
                 <input type="text" placeholder="添加输出状态..." @focus="addOutput">
               </div>
-              <Modal v-model="showOutput" @on-ok="saveOutput">
+              <Modal v-model="showOutput" @on-ok="saveOutput" :closable="false" >
                 <Form style="width: 100%">
                   <Form-item label="名称">
                     <Input v-model="out.name"></Input>
@@ -92,12 +92,12 @@
             </div>
           </div>
         </div>
-        <Form-item label="动作">
-          <Radio-group v-model="createIntentsForm.flag">
+        <!-- <Form-item label="动作">
+          <Radio-group v-model="placeFlag">
             <Radio label="0">前置</Radio>
             <Radio label="1">后置</Radio>
           </Radio-group>
-        </Form-item>
+        </Form-item> -->
         <Form-item label="用户提问"><br>
         <div v-for="(item, index) in askList" :key="index" style="margin-bottom: 10px;" class="ask-box">
           <div>
@@ -147,21 +147,31 @@
         <Form-item label="动作">
           <input type="text" class="my-input" placeholder="请输入动作名称" v-model="actionName">
         </Form-item>
+        <Form-item label="检查">
+          <Radio-group v-model="placeFlag">
+            <Radio label="0">前置</Radio>
+            <Radio label="1">后置</Radio>
+          </Radio-group>
+        </Form-item>
         <Form-item>
           <table class="action-tbl" v-if="showActionList">
             <thead>
-              <!-- <td>是否必须</td> -->
-              <td>参数名称</td>
-              <td>类型</td>
-              <td>取值</td>
-              <!-- <td>提示语</td> -->
-              <td>操作</td>
+              <tr>
+                <td>是否必须</td>
+                <td>参数名称</td>
+                <td>类型</td>
+                <td>取值</td>
+                <td>提示语</td>
+                <td>操作</td>
+              </tr>
             </thead>
             <tbody>
-              <!-- <td>
-                <input type="checkbox">
-              </td> -->
               <tr v-for="(item, index) in slotList" :key="index">
+                <td>
+                  <div class="chkbox" @click="selectChk(index)" :class="{ checked:item.flag }"></div>
+                  <!-- <input type="checkbox" v-model="item.flag">{{ item.flag }} -->
+                  <!-- <Checkbox v-model="item.flag">{{ item.flag }}</Checkbox> -->
+                </td>
                 <td>
                   <input type="text" placeholder="添加参数名称..." v-model="item.typeName">
                 </td>
@@ -172,11 +182,12 @@
                   <!-- <input type="text" disabled v-model=" '${ ' + item.typeName + '}'"> -->
                 <!-- </td> -->
                 <td>
+                  <input type="text" placeholder="编辑提示语" v-model="item.message" v-if="item.flag">
+                  <span class="span-message" v-else>{{ item.message }}</span>
+                </td>
+                <td>
                   <button @click.prevent="delSlotList(index)" class="del-btn">删除</button>
                 </td>
-                <!-- <td>
-                  <input type="text" placeholder="编辑提示语" v-model="item.message">
-                </td> -->
               </tr>         
             </tbody>
           </table>
@@ -217,15 +228,17 @@ export default {
   name: 'EditIntents',
   data () {
     return {
+      test: false,
       appId: '', // 应用id
       intentId: '',
       selectIntent: '',
       name: '', // 搜素场景关键词
       createIntentsForm: { // 创建场景 表单
-        flag: '',
+        // flag: '',
         name: '', // 场景名称
         text: '' // 提问语料
       },
+      placeFlag: '',
       ruleIntentsForm: { // 场景表单的验证规则
         name: [
           { required: true, message: '场景名称不能为空', trigger: 'blur' }
@@ -335,7 +348,7 @@ export default {
         id: this.getIntentId,
         input: this.input,
         check: this.check,
-        flag: this.createIntentsForm.flag
+        flag: this.placeFlag
         // yHint: this.yHint,
         // yAction: this.yAction,
         // onHint: this.onHint,
@@ -409,7 +422,7 @@ export default {
         if (response.data) {
           var data = response.data.intent
           this.createIntentsForm.name = data.name
-          this.createIntentsForm.flag = data.flag
+          this.placeFlag = data.flag
           this.checkList = data.checkIdObj || []
           this.output = data.output
           this.askList = data.askList
@@ -429,7 +442,15 @@ export default {
           }
           this.slotList = data.slotList
           if (this.slotList.length < 1) {
-            this.slotList.push({ defValue: this.slotList.defValue, typeName: this.slotList.typeName, dictName: this.slotList.dictName })
+            this.slotList.push({ defValue: this.slotList.defValue, typeName: this.slotList.typeName, dictName: this.slotList.dictName, flag: false, message: '' })
+          } else {
+            for (let item of this.slotList) {
+              if (item.flag === 'false') {
+                item.flag = false
+              } else if (item.flag === 'true') {
+                item.flag = true
+              }
+            }
           }
           this.actionName = data.actionName
         }
@@ -525,6 +546,7 @@ export default {
     },
     // 选中某一项
     onSelectAction (id) {
+      console.log('onSelect')
       let typeName, dictName
       console.log('onSelectAction', id)
       for (let i = 0; i < this.entitiesList.length; i++) {
@@ -538,14 +560,15 @@ export default {
         this.slotList.push({ typeName: typeName, dictName: dictName })
       } else {
         console.log('正在编辑')
-        this.slotList[this.editActionIndex] = { typeName: typeName, dictName: dictName }
+        this.slotList[this.editActionIndex].typeName = typeName
+        this.slotList[this.editActionIndex].dictName = dictName
         this.editActionIndex = ''
       }
       this.hasEntities = false
     },
     // 添加动作列表
     addActionList () {
-      this.slotList.push({ typeName: this.slotList.typeName, dictName: this.slotList.dictName })
+      this.slotList.push({ typeName: this.slotList.typeName, dictName: this.slotList.dictName, flag: false, message: '' })
     },
     // 编辑动作列表
     editActionList (index) {
@@ -645,9 +668,16 @@ export default {
     },
     chooseNo2 (value) {
       this.out.inAction = value
+    },
+    selectChk (index) {
+      this.slotList[index].flag = !this.slotList[index].flag
+      console.log('selectChk', index, this.slotList[index].flag)
+      if (!this.slotList[index].flag) {
+        this.slotList[index].message = ''
+      }
     }
   },
-  created () {
+  mounted () {
     this.$store.dispatch('getAppIdFromStorage')
     this.getIntentsList()
     this.getIntentsDetail()
@@ -666,6 +696,9 @@ export default {
       if (!newV) {
         this.ifOutputDetail = false
       }
+    },
+    'slotList' () {
+      console.log(this.slotList)
     }
   }
 }
@@ -676,7 +709,6 @@ export default {
   // 删除按钮
   .input-box {
     position: relative;
-
     &:hover .trash-icon {
       display: block;
     }
@@ -698,12 +730,24 @@ export default {
     text-align: center;
   }
   td {
-    width: 25%;
+    width: 15%;
     border-bottom: 1px solid #ccc;
     padding: 5px 0;
     text-align: center;
+    
+    div.chkbox {
+      display: inline-block;
+      width: 15px;
+      height: 15px;
+      // background: #ccc;
+      border: 1px solid #ccc;
+    }
+    div.checked {
+      background: #ccc;
+    }
   }
-  input {
+  input, .span-message {
+    width: 116px;
     outline: none;
     border: none;
     padding: 10px 15px;
@@ -742,7 +786,6 @@ export default {
           padding: 5px 10px;
           cursor: pointer;
           margin: 0px 5px 5px 5px;
-
           &:hover {
             background: #eee;
           }
@@ -767,7 +810,6 @@ export default {
       padding: 5px 10px;
       cursor: pointer;
       margin: 0px 5px 5px 5px;
-
       &:hover {
         background: #eee;
       }
