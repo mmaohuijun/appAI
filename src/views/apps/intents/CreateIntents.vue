@@ -14,7 +14,7 @@
     </div> 
     <div class="list-header">场景列表</div>
     <div style="display: flex; position: relative;">
-      <aside>
+      <aside class="intent-aside">
         <ul v-if="hasIntents">
           <li 
           v-for="(item, index) in intentList" 
@@ -557,15 +557,11 @@ export default {
 }
 </script>
 
-<style lang="less">
-.content-body {
-  position: relative;
-}
+<style lang="less" scope>
 .ask-box {
   // 删除按钮
   .input-box {
     position: relative;
-
     &:hover .trash-icon {
       display: block;
     }
@@ -580,21 +576,33 @@ export default {
   }
 }
 .action-tbl {
-  // border: 1px solid #ccc;
+  border: 1px solid #0278cc;
   border-collapse: collapse;
   width: 100%;
   thead {
-    background: #0A469E;
-    color: #fff;
     text-align: center;
+    background: #0278cc;
+    color:#fff;
   }
   td {
     width: 15%;
-    border-bottom: 1px solid #ccc;
+    border-bottom: 1px solid #0278cc;
     padding: 5px 0;
-    text-align: center
+    text-align: center;
+    
+    div.chkbox {
+      display: inline-block;
+      width: 15px;
+      height: 15px;
+      // background: #ccc;
+      border: 1px solid #0278cc;
+    }
+    div.checked {
+      background: #0278cc;
+    }
   }
-  input {
+  input, .span-message {
+    width: 116px;
     outline: none;
     border: none;
     padding: 10px 15px;
@@ -604,10 +612,14 @@ export default {
 .del-btn {
   outline: none;
   border: none;
-  padding: 2px 20px;
+  padding: 1px 15px;
+  background: #0278cc;
+  color: #fff;
+  border-radius: 2px;
   
   &:hover {
     cursor: pointer;
+    background: #0568af;
   }
 }
   .my-input {
@@ -617,12 +629,16 @@ export default {
   padding: 5px;
   margin-bottom: 1px;
 }
-
 // 状态
 .state-box {
   .state-type {
     .input-type, .output-type{
+      margin-top: 5px;
       display: flex;
+      span {
+        font-style: italic;
+        margin-right: 5px;
+      }
       & > div {
         margin-left: 5px;
       }
@@ -630,13 +646,16 @@ export default {
         float: left;
         li {
           float: left;
-          border: 1px solid red;
+          border: 1px solid #0278cc;
+          background: #0278cc;
+          color: #fff;
           padding: 5px 10px;
           cursor: pointer;
           margin: 0px 5px 5px 5px;
-
           &:hover {
-            background: #eee;
+            background: #0568af;
+            border: 1px solid #0278cc;
+            color: #fff;
           }
         }
       }
@@ -655,15 +674,40 @@ export default {
     float: left;
     li {
       float: left;
-      border: 1px solid red;
+      border: 1px solid #0278cc;
+      background: #0278cc;
+      color: #fff;
       padding: 5px 10px;
       cursor: pointer;
       margin: 0px 5px 5px 5px;
-
       &:hover {
-        background: #eee;
+        background: #0568af;
+        border: 1px solid #0278cc;
+        color: #fff;
       }
     }
   }  
+}
+// 肯定回答
+.sure-reply, .refuse-reply {
+  .ivu-form-item-content {
+    display: flex;
+    .ivu-input-wrapper {
+      margin-left: 10px;
+    }
+  }
+}
+.intent-aside {
+  left: 0px;
+  top: 0px;
+  bottom: -40px;
+}
+// 场景列表 选中变色
+aside .intentList {
+  background: #0278cc;
+  color: #fff;
+}
+.form .ivu-form-item-label, .title {
+  font-size: 18px;
 }
 </style>

@@ -15,13 +15,13 @@
     <div>
       <h2 class="list-header">词库列表</h2>
       <div style="display: flex" >
-        <aside>
+        <aside class="entity-aside">
           <ul v-if="hasEntities">
             <li 
               v-for="(item, index) in entitiesList" 
               :key="index" 
               @click="gotoEdit(index)">
-              <a>{{item.name}}</a>
+              <a :class="{intentList:sIndex === index}">{{item.name}}</a>
             </li>
           </ul>
           <p v-else class="empty-list">当前词库列表为空！</p>
@@ -85,7 +85,8 @@ export default {
       },
       // 词库详情
       entitiesDetail: {},
-      hasChoosed: false
+      hasChoosed: false,
+      sIndex: ''
     }
   },
   computed: {
@@ -144,6 +145,7 @@ export default {
     // 修改某个词库
     gotoEdit (index) {
       this.hasChoosed = true
+      this.sIndex = index
       let selectEntity = this.entitiesList[index].id
       this.$store.dispatch('setEntityId', selectEntity)
       this.getEntitiesDetail(selectEntity)
@@ -208,10 +210,15 @@ export default {
 }
 </script>
 
-<style lang="less">
+<style lang="less" scope>
   // 左侧侧边栏
   .content-body {
-    position: relative
+    position: relative;
+  }
+  .entity-aside{
+    top: 120px;
+    left: 20px;
+    bottom: 0px;
   }
   .icon-trash {
     position: absolute;
@@ -224,4 +231,8 @@ export default {
   .choosed {
     background: #333;
   }
+aside .intentList {
+  background: #0278cc;
+  color: #fff;
+}
 </style>

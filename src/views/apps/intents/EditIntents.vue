@@ -14,13 +14,13 @@
     </div> 
     <div class="list-header">场景列表</div>
     <div style="display: flex; position: relative;">
-      <aside>
+      <aside class="intent-aside">
         <ul v-if="hasIntents">
-          <li 
+          <li
           v-for="(item, index) in intentList" 
           :key="index"
           @click="gotoEdit(index)">
-          <a>{{item.name}}</a>
+          <a :class="{intentList: sIndex===index}">{{item.name}}</a>
           </li>
         </ul>
         <p v-else class="empty-list">当前场景列表为空！</p>
@@ -30,10 +30,10 @@
           <Input v-model="createIntentsForm.name"></Input>
         </Form-item>
         <div class="state-box">
-          <div>状态</div>
+          <div class="title">状态</div>
           <div class="state-type">
             <div class="input-type">
-              <span>输入</span>
+              <span>输入：</span>
               <div>
                 <ul class="list-card">
                   <li v-for="(item, index) in selectInputList" :key="index">
@@ -50,7 +50,7 @@
               </div>
             </div>
             <div class="output-type">
-              <span>输出</span>
+              <span>输出：</span>
               <div>
                 <ul class="list-card">
                   <li v-for="(item, index) in output" :key="index" @click="getOutput(index)">
@@ -58,7 +58,7 @@
                     <span @click.stop="delOutput(index)">x</span>          
                   </li>
                 </ul>
-                <input type="text" placeholder="添加输出状态..." @focus="addOutput">
+                <input type="text" placeholder="点击添加输出状态..." @focus="addOutput">
               </div>
               <Modal v-model="showOutput" @on-ok="saveOutput" :closable="false" >
                 <Form style="width: 100%">
@@ -193,13 +193,13 @@
               </Form-item>
             </Form>
         </Modal>
-        <Form-item label="检查">
+        <!-- <Form-item>
           <Radio-group v-model="placeFlag">
             <Radio label="0">前置</Radio>
             <Radio label="1">后置</Radio>
           </Radio-group>
-        </Form-item>
-        <Form-item>
+        </Form-item> -->
+        <Form-item style="margin-bottom:0;">
           <table class="action-tbl" v-if="showActionList">
             <thead>
               <tr>
@@ -242,10 +242,16 @@
           </Select>
           <a href="" @click.prevent="addActionList">添加一行</a>
         </Form-item>
+        <Form-item>
+          <Radio-group v-model="placeFlag">
+            <Radio label="0">前置</Radio>
+            <Radio label="1">后置</Radio>
+          </Radio-group>
+        </Form-item>
 
         <div class="validate">
-          <div>后置检查</div>
-            <div>
+          <div class="title">后置检查</div>
+            <div style="margin-top:10px;">
               <ul class="list-card">
                   <li v-for="(item, index) in checkList" :key="index">
                     {{ item.name }}    
@@ -261,7 +267,7 @@
             </div>
         </div>
 
-        <Form-item>
+        <Form-item class="save-btn">
           <Button type="primary" size="large" @click="saveCreate('createIntentsForm')">保存</Button>
         </Form-item>
       </Form>
@@ -341,7 +347,8 @@ export default {
           }
         ]
       },
-      microList: []     
+      microList: [],
+      sIndex: '' // 场景列表被选中index 
     }
   },
   computed: {
@@ -366,6 +373,7 @@ export default {
     // 编辑某个场景
     gotoEdit (index) {
       let selectIntent = this.intentList[index].id
+      this.sIndex = index
       this.$store.dispatch('setIntentId', this.intentList[index].id)
       this.$router.push({ name: 'EditIntents', params: { appId: this.getAppId } })
       this.getIntentsDetail(selectIntent)
@@ -791,7 +799,7 @@ export default {
 }
 </script>
 
-<style lang="less">
+<style lang="less" scope>
 .ask-box {
   // 删除按钮
   .input-box {
@@ -810,15 +818,17 @@ export default {
   }
 }
 .action-tbl {
-  border: 1px solid #ccc;
+  border: 1px solid #0278cc;
   border-collapse: collapse;
   width: 100%;
   thead {
     text-align: center;
+    background: #0278cc;
+    color:#fff;
   }
   td {
     width: 15%;
-    border-bottom: 1px solid #ccc;
+    border-bottom: 1px solid #0278cc;
     padding: 5px 0;
     text-align: center;
     
@@ -827,10 +837,10 @@ export default {
       width: 15px;
       height: 15px;
       // background: #ccc;
-      border: 1px solid #ccc;
+      border: 1px solid #0278cc;
     }
     div.checked {
-      background: #ccc;
+      background: #0278cc;
     }
   }
   input, .span-message {
@@ -844,10 +854,14 @@ export default {
 .del-btn {
   outline: none;
   border: none;
-  padding: 2px 20px;
+  padding: 1px 15px;
+  background: #0278cc;
+  color: #fff;
+  border-radius: 2px;
   
   &:hover {
     cursor: pointer;
+    background: #0568af;
   }
 }
   .my-input {
@@ -861,7 +875,12 @@ export default {
 .state-box {
   .state-type {
     .input-type, .output-type{
+      margin-top: 5px;
       display: flex;
+      span {
+        font-style: italic;
+        margin-right: 5px;
+      }
       & > div {
         margin-left: 5px;
       }
@@ -869,12 +888,16 @@ export default {
         float: left;
         li {
           float: left;
-          border: 1px solid red;
+          border: 1px solid #0278cc;
+          background: #0278cc;
+          color: #fff;
           padding: 5px 10px;
           cursor: pointer;
           margin: 0px 5px 5px 5px;
           &:hover {
-            background: #eee;
+            background: #0568af;
+            border: 1px solid #0278cc;
+            color: #fff;
           }
         }
       }
@@ -893,12 +916,16 @@ export default {
     float: left;
     li {
       float: left;
-      border: 1px solid red;
+      border: 1px solid #0278cc;
+      background: #0278cc;
+      color: #fff;
       padding: 5px 10px;
       cursor: pointer;
       margin: 0px 5px 5px 5px;
       &:hover {
-        background: #eee;
+        background: #0568af;
+        border: 1px solid #0278cc;
+        color: #fff;
       }
     }
   }  
@@ -911,5 +938,24 @@ export default {
       margin-left: 10px;
     }
   }
+}
+// 场景列表 选中变色
+.intent-aside {
+  left: 0px;
+  top: 0px;
+  bottom: -40px;
+}
+aside .intentList {
+  background: #0278cc;
+  color: #fff;
+}
+.form .ivu-form-item-label, .title {
+  font-size: 18px;
+}
+// 保存按钮
+.save-btn {
+  text-align: center;
+  margin-top:24px;
+  margin-bottom: 0;
 }
 </style>
