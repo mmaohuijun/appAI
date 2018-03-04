@@ -13,7 +13,7 @@
       </div>
     </div> 
     <div class="list-header">场景列表</div>
-    <div style="display: flex">
+    <div style="display: flex; position: relative;">
       <aside>
         <ul v-if="hasIntents">
           <li 
@@ -145,8 +145,54 @@
         </Form-item>
 
         <Form-item label="动作">
-          <input type="text" class="my-input" placeholder="请输入动作名称" v-model="actionName">
+          <input type="text" class="my-input" placeholder="请输入动作名称" v-model="actionName" @dblclick="editAcModal">
         </Form-item>
+        <Modal
+          :closable="false"
+          v-model="showAcModal">
+            <Form :model="acForm">
+              <Form-item label="动作">
+                <Input v-model="acForm.actionName"></Input>
+              </Form-item>
+              <Form-item label="微服务">
+                <Select v-model="acForm.micId">
+                  <Option v-for="item in microList" :value="item.id" :key="item.id">{{ item.name }}</Option>
+                </Select>
+              </Form-item>
+              <Form-item label="判断类型">
+                <Radio-group v-model="acForm.type">
+                  <Radio label="1">按内容</Radio>
+                  <Radio label="0">按结果</Radio>
+                </Radio-group>
+              </Form-item>
+              <Form-item label="内容" v-if="acForm.type==1">
+                <div v-for="(item, index) in acForm.cJson" :key="index" style="margin-bottom: 10px;" class="ask-box">
+                  <div>
+                    <div class="input-box">
+                      <input 
+                      class="my-input" 
+                      type="text" 
+                      placeholder="内容语料" 
+                      v-model="item.message"/>
+                      <input 
+                      class="my-input" 
+                      type="text" 
+                      placeholder="执行动作" 
+                      v-model="item.action"/>
+                      <div @click="deleteAcService(index)">
+                        <Icon v-show="index!==0" type="trash-a" class="trash-icon"></Icon>
+                      </div>          
+                    </div>    
+                  </div>       
+                </div>
+                <a href="" @click.prevent="addAcService">添加一行</a> 
+              </Form-item>
+              <Form-item label="执行动作" v-else>
+                <Input placeholder="有结果" v-model="acForm.yResult"></Input>
+                <Input placeholder="无结果" v-model="acForm.nResult"></Input>
+              </Form-item>
+            </Form>
+        </Modal>
         <Form-item label="检查">
           <Radio-group v-model="placeFlag">
             <Radio label="0">前置</Radio>
@@ -280,13 +326,22 @@ export default {
       ],
       outIndex: '', // 选择输出项
       ifOutputDetail: false,
-      editI: '' // 正在编辑第几项 输出
-      // yHint: '',
-      // yAction: '',
-      // onHint: '',
-      // onAction: '',
-      // inHint: '',
-      // inAction: ''
+      editI: '', // 正在编辑第几项 输出
+      showAcModal: false,
+      acForm: {
+        actionName: '',
+        micId: '',
+        type: '',
+        nResult: '',
+        yResult: '',
+        cJson: [
+          {
+            message: '',
+            action: ''
+          }
+        ]
+      },
+      microList: []     
     }
   },
   computed: {
@@ -348,13 +403,7 @@ export default {
         id: this.getIntentId,
         input: this.input,
         check: this.check,
-        flag: this.placeFlag
-        // yHint: this.yHint,
-        // yAction: this.yAction,
-        // onHint: this.onHint,
-        // onAction: this.onAction,
-        // inHint: this.inHint,
-        // inAction: this.inAction
+        flag: this.placeFlag,
       }
       this._.each(this.slotList, (ele, index) => {
         data[`slotList[${index}].id`] = this.slotList[index].id
@@ -385,6 +434,16 @@ export default {
         data[`output[${index}].onAction`] = this.output[index].onAction
         data[`output[${index}].inHint`] = this.output[index].inHint
         data[`output[${index}].inAction`] = this.output[index].inAction
+      })
+      data[`actService.id`] = this.acForm.id || ''
+      data[`actService.actionName`] = this.acForm.actionName
+      data[`actService.micId`] = this.acForm.micId
+      data[`actService.type`] = this.acForm.type
+      data[`actService.nResult`] = this.acForm.nResult
+      data[`actService.yResult`] = this.acForm.yResult
+      this._.each(this.acForm.cJson, (ele, index) => {
+        data[`actService[${index}].message`] = this.acForm.cJson[index].message
+        data[`actService[${index}].action`] = this.acForm.cJson[index].action
       })
       return data
     },
@@ -453,6 +512,8 @@ export default {
             }
           }
           this.actionName = data.actionName
+          // 获取动作弹框 详情
+          this.acForm = data.actService
         }
       })
     },
@@ -675,6 +736,31 @@ export default {
       if (!this.slotList[index].flag) {
         this.slotList[index].message = ''
       }
+    },
+    editAcModal () {
+      this.showAcModal = true
+    },
+    // 获取微服务下拉框 列表
+    getMicroList () {
+      let data = {
+        name: '',
+        date: '',
+        pageSize: 10,
+        pageNo: 1
+      }
+      this.$axios.post('mic_service/list', data).then(response => {
+        if (response.data) {
+          this.microList = response.data.mServiceList
+        }
+      })
+    },
+    // 动作弹框 按内容判断 添加一行
+    addAcService () {
+      this.acForm.cJson.push({ action: this.acForm.cJson.action, message: this.acForm.cJson.message })
+    },
+    // 删除一行
+    deleteAcService(index) {
+      this.acForm.cJson.splice(index, 1)
     }
   },
   mounted () {
@@ -682,6 +768,7 @@ export default {
     this.getIntentsList()
     this.getIntentsDetail()
     this.getEntitiesList()
+    this.getMicroList()
   },
   watch: {
     'name' (newV, oldV) {
@@ -697,8 +784,8 @@ export default {
         this.ifOutputDetail = false
       }
     },
-    'slotList' () {
-      console.log(this.slotList)
+    'acForm' () {
+      console.log(this.acForm)
     }
   }
 }

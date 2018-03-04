@@ -13,7 +13,7 @@
       </div>
     </div> 
     <div class="list-header">场景列表</div>
-    <div style="display: flex">
+    <div style="display: flex; position: relative;">
       <aside>
         <ul v-if="hasIntents">
           <li 

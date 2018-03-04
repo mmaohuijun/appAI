@@ -148,6 +148,10 @@ export default {
   html, body {
     width: 100%;
     height: 100%;
+    font-size: 14px;
+  }
+  .ivu-table-cell {
+    font-size: 14px;
   }
   // 导航条样式
   .layout {
@@ -325,9 +329,9 @@ export default {
     border-bottom: none;
     border-top: none;
     position: absolute;
-    left: 20px;
-    top: 120px;
-    bottom: 0px;
+    left: 0px;
+    top: 0px;
+    bottom: -40px;
     background: #fff;
 
     input {
@@ -356,7 +360,7 @@ export default {
 
         &:hover a {
           cursor: pointer;
-        background: #9399A6;
+        background: #0278cc;
         }
       }
     }
