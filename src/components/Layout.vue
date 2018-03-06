@@ -151,7 +151,7 @@ export default {
     font-size: 14px;
   }
   .ivu-table-cell, .ivu-form-item-content {
-    font-size: 14px;
+    font-size: 14px !important;
   }
   // 导航条样式
   .layout {

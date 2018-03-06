@@ -193,12 +193,6 @@
               </Form-item>
             </Form>
         </Modal>
-        <!-- <Form-item>
-          <Radio-group v-model="placeFlag">
-            <Radio label="0">前置</Radio>
-            <Radio label="1">后置</Radio>
-          </Radio-group>
-        </Form-item> -->
         <Form-item style="margin-bottom:0;">
           <table class="action-tbl" v-if="showActionList">
             <thead>
@@ -215,8 +209,6 @@
               <tr v-for="(item, index) in slotList" :key="index">
                 <td>
                   <div class="chkbox" @click="selectChk(index)" :class="{ checked:item.flag }"></div>
-                  <!-- <input type="checkbox" v-model="item.flag">{{ item.flag }} -->
-                  <!-- <Checkbox v-model="item.flag">{{ item.flag }}</Checkbox> -->
                 </td>
                 <td>
                   <input type="text" placeholder="添加参数名称..." v-model="item.typeName">
