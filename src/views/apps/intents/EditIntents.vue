@@ -92,12 +92,6 @@
             </div>
           </div>
         </div>
-        <!-- <Form-item label="动作">
-          <Radio-group v-model="placeFlag">
-            <Radio label="0">前置</Radio>
-            <Radio label="1">后置</Radio>
-          </Radio-group>
-        </Form-item> -->
         <Form-item label="用户提问"><br>
         <div v-for="(item, index) in askList" :key="index" style="margin-bottom: 10px;" class="ask-box">
           <div>
