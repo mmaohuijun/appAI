@@ -147,6 +147,10 @@ export default {
   html, body {
     width: 100%;
     height: 100%;
+    font-size: 14px;
+  }
+  .ivu-table-cell, .ivu-form-item-content {
+    font-size: 14px !important;
   }
   // 导航条样式
   .layout {
@@ -161,7 +165,8 @@ export default {
             left: 0;
             width: 100%;
             height: 75px;
-            background: #0396FF;
+            // background: #0396FF;
+            background: #0396EB;
             line-height: 75px;
           }
           .layout-logo{
@@ -312,21 +317,21 @@ export default {
 
 
   .list-header {
-    background: #0A469E;
+    background: #0278cc;
     color: #fff;
     font-size: 16px;
     padding: 10px 15px;
   }
   aside {
     width: 240px;
-    border: 1px solid #ccc;
-    padding: 0 0 15px 0;
+    border: 1px solid #0278cc;
+    padding: 5px 0 15px 0;
     border-bottom: none;
     border-top: none;
     position: absolute;
-    left: 20px;
-    top: 120px;
-    bottom: 0px;
+    // left: 0px;
+    // top: 0px;
+    // bottom: -40px;
     background: #fff;
 
     input {
@@ -345,7 +350,7 @@ export default {
         a {
           width: 100%;
           display: inline-block;
-          padding: 8px 15px;
+          padding: 8px 30px;
           color: #333;
 
           &:hover {
@@ -355,7 +360,7 @@ export default {
 
         &:hover a {
           cursor: pointer;
-        background: #9399A6;
+        background: #0278cc;
         }
       }
     }

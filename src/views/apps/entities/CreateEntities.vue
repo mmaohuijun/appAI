@@ -16,7 +16,7 @@
     <div>
       <h2 class="list-header">词库列表</h2>
       <div style="display: flex" >
-        <aside>
+        <aside class="entity-aside">
           <ul v-if="hasEntities">
             <li 
               v-for="(item, index) in entitiesList" 
@@ -173,8 +173,13 @@ export default {
 }
 </script>
 
-<style lang="less">
+<style lang="less" scope>
   .content-body {
     position: relative;
+  }
+  .entity-aside{
+    top: 120px;
+    left: 20px;
+    bottom: 0px;
   }
 </style>

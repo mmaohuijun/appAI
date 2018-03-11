@@ -13,14 +13,14 @@
       </div>
     </div> 
     <div class="list-header">场景列表</div>
-    <div style="display: flex">
-      <aside>
+    <div style="display: flex; position: relative;">
+      <aside class="intent-aside">
         <ul v-if="hasIntents">
-          <li 
+          <li
           v-for="(item, index) in intentList" 
           :key="index"
           @click="gotoEdit(index)">
-          <a>{{item.name}}</a>
+          <a :class="{intentList: sIndex===index}">{{item.name}}</a>
           </li>
         </ul>
         <p v-else class="empty-list">当前场景列表为空！</p>
@@ -30,10 +30,10 @@
           <Input v-model="createIntentsForm.name"></Input>
         </Form-item>
         <div class="state-box">
-          <div>状态</div>
+          <div class="title">状态</div>
           <div class="state-type">
             <div class="input-type">
-              <span>输入</span>
+              <span>输入：</span>
               <div>
                 <ul class="list-card">
                   <li v-for="(item, index) in selectInputList" :key="index">
@@ -50,7 +50,7 @@
               </div>
             </div>
             <div class="output-type">
-              <span>输出</span>
+              <span>输出：</span>
               <div>
                 <ul class="list-card">
                   <li v-for="(item, index) in output" :key="index" @click="getOutput(index)">
@@ -58,7 +58,7 @@
                     <span @click.stop="delOutput(index)">x</span>          
                   </li>
                 </ul>
-                <input type="text" placeholder="添加输出状态..." @focus="addOutput">
+                <input type="text" placeholder="点击添加输出状态..." @focus="addOutput">
               </div>
               <Modal v-model="showOutput" @on-ok="saveOutput" :closable="false" >
                 <Form style="width: 100%">
@@ -92,12 +92,6 @@
             </div>
           </div>
         </div>
-        <!-- <Form-item label="动作">
-          <Radio-group v-model="placeFlag">
-            <Radio label="0">前置</Radio>
-            <Radio label="1">后置</Radio>
-          </Radio-group>
-        </Form-item> -->
         <Form-item label="用户提问"><br>
         <div v-for="(item, index) in askList" :key="index" style="margin-bottom: 10px;" class="ask-box">
           <div>
@@ -145,15 +139,55 @@
         </Form-item>
 
         <Form-item label="动作">
-          <input type="text" class="my-input" placeholder="请输入动作名称" v-model="actionName">
+          <input type="text" class="my-input" placeholder="请输入动作名称" v-model="actionName" @dblclick="editAcModal">
         </Form-item>
-        <Form-item label="检查">
-          <Radio-group v-model="placeFlag">
-            <Radio label="0">前置</Radio>
-            <Radio label="1">后置</Radio>
-          </Radio-group>
-        </Form-item>
-        <Form-item>
+        <Modal
+          :closable="false"
+          v-model="showAcModal">
+            <Form :model="acForm">
+              <Form-item label="动作">
+                <Input v-model="acForm.actionName"></Input>
+              </Form-item>
+              <Form-item label="微服务">
+                <Select v-model="acForm.micId">
+                  <Option v-for="item in microList" :value="item.id" :key="item.id">{{ item.name }}</Option>
+                </Select>
+              </Form-item>
+              <Form-item label="判断类型">
+                <Radio-group v-model="acForm.type">
+                  <Radio label="1">按内容</Radio>
+                  <Radio label="0">按结果</Radio>
+                </Radio-group>
+              </Form-item>
+              <Form-item label="内容" v-if="acForm.type==1">
+                <div v-for="(item, index) in acForm.cJson" :key="index" style="margin-bottom: 10px;" class="ask-box">
+                  <div>
+                    <div class="input-box">
+                      <input 
+                      class="my-input" 
+                      type="text" 
+                      placeholder="内容语料" 
+                      v-model="item.message"/>
+                      <input 
+                      class="my-input" 
+                      type="text" 
+                      placeholder="执行动作" 
+                      v-model="item.action"/>
+                      <div @click="deleteAcService(index)">
+                        <Icon v-show="index!==0" type="trash-a" class="trash-icon"></Icon>
+                      </div>          
+                    </div>    
+                  </div>       
+                </div>
+                <a href="" @click.prevent="addAcService">添加一行</a> 
+              </Form-item>
+              <Form-item label="执行动作" v-else>
+                <Input placeholder="有结果" v-model="acForm.yResult"></Input>
+                <Input placeholder="无结果" v-model="acForm.nResult"></Input>
+              </Form-item>
+            </Form>
+        </Modal>
+        <Form-item style="margin-bottom:0;">
           <table class="action-tbl" v-if="showActionList">
             <thead>
               <tr>
@@ -169,8 +203,6 @@
               <tr v-for="(item, index) in slotList" :key="index">
                 <td>
                   <div class="chkbox" @click="selectChk(index)" :class="{ checked:item.flag }"></div>
-                  <!-- <input type="checkbox" v-model="item.flag">{{ item.flag }} -->
-                  <!-- <Checkbox v-model="item.flag">{{ item.flag }}</Checkbox> -->
                 </td>
                 <td>
                   <input type="text" placeholder="添加参数名称..." v-model="item.typeName">
@@ -196,10 +228,16 @@
           </Select>
           <a href="" @click.prevent="addActionList">添加一行</a>
         </Form-item>
+        <Form-item>
+          <Radio-group v-model="placeFlag">
+            <Radio label="0">前置</Radio>
+            <Radio label="1">后置</Radio>
+          </Radio-group>
+        </Form-item>
 
         <div class="validate">
-          <div>后置检查</div>
-            <div>
+          <div class="title">后置检查</div>
+            <div style="margin-top:10px;">
               <ul class="list-card">
                   <li v-for="(item, index) in checkList" :key="index">
                     {{ item.name }}    
@@ -215,7 +253,7 @@
             </div>
         </div>
 
-        <Form-item>
+        <Form-item class="save-btn">
           <Button type="primary" size="large" @click="saveCreate('createIntentsForm')">保存</Button>
         </Form-item>
       </Form>
@@ -280,13 +318,23 @@ export default {
       ],
       outIndex: '', // 选择输出项
       ifOutputDetail: false,
-      editI: '' // 正在编辑第几项 输出
-      // yHint: '',
-      // yAction: '',
-      // onHint: '',
-      // onAction: '',
-      // inHint: '',
-      // inAction: ''
+      editI: '', // 正在编辑第几项 输出
+      showAcModal: false,
+      acForm: {
+        actionName: '',
+        micId: '',
+        type: '',
+        nResult: '',
+        yResult: '',
+        cJson: [
+          {
+            message: '',
+            action: ''
+          }
+        ]
+      },
+      microList: [],
+      sIndex: '' // 场景列表被选中index 
     }
   },
   computed: {
@@ -311,6 +359,7 @@ export default {
     // 编辑某个场景
     gotoEdit (index) {
       let selectIntent = this.intentList[index].id
+      this.sIndex = index
       this.$store.dispatch('setIntentId', this.intentList[index].id)
       this.$router.push({ name: 'EditIntents', params: { appId: this.getAppId } })
       this.getIntentsDetail(selectIntent)
@@ -348,13 +397,7 @@ export default {
         id: this.getIntentId,
         input: this.input,
         check: this.check,
-        flag: this.placeFlag
-        // yHint: this.yHint,
-        // yAction: this.yAction,
-        // onHint: this.onHint,
-        // onAction: this.onAction,
-        // inHint: this.inHint,
-        // inAction: this.inAction
+        flag: this.placeFlag,
       }
       this._.each(this.slotList, (ele, index) => {
         data[`slotList[${index}].id`] = this.slotList[index].id
@@ -385,6 +428,16 @@ export default {
         data[`output[${index}].onAction`] = this.output[index].onAction
         data[`output[${index}].inHint`] = this.output[index].inHint
         data[`output[${index}].inAction`] = this.output[index].inAction
+      })
+      data[`actService.id`] = this.acForm.id || ''
+      data[`actService.actionName`] = this.acForm.actionName
+      data[`actService.micId`] = this.acForm.micId
+      data[`actService.type`] = this.acForm.type
+      data[`actService.nResult`] = this.acForm.nResult
+      data[`actService.yResult`] = this.acForm.yResult
+      this._.each(this.acForm.cJson, (ele, index) => {
+        data[`actService[${index}].message`] = this.acForm.cJson[index].message
+        data[`actService[${index}].action`] = this.acForm.cJson[index].action
       })
       return data
     },
@@ -453,6 +506,8 @@ export default {
             }
           }
           this.actionName = data.actionName
+          // 获取动作弹框 详情
+          this.acForm = data.actService
         }
       })
     },
@@ -675,6 +730,31 @@ export default {
       if (!this.slotList[index].flag) {
         this.slotList[index].message = ''
       }
+    },
+    editAcModal () {
+      this.showAcModal = true
+    },
+    // 获取微服务下拉框 列表
+    getMicroList () {
+      let data = {
+        name: '',
+        date: '',
+        pageSize: 10,
+        pageNo: 1
+      }
+      this.$axios.post('mic_service/list', data).then(response => {
+        if (response.data) {
+          this.microList = response.data.mServiceList
+        }
+      })
+    },
+    // 动作弹框 按内容判断 添加一行
+    addAcService () {
+      this.acForm.cJson.push({ action: this.acForm.cJson.action, message: this.acForm.cJson.message })
+    },
+    // 删除一行
+    deleteAcService(index) {
+      this.acForm.cJson.splice(index, 1)
     }
   },
   mounted () {
@@ -682,6 +762,7 @@ export default {
     this.getIntentsList()
     this.getIntentsDetail()
     this.getEntitiesList()
+    this.getMicroList()
   },
   watch: {
     'name' (newV, oldV) {
@@ -697,14 +778,14 @@ export default {
         this.ifOutputDetail = false
       }
     },
-    'slotList' () {
-      console.log(this.slotList)
+    'acForm' () {
+      console.log(this.acForm)
     }
   }
 }
 </script>
 
-<style lang="less">
+<style lang="less" scope>
 .ask-box {
   // 删除按钮
   .input-box {
@@ -723,15 +804,17 @@ export default {
   }
 }
 .action-tbl {
-  border: 1px solid #ccc;
+  border: 1px solid #0278cc;
   border-collapse: collapse;
   width: 100%;
   thead {
     text-align: center;
+    background: #0278cc;
+    color:#fff;
   }
   td {
     width: 15%;
-    border-bottom: 1px solid #ccc;
+    border-bottom: 1px solid #0278cc;
     padding: 5px 0;
     text-align: center;
     
@@ -740,10 +823,10 @@ export default {
       width: 15px;
       height: 15px;
       // background: #ccc;
-      border: 1px solid #ccc;
+      border: 1px solid #0278cc;
     }
     div.checked {
-      background: #ccc;
+      background: #0278cc;
     }
   }
   input, .span-message {
@@ -757,10 +840,14 @@ export default {
 .del-btn {
   outline: none;
   border: none;
-  padding: 2px 20px;
+  padding: 1px 15px;
+  background: #0278cc;
+  color: #fff;
+  border-radius: 2px;
   
   &:hover {
     cursor: pointer;
+    background: #0568af;
   }
 }
   .my-input {
@@ -774,7 +861,12 @@ export default {
 .state-box {
   .state-type {
     .input-type, .output-type{
+      margin-top: 5px;
       display: flex;
+      span {
+        font-style: italic;
+        margin-right: 5px;
+      }
       & > div {
         margin-left: 5px;
       }
@@ -782,12 +874,16 @@ export default {
         float: left;
         li {
           float: left;
-          border: 1px solid red;
+          border: 1px solid #0278cc;
+          background: #0278cc;
+          color: #fff;
           padding: 5px 10px;
           cursor: pointer;
           margin: 0px 5px 5px 5px;
           &:hover {
-            background: #eee;
+            background: #0568af;
+            border: 1px solid #0278cc;
+            color: #fff;
           }
         }
       }
@@ -806,12 +902,16 @@ export default {
     float: left;
     li {
       float: left;
-      border: 1px solid red;
+      border: 1px solid #0278cc;
+      background: #0278cc;
+      color: #fff;
       padding: 5px 10px;
       cursor: pointer;
       margin: 0px 5px 5px 5px;
       &:hover {
-        background: #eee;
+        background: #0568af;
+        border: 1px solid #0278cc;
+        color: #fff;
       }
     }
   }  
@@ -824,5 +924,24 @@ export default {
       margin-left: 10px;
     }
   }
+}
+// 场景列表 选中变色
+.intent-aside {
+  left: 0px;
+  top: 0px;
+  bottom: -40px;
+}
+aside .intentList {
+  background: #0278cc;
+  color: #fff;
+}
+.form .ivu-form-item-label, .title {
+  font-size: 18px;
+}
+// 保存按钮
+.save-btn {
+  text-align: center;
+  margin-top:24px;
+  margin-bottom: 0;
 }
 </style>

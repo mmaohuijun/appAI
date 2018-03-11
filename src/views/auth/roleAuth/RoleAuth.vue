@@ -120,6 +120,44 @@ export default {
               h('Button', {
                 props: {
                   type: 'text',
+                  size: 'small',
+                  icon: 'person'
+                },
+                style: {
+                  marginRight: '5px',
+                  color: '#999',
+                  fontSize: '22px'
+                },
+                on: {
+                  click () {
+                    that.showDis = true
+                    that.$store.commit('SET_ROLEAUTHID', params.row.id)
+                    that.$router.push({ name: 'DisUser' })
+                  }
+                }
+              }),
+              h('Button', {
+                props: {
+                  type: 'text',
+                  size: 'small',
+                  icon: 'ios-infinite'
+                },
+                style: {
+                  marginRight: '5px',
+                  color: '#999',
+                  fontSize: '20px'
+                },
+                on: {
+                  click () {
+                    that.showDis = true
+                    that.$store.commit('SET_ROLEAUTHID', params.row.id)
+                    that.$router.push({ name: 'DisThemeUser' })
+                  }
+                }
+              }),
+              h('Button', {
+                props: {
+                  type: 'text',
                   icon: 'trash-a',
                   size: 'small'
                 },
@@ -133,43 +171,7 @@ export default {
                     that.delId = params.row.id
                   }
                 }
-              }),
-              h('a', {
-                props: {
-                  type: 'primary',
-                  size: 'small'
-                },
-                style: {
-                  float: 'right',
-                  // color: '#fff',
-                  fontSize: '14px'
-                },
-                on: {
-                  click () {
-                    that.showDis = true
-                    that.$store.commit('SET_ROLEAUTHID', params.row.id)
-                    that.$router.push({ name: 'DisUser' })
-                  }
-                }
-              }, '分配用户'),
-              h('a', {
-                props: {
-                  type: 'primary',
-                  size: 'small'
-                },
-                style: {
-                  float: 'right',
-                  // color: '#fff',
-                  fontSize: '14px'
-                },
-                on: {
-                  click () {
-                    that.showDis = true
-                    that.$store.commit('SET_ROLEAUTHID', params.row.id)
-                    that.$router.push({ name: 'DisThemeUser' })
-                  }
-                }
-              }, '分配主题和密级')
+              })
             ])
           }
         }
