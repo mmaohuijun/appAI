@@ -1,14 +1,4 @@
 <template>
-  <!-- <div>
-    所有应用
-    <Select style="width:500px;" @on-change="getTransList">
-      <Option v-for="item in appList" :value="item.id" :key="item.id" >{{item.name}}</Option>
-    </Select>
-    <Button @click="doTrain" style="float: right" size="large">训练</Button>
-    <div class="train-tbl">
-      <Table :columns="column" :data="trainList"></Table>
-    </div>
-  </div> -->
   <div class="content-body">
     <div class="content-body-header">
       <div class="">
