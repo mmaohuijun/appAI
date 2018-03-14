@@ -58,4 +58,11 @@ npm run build
 
 项目部分截图
 ![](./src/assets/01.png '应用列表')
+![](./src/assets/02.png '应用列表')
+![](./src/assets/03.png '应用列表')
+![](./src/assets/04.png '应用列表')
+![](./src/assets/05.png '应用列表')
+![](./src/assets/06.png '应用列表')
+
+
 For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
