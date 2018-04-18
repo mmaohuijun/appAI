@@ -96,7 +96,6 @@ export default {
                 on: {
                   click () {
                     that.clickEdit = true
-                    // that.gotoEditApp(params.index)
                   }
                 }
               }),
