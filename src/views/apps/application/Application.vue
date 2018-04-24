@@ -112,7 +112,6 @@ export default {
                 on: {
                   click () {
                     that.showModal = true
-                    // that.clickDel = true
                   }
                 }
               })
