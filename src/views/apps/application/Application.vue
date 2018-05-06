@@ -148,7 +148,6 @@ export default {
         this.$router.push({ name: 'Intents', params: { appId: params.id } })
       }
     },
-    // 跳转到 编辑页面
     gotoEditApp (appId) {
       this.$store.dispatch('setAppId', appId)
       this.$router.push({ name: 'EditApp', params: { appId: appId } })
