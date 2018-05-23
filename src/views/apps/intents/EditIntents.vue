@@ -334,7 +334,7 @@ export default {
         ]
       },
       microList: [],
-      sIndex: '' // 场景列表被选中index 
+      sIndex: '' // 场景列表被选中index
     }
   },
   computed: {
@@ -397,7 +397,7 @@ export default {
         id: this.getIntentId,
         input: this.input,
         check: this.check,
-        flag: this.placeFlag,
+        flag: this.placeFlag
       }
       this._.each(this.slotList, (ele, index) => {
         data[`slotList[${index}].id`] = this.slotList[index].id
@@ -753,7 +753,7 @@ export default {
       this.acForm.cJson.push({ action: this.acForm.cJson.action, message: this.acForm.cJson.message })
     },
     // 删除一行
-    deleteAcService(index) {
+    deleteAcService (index) {
       this.acForm.cJson.splice(index, 1)
     }
   },

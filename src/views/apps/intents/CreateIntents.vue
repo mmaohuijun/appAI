@@ -318,7 +318,7 @@ export default {
         ]
       },
       microList: [],
-      sIndex: '' // 场景列表被选中index 
+      sIndex: '' // 场景列表被选中index
     }
   },
   computed: {
@@ -651,7 +651,7 @@ export default {
       this.acForm.cJson.push({ action: this.acForm.cJson.action, message: this.acForm.cJson.message })
     },
     // 删除一行
-    deleteAcService(index) {
+    deleteAcService (index) {
       this.acForm.cJson.splice(index, 1)
     }
   },
